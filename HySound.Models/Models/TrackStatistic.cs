@@ -13,7 +13,6 @@ namespace HySound.Models.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(Track))]
         public int? TrackId { get; set; }
         public int Plays { get; set; } = 0;
         public int Likes { get; set; } = 0;

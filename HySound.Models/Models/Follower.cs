@@ -12,9 +12,7 @@ namespace HySound.Models.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(User))]
         public int? FollowedId { get; set; }
-        [ForeignKey(nameof(User))]
 
         public int? FollowingId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

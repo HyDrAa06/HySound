@@ -17,7 +17,6 @@ namespace HySound.Models.Models
         public DateTime ReleaseDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [ForeignKey(nameof(User))]
         public int? UserId { get; set; }
         public User? User {  get; set; }
         public ICollection<Track>? Tracks { get; set; } = new List<Track>();

@@ -18,12 +18,9 @@ namespace HySound.Models.Models
         public int Duration { get; set; }
         public int Plays { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [ForeignKey(nameof(User))]
         public int? UserId { get; set; }
-        [ForeignKey(nameof(Album))]
 
         public int? AlbumId { get; set; }
-        [ForeignKey(nameof(Genre))]
 
         public int? GenreId { get; set; }
 

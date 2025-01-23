@@ -15,7 +15,6 @@ namespace HySound.Models.Models
         public string Title { get; set; }
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [ForeignKey(nameof(User))]
         public int? UserId { get; set; }
         public User? User { get; set; }
         public ICollection<PlaylistTrack>? PlaylistTracks { get; set; } = new List<PlaylistTrack>();
