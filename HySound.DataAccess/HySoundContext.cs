@@ -49,38 +49,38 @@ namespace HySound.DataAccess
                 .HasOne(t => t.Track)
                 .WithMany(t => t.PlaylistTracks)
                 .HasForeignKey(t => t.TrackId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Follower>()
            .HasKey(f => new { f.FollowedId, f.FollowingId });
 
             modelBuilder.Entity<Follower>()
                 .HasOne(f => f.FollowedUser)
-                .WithMany(f => f.Followers)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(f => f.Following)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<Follower>()
                 .HasOne(f => f.FollowingUser)
-                .WithMany(f => f.Following)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(f => f.Followers)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Track>()
                 .HasOne(t => t.User)
                 .WithMany(a => a.Tracks)
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.NoAction); 
 
             modelBuilder.Entity<Track>()
                 .HasOne(t => t.Album)
                 .WithMany(a => a.Tracks)
                 .HasForeignKey(t => t.AlbumId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Track>()
                  .HasOne(g => g.Genre)
                  .WithMany(t => t.Tracks)
-                 .OnDelete(DeleteBehavior.SetNull);
+                 .OnDelete(DeleteBehavior.Cascade);
 
 
             modelBuilder.Entity<Comment>()
@@ -99,7 +99,7 @@ namespace HySound.DataAccess
                 .HasOne(u => u.User)
                 .WithMany(c => c.Comments)
                 .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Album>()
                 .HasOne(a => a.User)
@@ -121,7 +121,7 @@ namespace HySound.DataAccess
               .HasOne(x => x.User)
               .WithMany(l => l.Likes)
               .HasForeignKey(x => x.UserId)
-              .OnDelete(DeleteBehavior.Cascade);
+              .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
