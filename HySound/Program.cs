@@ -9,7 +9,11 @@ builder.Services.AddDbContext<HySoundContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
      b => b.MigrationsAssembly("HySound.DataAccess")));
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<HySoundContext>();
+    await dbContext.Seed();
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

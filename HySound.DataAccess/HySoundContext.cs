@@ -123,5 +123,37 @@ namespace HySound.DataAccess
               .HasForeignKey(x => x.UserId)
               .OnDelete(DeleteBehavior.NoAction);
         }
+
+        public async Task Seed()
+        {
+            if (!Genres.Any())
+            {
+                Genres.AddRange(
+                    new Genre { Name = "Pop"},
+                    new Genre { Name = "Rock" },
+                    new Genre { Name = "Hip-Hop / Rap" },
+                    new Genre { Name = "Electronic / Dance (EDN)" },
+                    new Genre { Name = "R&B / Soul" },
+                    new Genre { Name = "Country" },
+                    new Genre { Name = "Jazz" },
+                    new Genre { Name = "Classical" },
+                    new Genre { Name = "Reggae" },
+                    new Genre { Name = "Blues" },
+                    new Genre { Name = "Folk" },
+                    new Genre { Name = "Latin" },
+                    new Genre { Name = "Metal" },
+                    new Genre { Name = "Punk" },
+                    new Genre { Name = "Indie / Alternative" },
+                    new Genre { Name = "Trap" },
+                    new Genre { Name = "Dubstep" },
+                    new Genre { Name = "Techno" },
+                    new Genre { Name = "K-Pop" },
+                    new Genre { Name = "Chillwave" },
+                    new Genre { Name = "Lo-fi" },
+                    new Genre { Name = "Balkan Beats" }
+                );
+                await SaveChangesAsync();
+            }
+        }
     }
 }
