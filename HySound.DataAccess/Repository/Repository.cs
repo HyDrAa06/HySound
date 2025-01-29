@@ -1,4 +1,5 @@
 ﻿using HySound.DataAccess.Repository.IRepository;
+using HySound.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,11 @@ namespace HySound.DataAccess.Repository
                 _dbSet.Remove(entity);
                 await SaveAsync();
             }
+        }
+
+        public IQueryable<T> GetAll()
+        {
+            return _dbSet.AsQueryable();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)

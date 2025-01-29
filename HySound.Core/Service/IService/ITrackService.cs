@@ -23,7 +23,7 @@ namespace HySound.Core.Service.IService
         Task<IEnumerable<Track>> GetAllTracksAsync(Expression<Func<Track, bool>> filter);
         Task<IEnumerable<Track>> GetAllTracksAsync();
 
-
+        IQueryable<Track> GetAll();
 
     }
 }

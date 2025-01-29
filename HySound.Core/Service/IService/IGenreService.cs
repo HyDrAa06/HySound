@@ -12,8 +12,10 @@ namespace HySound.Core.Service.IService
     {
         IQueryable<Genre> AllWithInclude(params Expression<Func<Genre, object>>[] includes);
         Task<Genre> GetGenreByIdAsync(int id);
+        IQueryable<Genre> GetAll();
+
         Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> filter);
-        Task<IEnumerable<Genre>> GetAllGenreAsync(Expression<Func<Genre, bool>> filter);
-        Task<IEnumerable<Genre>> GetAllGenreAsync();
+        Task<IEnumerable<Genre>> GetAllGenresAsync(Expression<Func<Genre, bool>> filter);
+        Task<IEnumerable<Genre>> GetAllGenresAsync();
     }
 }

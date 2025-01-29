@@ -17,7 +17,7 @@ namespace HySound.Core.Service.IService
         IQueryable<Comment> AllWithInclude(params Expression<Func<Comment, object>>[] includes);
         Task<Comment> GetCommentByIdAsync(int id);
         Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> filter);
-        Task<IEnumerable<Comment>> GetAllCommentAsync(Expression<Func<Comment, bool>> filter);
-        Task<IEnumerable<Comment>> GetAllCommentAsync();
+        Task<IEnumerable<Comment>> GetAllCommentsAsync(Expression<Func<Comment, bool>> filter);
+        Task<IEnumerable<Comment>> GetAllCommentsAsync();
     }
 }

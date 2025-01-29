@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace HySound.Core.Service.IService
 {
-    public interface IUser
+    public interface IUserService
     {
-        User AddUserAsync(User entity);
-        User UpdateUserAsync(User entity);
-        User DeleteUserAsync(User entity);
+        Task AddUserAsync(User entity);
+        Task UpdateUserAsync(User entity);
+        Task DeleteUserAsync(User entity);
+        IQueryable<User> GetAll();
+
         Task DeleteUserByIdAsync(int id);
         IQueryable<User> AllWithInclude(params Expression<Func<User, object>>[] includes);
         Task<User> GetUserByIdAsync(int id);

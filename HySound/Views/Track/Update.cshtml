@@ -1,0 +1,24 @@
+﻿@using HySound.Models.Models
+@model EditTrackViewModel
+
+<h1>Update track</h1>
+
+<form asp-action="Update" method="post">
+    <input type="text" placeholder="Title" asp-for="Title" />
+    <br />
+    <input type="text" placeholder="Audio" asp-for="AudioUrl" />
+    <br />
+    <input type="number" placeholder="Plays" asp-for="Plays" />
+    <br />
+    <input type="number" placeholder="Duration" asp-for="Duration" />
+    <br />
+    <select asp-for="GenreId" asp-items="Model.GenresList" class="form-control">
+        <option value="">Select a Genre</option>
+    </select>
+    <br />
+    <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
+        <option value="">Select an User</option>
+    </select>
+    <br />
+    <button type="submit">Save Changes</button>
+</form>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HySound.Models.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,6 +16,7 @@ namespace HySound.DataAccess.Repository.IRepository
         Task DeleteByIdAsync(int id);
         Task SaveAsync();
         Task<T> GetByIdAsync(int id);
+        IQueryable<T> GetAll();
         Task<T> GetAsync(Expression<Func<T, bool>> filter);
         IQueryable<T> GetAllQuery(Expression<Func<T, bool>> filter);
         IQueryable<T> GetAllQuery();

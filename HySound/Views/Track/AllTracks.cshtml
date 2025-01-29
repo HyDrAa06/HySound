@@ -1,0 +1,45 @@
+﻿@using HySound.Models.Models
+@model IEnumerable<TrackViewModel>
+
+<div class="row">
+    <div class="col-10">
+        <h1>All Tracks</h1>
+    </div>
+    <div class="col-2">
+        <a class="btn-danger" asp-controller="Track" asp-action="AddTrack">Add Track</a>
+    </div>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Genre</th>
+            <th scope="col">User</th>
+            <th scope="col">Plays</th>
+            <th scope="col">AudioUrl</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var track in Model)
+        {
+            <tr>
+                <th scope="row">@track.TrackId</th>
+                <th scope="row">@track.Title</th>
+                <td>@track.Duration</td>
+                <td>@track.GenreName</td>
+                <td>@track.UserName</td>
+                <td>@track.Plays</td>
+                <td>@track.AudioUrl</td>
+                <td>
+                    <a class="btn-info" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a>
+                    <a class="btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">Delete</a>
+                </td>
+            </tr>
+        } 
+    </tbody>
+</table>

@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HySound.Core\HySound.Core.csproj" />
     <ProjectReference Include="..\HySound.DataAccess\HySound.DataAccess.csproj" />
+    <ProjectReference Include="..\HySound.Models\HySound.Models.csproj" />
   </ItemGroup>
 
 </Project>

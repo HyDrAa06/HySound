@@ -17,7 +17,7 @@ namespace HySound.Core.Service.IService
         IQueryable<Playlist> AllWithInclude(params Expression<Func<Playlist, object>>[] includes);
         Task<Playlist> GetPlaylistByIdAsync(int id);
         Task<Playlist> GetPlaylistAsync(Expression<Func<Playlist, bool>> filter);
-        Task<IEnumerable<Playlist>> GetAllPlaylistAsync(Expression<Func<Playlist, bool>> filter);
-        Task<IEnumerable<Playlist>> GetAllPlaylistAsync();
+        Task<IEnumerable<Playlist>> GetAllPlaylistsAsync(Expression<Func<Playlist, bool>> filter);
+        Task<IEnumerable<Playlist>> GetAllPlaylistsAsync();
     }
 }
