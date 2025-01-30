@@ -1,6 +1,7 @@
 ﻿using HySound.Core.Service.IService;
 using HySound.Models;
 using HySound.Models.Models;
+using HySound.Models.Track;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -105,19 +106,64 @@ namespace HySound.Controllers
             }
 
         }
-        public async Task<IActionResult> AllTracks()
+        public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {
-            var model = trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x=>x.Tracks).Select(x => new TrackViewModel()
+            var query = trackService.GetAll().AsQueryable();
+
+            if(filter.GenreId == null && string.IsNullOrEmpty(filter.Title))
             {
-                TrackId = x.Id,
-                Title = x.Title, 
-                AudioUrl = x.AudioUrl,
-                GenreName = x.Genre.Name,
-                UserName = x.User.Username,
-                Duration = x.Duration,
-                Plays = x.Plays
-            }).ToList();
-            return View(model);
+                var model = trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x => x.Tracks).Select(x => new TrackViewModel()
+                {
+                    TrackId = x.Id,
+                    Title = x.Title,
+                    AudioUrl = x.AudioUrl,
+                    GenreName = x.Genre.Name,
+                    UserName = x.User.Username,
+                    Duration = x.Duration,
+                    Plays = x.Plays
+                }).ToList();
+
+                var filterModel = new TrackFilterViewModel
+                {
+                    Tracks = model,
+                    Genres = new SelectList(genreService.GetAll(), "Id", "Name")
+
+                };
+                return View(filterModel);
+            }
+            else
+            {
+                if (filter.GenreId != null)
+                {
+                    query = query.Where(x => x.GenreId == filter.GenreId);
+                }
+                if (!string.IsNullOrEmpty(filter.Title))
+                {
+                    query = query.Where(x => x.Title == filter.Title);
+                }
+
+                var filterModel = new TrackFilterViewModel
+                {
+                    Tracks = query.Include(x => x.Genre).ThenInclude(x => x.Tracks)
+                .Include(x => x.User).ThenInclude(x => x.Tracks)
+                .Select(x => new TrackViewModel()
+                {
+                    TrackId = x.Id,
+                    Title = x.Title,
+                    AudioUrl = x.AudioUrl,
+                    GenreName = x.Genre.Name,
+                    UserName = x.User.Username,
+                    Duration = x.Duration,
+                    Plays = x.Plays
+                }).ToList(),
+                    Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
+                    Title = filter.Title,
+                    GenreId = filter.GenreId
+                };
+
+                return View(filterModel);
+            }
+       
         }
     }
 }

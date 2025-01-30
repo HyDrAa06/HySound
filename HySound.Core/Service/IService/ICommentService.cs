@@ -10,10 +10,10 @@ namespace HySound.Core.Service.IService
 {
     public interface ICommentService
     {
-        Comment AddCommentAsync(Comment entity);
-        Comment UpdateCommentAsync(Comment entity);
-        Comment DeleteCommentAsync(Comment entity);
-        Comment DeleteCommentByIdAsync(int id);
+        Task AddCommentAsync(Comment entity);
+        Task UpdateCommentAsync(Comment entity);
+        Task DeleteCommentAsync(Comment entity);
+        Task DeleteCommentByIdAsync(int id);
         IQueryable<Comment> AllWithInclude(params Expression<Func<Comment, object>>[] includes);
         Task<Comment> GetCommentByIdAsync(int id);
         Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> filter);

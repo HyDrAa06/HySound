@@ -1,0 +1,46 @@
+﻿@using HySound.Models.Album
+@model AlbumFilterViewModel
+
+<div class="row">
+    <div class="col-10">
+        <h1>All Albums</h1>
+    </div>
+    <div class="col-2">
+        <a class="btn-danger" asp-controller="Album" asp-action="AddAlbum">Add Album</a>
+    </div>
+</div>
+
+<form asp-action="AllAlbums" method="get">
+    <div class="form-group mb-3">
+        <label for="Artist name">Name</label>
+        <input type="text" asp-for="ArtistName" />
+    </div>
+    <button type="submit">
+        Show Results
+    </button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">ReleaseDate</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var album in Model.Albums)
+        {
+            <tr>
+                <th scope="row">@album.Title</th>
+                <th scope="row">@album.ReleaseDate</th>
+                <td>@album.UserName</td>
+                <td>
+                    <a class="btn-info" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id">Update</a>
+                    <a class="btn-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

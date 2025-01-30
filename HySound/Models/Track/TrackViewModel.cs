@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using HySound.Models.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HySound.Models
 {
@@ -11,6 +12,7 @@ namespace HySound.Models
         public int Plays { get; set; }
         public string GenreName { get; set; }
         public string UserName { get; set; } 
+        
 
     }
 }

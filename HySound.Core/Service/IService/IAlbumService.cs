@@ -10,10 +10,12 @@ namespace HySound.Core.Service.IService
 {
     public interface IAlbumService
     {
-        Album AddAlbumAsync(Album entity);
-        Album UpdateAlbumAsync(Album entity);
-        Album DeleteAlbumAsync(Album entity);
-        Album DeleteAlbumByIdAsync(int id);
+        public IQueryable<Album> GetAll();
+        
+        Task AddAlbumAsync(Album entity);
+        Task UpdateAlbumAsync(Album entity);
+        Task DeleteAlbumAsync(Album entity);
+        Task DeleteAlbumByIdAsync(int id);
         IQueryable<Album> AllWithInclude(params Expression<Func<Album, object>>[] includes);
         Task<Album> GetAlbumByIdAsync(int id);
         Task<Album> GetAlbumAsync(Expression<Func<Album, bool>> filter);

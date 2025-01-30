@@ -1,5 +1,5 @@
-﻿@using HySound.Models.Models
-@model IEnumerable<TrackViewModel>
+﻿@using HySound.Models.Track
+@model TrackFilterViewModel
 
 <div class="row">
     <div class="col-10">
@@ -10,6 +10,22 @@
     </div>
 </div>
 
+
+<form asp-action="AllTracks" method="get">
+    <div class="form-group mb-3">
+        <label for="GenreId">Genres</label>
+        <select asp-for="GenreId" asp-items="Model.Genres">
+            <option value="">All Genres</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <label for="Title" >Title</label>
+        <input type="text" asp-for="Title" />
+    </div>
+    <button type="submit">
+        Show Results
+    </button>
+</form>
 
 <table class="table">
     <thead>
@@ -25,7 +41,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var track in Model)
+        @foreach(var track in Model.Tracks)
         {
             <tr>
                 <th scope="row">@track.TrackId</th>

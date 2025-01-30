@@ -10,10 +10,10 @@ namespace HySound.Core.Service.IService
 {
     public interface IPlaylistService
     {
-        Playlist AddPlaylistAsync(Playlist entity);
-        Playlist UpdatePlaylistAsync(Playlist entity);
-        Playlist DeletePlaylistAsync(Playlist entity);
-        Playlist DeletePlaylistByIdAsync(int id);
+        Task AddPlaylistAsync(Playlist entity);
+        Task UpdatePlaylistAsync(Playlist entity);
+        Task DeletePlaylistAsync(Playlist entity);
+        Task DeletePlaylistByIdAsync(int id);
         IQueryable<Playlist> AllWithInclude(params Expression<Func<Playlist, object>>[] includes);
         Task<Playlist> GetPlaylistByIdAsync(int id);
         Task<Playlist> GetPlaylistAsync(Expression<Func<Playlist, bool>> filter);

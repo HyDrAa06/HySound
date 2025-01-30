@@ -1,0 +1,18 @@
+﻿@using HySound.Models.Models
+@model User
+
+<h1>Update User</h1>
+
+<form method="post">
+    <input type="text" placeholder="Username" asp-for="Username" />
+    <br />
+    <input type="text" placeholder="Email" asp-for="Email" />
+    <br />
+    <input type="text" placeholder="Password" asp-for="Password" />
+    <br />
+    <input type="text" placeholder="Bio" asp-for="Bio" />
+    <br />
+    <input type="text" placeholder="PFP" asp-for="ProfilePicture" />
+    <br />
+    <button type="submit">Submit</button>
+</form>

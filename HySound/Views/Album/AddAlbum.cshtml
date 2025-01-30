@@ -1,0 +1,16 @@
+﻿@using HySound.Models.Models
+@model AddAlbumViewModel
+
+<h1>Add Album</h1>
+
+<form method="post">
+    <input type="text" placeholder="Title" asp-for="Title" />
+    <br />
+    <input type="date" placeholder="ReleaseDate" asp-for="ReleaseDate" />
+    <br />
+    <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
+        <option value="">Select an User</option>
+    </select>
+    <br />
+    <button type="submit">Submit</button>
+</form>

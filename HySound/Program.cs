@@ -7,7 +7,6 @@ using HySound.Core.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HySoundContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -17,6 +16,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITrackService, TrackService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 
 
 var app = builder.Build();
