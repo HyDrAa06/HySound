@@ -1,0 +1,12 @@
+﻿@using HySound.Models.Models
+@model Playlist
+
+<h1>Add Playlist</h1>
+
+<form method="post">
+    <input type="text" placeholder="Title" asp-for="Title" />
+    <br />
+    <input type="text" placeholder="Description" asp-for="Description" />
+    <br />
+    <button type="submit">Submit</button>
+</form>

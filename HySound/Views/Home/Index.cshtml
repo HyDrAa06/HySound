@@ -1,31 +1,49 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+}
+@model IEnumerable<TrackViewModel>
+
+@{
+    Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <div class="text-center py-5" style="background-color: #4CAF50; color: white; border-radius: 10px;">
-        <h1>Добре дошли в HySound!</h1>
-        <p>Открийте и слушайте невероятна музика от цял свят.</p>
-        <a href="#" class="btn btn-warning btn-lg">Започни да слушаш</a>
+<!-- Hero Section -->
+<div class="home-hero-section">
+    <div class="home-hero-content">
+        <h1>Discover Your Next Favorite Track</h1>
+        <p>Endless music, tailored to your taste.</p>
+        <button class="home-cta-btn">Explore Tracks</button>
     </div>
+</div>
 
-    <h2 class="mt-5">🔥 Тренди сега</h2>
-    <div class="row">
-   
+<!-- Featured Section -->
+<div class="home-featured-section">
+    <h2 class="home-section-title">Featured Tracks</h2>
+    <div class="home-tracks-grid">
+        @foreach (var track in Model)
+        {
+            <div class="home-track-card">
+                <div class="home-track-image">
+                    <img src="~/images/@track.ImageLink" alt="@track.Title" class="home-track-img">
+                </div>
+                <div class="home-track-info">
+                    <h3>@track.Title</h3>
+                    <p>@track.GenreName</p>
+                    <a href="@track.AudioUrl" class="home-play-btn">Play</a>
+                </div>
+            </div>
+        }
     </div>
+</div>
 
-    <h2 class="mt-5">🎧 Препоръчано за теб</h2>
-   
+<!-- CTA Section -->
+<div class="home-cta-section">
+    <h2>Join the Revolution</h2>
+    <p>Millions of tracks await. Sign up now!</p>
+    <button class="home-cta-btn">Sign Up</button>
+</div>
 
-    <h2 class="mt-5">🎼 Разгледай по жанр</h2>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="#" class="btn btn-outline-dark">Поп</a>
-        <a href="#" class="btn btn-outline-dark">Рок</a>
-        <a href="#" class="btn btn-outline-dark">Хип-хоп</a>
-        <a href="#" class="btn btn-outline-dark">Класика</a>
-    </div>
-
-    <h2 class="mt-5">🆕 Последно добавени</h2>
-    <div class="row">
-       
+<!-- Footer -->
+<div class="home-footer">
+    <p>&copy; 2025 HySound - All Rights Reserved</p>
 </div>

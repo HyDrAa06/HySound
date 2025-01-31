@@ -49,7 +49,7 @@ namespace HySound.Controllers
             track.Duration = model.Duration;
             track.GenreId = model.GenreId;
             track.UserId = model.UserId;
-
+            track.CoverImage = model.ImageLink;
             await trackService.UpdateTrackAsync(track);
             return RedirectToAction("AllTracks");
         }
@@ -64,6 +64,7 @@ namespace HySound.Controllers
                 Plays=x.Plays,
                 Duration=x.Duration,
                 AudioUrl=x.AudioUrl,
+                ImageLink = x.CoverImage,
                 GenreId=x.GenreId,
                 GenresList= new SelectList(genreService.GetAll(), "Id", "Name"),
                 UserId=x.UserId,
@@ -93,7 +94,8 @@ namespace HySound.Controllers
                     UserId = model.UserId,
                     Duration = model.Duration,
                     Plays = model.Plays,
-                    GenreId = model.GenreId
+                    GenreId = model.GenreId,
+                    CoverImage= model.ImageLink
                 };
                 await trackService.AddTrackAsync(track);
                 return RedirectToAction("AllTracks");
@@ -101,7 +103,7 @@ namespace HySound.Controllers
             else
             {
                 model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Name");
+                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
                 return View(model);
             }
 
@@ -120,7 +122,8 @@ namespace HySound.Controllers
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
                     Duration = x.Duration,
-                    Plays = x.Plays
+                    Plays = x.Plays,
+                    ImageLink=x.CoverImage
                 }).ToList();
 
                 var filterModel = new TrackFilterViewModel
@@ -154,7 +157,8 @@ namespace HySound.Controllers
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
                     Duration = x.Duration,
-                    Plays = x.Plays
+                    Plays = x.Plays,
+                    ImageLink=x.CoverImage
                 }).ToList(),
                     Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
                     Title = filter.Title,

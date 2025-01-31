@@ -3,22 +3,31 @@
 
 <h1>Update track</h1>
 
-<form asp-action="Update" method="post">
-    <input type="text" placeholder="Title" asp-for="Title" />
-    <br />
-    <input type="text" placeholder="Audio" asp-for="AudioUrl" />
-    <br />
-    <input type="number" placeholder="Plays" asp-for="Plays" />
-    <br />
-    <input type="number" placeholder="Duration" asp-for="Duration" />
-    <br />
-    <select asp-for="GenreId" asp-items="Model.GenresList" class="form-control">
-        <option value="">Select a Genre</option>
-    </select>
-    <br />
-    <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
-        <option value="">Select an User</option>
-    </select>
-    <br />
-    <button type="submit">Save Changes</button>
+<form asp-action="Update" method="post" class="edit-track-form">
+    <div class="mb-3">
+        <input type="text" placeholder="Title" asp-for="Title" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <input type="text" placeholder="Audio" asp-for="AudioUrl" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <input type="number" placeholder="Plays" asp-for="Plays" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <input type="number" placeholder="Duration" asp-for="Duration" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <input type="text" placeholder="Image" asp-for="ImageLink" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <select asp-for="GenreId" asp-items="Model.GenresList" class="form-control">
+            <option value="">Select a Genre</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
+            <option value="">Select an User</option>
+        </select>
+    </div>
+    <button type="submit" class="btn-submit">Save Changes</button>
 </form>

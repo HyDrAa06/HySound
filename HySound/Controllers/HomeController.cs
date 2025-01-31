@@ -1,5 +1,7 @@
+using HySound.Core.Service.IService;
 using HySound.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HySound.Controllers
@@ -7,15 +9,27 @@ namespace HySound.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        ITrackService trackService;
+        public HomeController(ILogger<HomeController> logger, ITrackService track)
         {
+            trackService = track;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var model = trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x => x.Tracks).Select(x => new TrackViewModel()
+            {
+                TrackId = x.Id,
+                Title = x.Title,
+                AudioUrl = x.AudioUrl,
+                GenreName = x.Genre.Name,
+                UserName = x.User.Username,
+                Duration = x.Duration,
+                Plays = x.Plays,
+                ImageLink = x.CoverImage
+            }).ToList();
+            return View(model);
         }
 
         public IActionResult Privacy()

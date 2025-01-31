@@ -1,25 +1,46 @@
 ﻿@using HySound.Models.Models
 @model AddTrackViewModel
 
-<h1>Add track</h1>
+<div class="container text-light">
+    <h1 class="mb-4">Add New Track</h1>
 
-<form method="post">
-    <input type="text" placeholder="Title" asp-for="Title"/>
-    <br />
-    <input type="text" placeholder="Audio" asp-for="AudioUrl" />
-    <br />
-    <input type="number" placeholder="Plays" asp-for="Plays" />
-    <br />
-    <input type="number" placeholder="Duration" asp-for="Duration" />
-    <br />
-    <select asp-for="GenreId" asp-items="Model.GenresList" class="form-control">
-        <option value="">Select a Genre</option>
-    </select>
-    <br />
-    <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
-    <option value="">Select an User</option>
-    </select>
-    <br />
-    <button type="submit">Submit</button>
+    <form method="post" class="add-track-form">
+        <div class="mb-3">
+            <label for="Title" class="form-label">Track Title</label>
+            <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter track title" asp-for="Title" required />
+        </div>
 
-</form>
+        <div class="mb-3">
+            <label for="AudioUrl" class="form-label">Audio URL</label>
+            <input type="text" id="AudioUrl" name="AudioUrl" class="form-control" placeholder="Enter audio file URL" asp-for="AudioUrl" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="Plays" class="form-label">Plays</label>
+            <input type="number" id="Plays" name="Plays" class="form-control" placeholder="Enter the number of plays" asp-for="Plays" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="Duration" class="form-label">Duration (Seconds)</label>
+            <input type="number" id="Duration" name="Duration" class="form-control" placeholder="Enter track duration" asp-for="Duration" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="GenreId" class="form-label">Genre</label>
+            <select asp-for="GenreId" asp-items="Model.GenresList" class="form-select" required>
+                <option value="">Select Genre</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="UserId" class="form-label">User</label>
+            <select asp-for="UserId" asp-items="Model.UserList" class="form-select" required>
+                <option value="">Select User</option>
+            </select>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Add Track</button>
+        </div>
+    </form>
+</div>
