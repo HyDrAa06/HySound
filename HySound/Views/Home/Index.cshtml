@@ -1,49 +1,55 @@
-﻿@{
-    Layout = "_Layout";
-}
-@model IEnumerable<TrackViewModel>
+﻿<div class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to HySound</h1>
+        <p>Discover, stream, and enjoy your favorite music.</p>
+        <button class="hero-btn">Get Started</button>
+    </section>
 
-@{
-    Layout = "_Layout";
-}
-
-<!-- Hero Section -->
-<div class="home-hero-section">
-    <div class="home-hero-content">
-        <h1>Discover Your Next Favorite Track</h1>
-        <p>Endless music, tailored to your taste.</p>
-        <button class="home-cta-btn">Explore Tracks</button>
-    </div>
-</div>
-
-<!-- Featured Section -->
-<div class="home-featured-section">
-    <h2 class="home-section-title">Featured Tracks</h2>
-    <div class="home-tracks-grid">
-        @foreach (var track in Model)
-        {
-            <div class="home-track-card">
-                <div class="home-track-image">
-                    <img src="~/images/@track.ImageLink" alt="@track.Title" class="home-track-img">
-                </div>
-                <div class="home-track-info">
-                    <h3>@track.Title</h3>
-                    <p>@track.GenreName</p>
-                    <a href="@track.AudioUrl" class="home-play-btn">Play</a>
-                </div>
+    <!-- Featured Playlists -->
+    <section class="playlists">
+        <h2>Featured Playlists</h2>
+        <div class="playlist-grid">
+            <div class="playlist-card">
+                <img src="~/images/wlr.jpg" alt="Playlist 1">
+                <h3>Chill Vibes</h3>
             </div>
-        }
-    </div>
-</div>
+            <div class="playlist-card">
+                <img src="~/images/wlr.jpg" alt="Playlist 2">
+                <h3>Top Hits</h3>
+            </div>
+            <div class="playlist-card">
+                <img src="~/images/utopia.jpg" alt="Playlist 3">
+                <h3>Workout Energy</h3>
+            </div>
+        </div>
+    </section>
 
-<!-- CTA Section -->
-<div class="home-cta-section">
-    <h2>Join the Revolution</h2>
-    <p>Millions of tracks await. Sign up now!</p>
-    <button class="home-cta-btn">Sign Up</button>
+    <!-- Recent Tracks -->
+    <section class="tracks">
+        <h2>Recently Played</h2>
+        <div class="track-list">
+            <div class="track-item">
+                <img src="~/images/magnolia.jpg" alt="Track 1">
+                <div class="track-info">
+                    <div class="track-title">Song Title</div>
+                    <div class="track-artist">Artist Name</div>
+                </div>
+                <button class="track-play-btn">▶ Play</button>
+            </div>
+            <div class="track-item">
+                <img src="~/images/utopia.jpg" alt="Track 2">
+                <div class="track-info">
+                    <div class="track-title">Another Song</div>
+                    <div class="track-artist">Another Artist</div>
+                </div>
+                <button class="track-play-btn">▶ Play</button>
+            </div>
+        </div>
+    </section>
 </div>
 
 <!-- Footer -->
-<div class="home-footer">
-    <p>&copy; 2025 HySound - All Rights Reserved</p>
-</div>
+<footer class="footer">
+    © 2025 HySound. All rights reserved.
+</footer>
