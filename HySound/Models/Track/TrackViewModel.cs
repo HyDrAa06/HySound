@@ -10,7 +10,6 @@ namespace HySound.Models
         public string? AudioUrl { get; set; }
 
         public string? ImageLink { get; set; }
-        public int Duration { get; set; }
         public int Plays { get; set; }
         public string GenreName { get; set; }
         public string UserName { get; set; } 
