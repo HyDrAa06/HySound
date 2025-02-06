@@ -1,634 +1,695 @@
-/* General Styles */
+﻿/* Global Styles */
 body {
-    background-color: #121212; /* Dark background */
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh; /* Ensure full height */
+    padding: 0;
+    margin: 0;
 }
 
-.container {
-    max-width: 1200px;
-    margin: auto;
+h1, h2 {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+.search-form .form-control,
+.search-form .form-select {
+    background-color: #333;
+    border: 1px solid #444;
+    color: white;
+    font-size: 1rem;
+}
+
+    .search-form .form-control::placeholder {
+        color: #b0b0b0;
+    }
+
+.btn-main {
+    background: linear-gradient(135deg, #1DB954, #388E3C);
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 2rem;
+    text-transform: uppercase;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+    .btn-main:hover {
+        background: linear-gradient(135deg, #388E3C, #1DB954);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+
+.track-card {
+    background-color: #2b2b2b;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     padding: 20px;
 }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-    color: #1DB9F3; /* Bluish accent */
-}
-
-/* Buttons */
-.btn {
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background 0.3s ease-in-out;
-}
-
-.btn-primary {
-    background: #1DB9F3; /* Blue */
-    border: none;
-    color: #fff;
-}
-
-    .btn-primary:hover {
-        background: #0E87B3; /* Darker blue */
-    }
-
-.btn-danger {
-    background: #E53935; /* Red */
-    border: none;
-    color: #fff;
-}
-
-    .btn-danger:hover {
-        background: #B71C1C; /* Darker red */
-    }
-
-.btn-info {
-    background: #29B6F6; /* Light blue */
-    border: none;
-    color: #fff;
-}
-
-    .btn-info:hover {
-        background: #0288D1; /* Darker light blue */
-    }
-
-/* Form Styling */
-.form-label {
-    font-weight: bold;
-    color: #ddd;
-}
-
-.form-control, .form-select {
-    background-color: #222;
-    color: white;
-    border: 1px solid #444;
-}
-
-    .form-control::placeholder {
-        color: #aaa;
-    }
-
-/* Track Card */
-.track-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    background: #1A1A1A;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease-in-out;
-}
-
     .track-card:hover {
-        transform: scale(1.02);
+        transform: translateY(-8px);
+        box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4);
     }
 
-/* Track Image and YouTube Embed */
 .track-image {
     width: 100%;
     height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     border-radius: 10px;
-    position: relative;
+    margin-bottom: 15px;
 }
 
-/* Track Image */
 .track-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    transition: transform 0.3s ease;
 }
 
-/* Fix YouTube iframe size */
-.track-iframe {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    border: none;
-}
+    .track-img:hover {
+        transform: scale(1.1);
+    }
 
-/* Track Info */
 .track-info {
+    padding: 15px;
+    text-align: center;
     flex-grow: 1;
-    margin-top: 10px;
 }
 
 .track-title {
-    font-size: 18px;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #1DB9F3;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .track-meta {
-    font-size: 14px;
-    color: #bbb;
+    font-size: 0.9rem;
+    color: #b0b0b0;
 }
 
-/* Track Actions */
 .track-actions {
+    text-align: center;
     display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+    justify-content: space-evenly;
+    margin-top: 15px;
 }
 
     .track-actions .btn {
-        flex: 1;
-        margin: 0 5px;
-    }
-
-/* Footer */
-.footer {
-    background: #0D0D0D;
-    color: #bbb;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    width: 100%;
-    position: relative;
-    margin-top: auto;
-}
-
-    .footer a {
-        color: #1DB9F3;
-        text-decoration: none;
-    }
-
-        .footer a:hover {
-            color: #0E87B3;
-        }
-
-/* Fix Footer Issue */
-html, body {
-    height: 100%;
-}
-
-#page-content {
-    flex: 1 0 auto;
-}
-
-.footer {
-    flex-shrink: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .track-card {
-        padding: 10px;
-    }
-
-    .track-title {
-        font-size: 16px;
-    }
-}
-/* Navbar - Ultra-Small Version */
-.navbar {
-    background-color: #181818; /* Dark color like Spotify */
-    padding: 4px 20px; /* Very small padding for minimal height */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: none; /* No shadow for a flat look */
-    position: sticky;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    border-bottom: 1px solid #2a2a2a; /* Subtle border */
-}
-
-/* Brand Name (Bluish color) */
-.navbar-brand {
-    font-size: 18px; /* Smaller size for the brand */
-    font-weight: 700;
-    color: #1DB9F3; /* Bluish color matching the site */
-    text-decoration: none;
-    font-family: "Roboto", sans-serif;
-    transition: color 0.3s ease;
-}
-
-    .navbar-brand:hover {
-        color: #0EC8E8; /* Lighter turquoise on hover */
-    }
-
-/* Navbar Links - Matching the site colors */
-.nav-link {
-    color: #B0B0B0; /* Light gray for default text */
-    padding: 4px 10px; /* Very small padding for a compact look */
-    margin: 0 8px; /* Reduced margin for compact spacing */
-    border-radius: 25px;
-    text-decoration: none;
-    font-size: 12px; /* Smaller font size for ultra-compact look */
-    font-weight: 500;
-    transition: color 0.2s ease, background-color 0.2s ease;
-    display: inline-block;
-}
-
-    /* Hover Effect for Links */
-    .nav-link:hover {
-        color: #FFFFFF; /* White text on hover */
-        background-color: #1DB9F3; /* Bluish background for buttons */
-    }
-
-/* Login Button (Bluish Accent) */
-.btn-login {
-    color: #1DB9F3; /* Bluish text color */
-    border: 1px solid #1DB9F3; /* Bluish border */
-    padding: 4px 12px; /* Small padding for compact button */
-    border-radius: 25px;
-    font-weight: bold;
-    font-size: 12px; /* Smaller font size */
-    text-decoration: none;
-}
-
-    .btn-login:hover {
-        background-color: #1DB9F3; /* Bluish background on hover */
-        color: #181818; /* Dark text on hover */
-    }
-
-/* Navbar Toggle (Mobile view) */
-.navbar-toggler {
-    display: none;
-    font-size: 18px; /* Smaller toggle icon */
-    color: #1DB9F3; /* Bluish color for toggle */
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* ADD TRACK PAGE STYLES */
-
-/* Title */
-h1 {
-    color: #1DB9F3; /* Bluish accent */
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* Add Track Form */
-.add-track-form {
-    background-color: #181818;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-    /* Input Fields */
-    .add-track-form input[type="text"],
-    .add-track-form input[type="number"],
-    .add-track-form select {
-        background-color: #2a2a2a;
-        color: #fff;
-        border: 1px solid #444;
-        border-radius: 5px;
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 15px;
-        transition: all 0.3s ease;
-    }
-
-        /* Hover Effect on Inputs */
-        .add-track-form input[type="text"]:focus,
-        .add-track-form input[type="number"]:focus,
-        .add-track-form select:focus {
-            background-color: #333;
-            border-color: #1DB9F3;
-            box-shadow: 0 0 10px rgba(29, 185, 243, 0.5);
-        }
-
-    /* Submit Button */
-    .add-track-form button[type="submit"] {
-        background-color: #1DB9F3;
-        color: #fff;
-        border: none;
-        border-radius: 30px;
-        padding: 15px 25px;
-        font-size: 18px;
-        cursor: pointer;
-        width: 100%;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        /* Button Hover Effect */
-        .add-track-form button[type="submit"]:hover {
-            background-color: #0EC8E8;
-            transform: scale(1.05);
-        }
-
-    /* Form Margin and Padding */
-    .add-track-form input,
-    .add-track-form select {
-        height: 45px;
-        font-size: 16px;
-    }
-
-/* Margin for better spacing */
-.mb-3 {
-    margin-bottom: 20px;
-}
-/* EDIT TRACK PAGE STYLES */
-
-/* Title */
-h1 {
-    color: #1DB9F3; /* Bluish accent */
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* Edit Track Form */
-.edit-track-form {
-    background-color: #181818;
-    border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-    /* Input Fields */
-    .edit-track-form input[type="text"],
-    .edit-track-form input[type="number"],
-    .edit-track-form select {
-        background-color: #2a2a2a;
-        color: #fff;
-        border: 1px solid #444;
-        border-radius: 5px;
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 15px;
-        transition: all 0.3s ease;
-    }
-
-        /* Hover Effect on Inputs */
-        .edit-track-form input[type="text"]:focus,
-        .edit-track-form input[type="number"]:focus,
-        .edit-track-form select:focus {
-            background-color: #333;
-            border-color: #1DB9F3;
-            box-shadow: 0 0 10px rgba(29, 185, 243, 0.5);
-        }
-
-    /* Save Changes Button */
-    .edit-track-form button[type="submit"] {
-        background-color: #1DB9F3;
-        color: #fff;
-        border: none;
-        border-radius: 30px;
-        padding: 15px 25px;
-        font-size: 18px;
-        cursor: pointer;
-        width: 100%;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        /* Button Hover Effect */
-        .edit-track-form button[type="submit"]:hover {
-            background-color: #0EC8E8;
-            transform: scale(1.05);
-        }
-
-    /* Form Margin and Padding */
-    .edit-track-form input,
-    .edit-track-form select {
-        height: 45px;
-        font-size: 16px;
-    }
-
-/* Margin for better spacing */
-.mb-3 {
-    margin-bottom: 20px;
-}
-
-/* Responsive Navbar (Mobile view) */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .navbar-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 10px;
-    }
-
-        .navbar-links a {
-            width: 100%;
-            text-align: center;
-            margin: 8px 0;
-        }
-
-    .navbar-toggler {
-        display: block;
-    }
-}
-
-/* GENERAL STYLES */
-body {
-    background-color: #0a0a0a; /* Dark background */
-    color: #fff;
-    font-family: 'Helvetica Neue', sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* NAVBAR */
-
-/* HERO SECTION */
-.hero {
-    background: linear-gradient(135deg, #0d1b29, #1db9f3);
-    padding: 100px 20px;
-    text-align: center;
-    margin-top: 60px;
-    border-radius: 20px;
-}
-
-    .hero h1 {
-        font-size: 3rem;
         font-weight: bold;
-        margin-bottom: 20px;
-        letter-spacing: 1px;
+        border-radius: 30px;
+        padding: 0.5rem 1.5rem;
+        margin: 0 5px;
+        text-transform: uppercase;
+        display: inline-block;
+        transition: all 0.3s ease;
     }
 
-    .hero p {
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-    }
-
-.hero-btn {
-    background-color: #1db9f3;
+.btn-action {
+    background-color: #FFC107;
     color: white;
-    font-size: 1.1rem;
-    padding: 12px 28px;
-    border-radius: 50px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
     border: none;
-    cursor: pointer;
 }
 
-    .hero-btn:hover {
-        background-color: #0ec8e8;
-        transform: scale(1.05);
+    .btn-action:hover {
+        background-color: #FFB300;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-/* PLAYLIST SECTION */
-.playlists {
-    margin-top: 40px;
-    padding: 20px;
+.btn-danger {
+    background-color: #F44336;
+    color: white;
+    border: none;
 }
 
-    .playlists h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        color: #1db9f3;
+    .btn-danger:hover {
+        background-color: #E53935;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
-.playlist-grid {
+/* Navbar Style */
+.navbar {
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    padding: 0.75rem 2rem;
+}
+
+    .navbar .logo {
+        width: 120px;
+        max-height: 50px;
+    }
+
+.navbar-nav .nav-item .nav-link {
+    color: #e0e0e0;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+    .navbar-nav .nav-item .nav-link:hover,
+    .navbar-nav .nav-item .nav-link.active {
+        color: #1DB954;
+    }
+
+.navbar-nav .nav-item .btn-main.nav-btn {
+    background: linear-gradient(135deg, #1DB954, #388E3C);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+    .navbar-nav .nav-item .btn-main.nav-btn:hover {
+        background: linear-gradient(135deg, #388E3C, #1DB954);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler-icon {
+    background-color: #e0e0e0;
+}
+
+/* Hero Section */
+.hero-home {
+    height: 75vh; /* Taller hero section */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background: #121212;
+    padding: 0 10%;
+}
+
+.hero-btn-home {
+    background: linear-gradient(135deg, #1DB954, #388E3C);
+    color: white;
+    padding: 0.75rem 2rem;
+    font-weight: bold;
+    border-radius: 30px;
+    border: none;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+    .hero-btn-home:hover {
+        background: linear-gradient(135deg, #388E3C, #1DB954);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+
+/* Featured Playlists */
+.playlists-home {
+    padding: 60px 10%;
+    background-color: #181818;
+}
+
+.playlist-grid-home {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
-.playlist-card {
-    background-color: #181818;
+.playlist-card-home {
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .playlist-card-home:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .playlist-card-home h3 {
+        color: white;
+        margin-top: 15px;
+    }
+
+.playlist-image-home {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Recent Tracks */
+.tracks-home {
+    padding: 60px 10%;
+}
+
+.track-list-home {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.track-item-home {
+    background-color: #2b2b2b;
+    width: 180px;
     border-radius: 10px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .track-item-home:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+.track-img-home {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.track-info-home {
+    text-align: center;
+    padding: 10px;
+}
+
+.track-title-home {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+}
+
+.track-artist-home {
+    color: #b0b0b0;
+    font-size: 1rem;
+}
+
+.track-play-btn-home {
+    background-color: #1DB954;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+    .track-play-btn-home:hover {
+        background-color: #388E3C;
+    }
+
+/* Footer */
+.footer-home {
+    text-align: center;
+    padding: 20px;
+    background-color: #121212;
+    color: #b0b0b0;
+}
+
+/* New Classes for Layout and Sections */
+.main-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px; /* Narrower left and right sidebars */
+    gap: 30px;
+    padding: 40px;
+    min-height: 80vh; /* Make the layout taller */
+}
+
+.albums-sidebar, .followers-sidebar {
+    background-color: #2b2b2b;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+.album-list, .follower-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.album-card, .follower-card {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+    .album-card:hover, .follower-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .album-card img, .follower-card img {
+        width: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+        height: 150px;
+    }
+
+    .album-card h3, .follower-card p {
+        color: white;
+        margin-top: 10px;
+    }
+
+.main-content {
+    background-color: #2b2b2b;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+    .main-content h1 {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 15px;
+    }
+
+.recent-tracks, .trending-tracks {
+    margin-top: 40px;
+}
+
+.track-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.track-item {
+    background-color: #333;
+    border-radius: 10px;
+    width: 180px;
     padding: 15px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .playlist-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .playlist-card img {
-        width: 100%;
-        border-radius: 8px;
-    }
-
-    .playlist-card h3 {
-        font-size: 1.2rem;
-        margin-top: 10px;
-    }
-
-
-/* TRACKS SECTION */
-.tracks {
-    margin-top: 40px;
-    padding: 20px;
-}
-
-    .tracks h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        color: #1db9f3;
-    }
-
-.track-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.track-item {
-    display: flex;
-    align-items: center;
-    background-color: #181818;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
     .track-item:hover {
-        background-color: #222;
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     }
 
     .track-item img {
-        width: 50px;
-        height: 50px;
-        border-radius: 4px;
-        margin-right: 15px;
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 10px;
     }
 
 .track-info {
-    flex-grow: 1;
+    color: white;
 }
 
 .track-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: bold;
 }
 
 .track-artist {
-    font-size: 0.9rem;
-    color: #bbb;
+    font-size: 1rem;
+    color: #b0b0b0;
 }
 
-.track-play-btn {
-    background-color: #1db9f3;
+.track-play-btn-home {
+    background-color: #1DB954;
+    color: white;
+    padding: 10px 20px;
     border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 30px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
 }
 
-    .track-play-btn:hover {
-        background-color: #0ec8e8;
+    .track-play-btn-home:hover {
+        background-color: #388E3C;
     }
-/* FOOTER */
-.footer {
-    background-color: #121212;
+
+/* Layout for Home Page */
+.home-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 10%;
+}
+
+/* Hero Section */
+.hero-home {
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background: #121212;
+    padding: 0 10%;
+}
+
+/* Playlists Section */
+.playlists-home {
+    padding: 60px 10%;
+    background-color: #181818;
+}
+
+.playlist-grid-home {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.playlist-card-home {
+    background-color: #2b2b2b;
+    border-radius: 10px;
     padding: 20px;
     text-align: center;
-    font-size: 0.9rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .playlist-card-home:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+.playlist-image-home {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Tracks Section */
+.tracks-home {
+    padding: 60px 10%;
+}
+
+.track-list-home {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.track-item-home {
+    background-color: #2b2b2b;
+    width: 180px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .track-item-home:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+.track-img-home {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.track-info-home {
+    text-align: center;
+    padding: 10px;
+}
+
+.track-title-home {
+    font-size: 1.25rem;
+    font-weight: bold;
     color: white;
-    margin-top: 40px;
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2.5rem;
+.track-artist-home {
+    color: #b0b0b0;
+    font-size: 1rem;
+}
+
+.track-play-btn-home {
+    background-color: #1DB954;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+    .track-play-btn-home:hover {
+        background-color: #388E3C;
     }
 
-    .hero p {
-        font-size: 1rem;
-    }
+/* Footer */
+.footer-home {
+    text-align: center;
+    padding: 20px;
+    background-color: #121212;
+    color: #b0b0b0;
+}
 
-    .playlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
+/* Library Page */
+.library-container {
+    display: flex;
+    height: 100vh;
+    background: #121212;
+    color: white;
+}
 
-    .tracks h2,
-    .playlists h2 {
+/* Sidebar */
+.library-sidebar {
+    width: 80px; /* Slimmer sidebar */
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.library-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+    .library-nav li {
+        padding: 15px;
+        text-align: center;
         font-size: 1.5rem;
+        color: #b0b0b0;
+        transition: 0.3s;
+        cursor: pointer;
     }
+
+        .library-nav li:hover,
+        .library-nav .active {
+            color: white;
+            background: #333;
+            border-radius: 10px;
+        }
+
+/* Main Content */
+.library-content {
+    flex-grow: 1;
+    padding: 40px;
 }
 
+.library-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+/* Track Grid */
+.library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Track Card */
+.library-track-card {
+    background: #222;
+    border-radius: 15px;
+    overflow: hidden;
+    padding: 15px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+    .library-track-card:hover {
+        background: #333;
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+.library-track-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.library-track-info {
+    padding: 10px;
+}
+
+.library-track-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.library-track-artist {
+    color: #b0b0b0;
+    font-size: 1rem;
+}
+
+/* Track Buttons */
+.library-track-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.track-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .track-btn:hover {
+        color: #1DB954;
+    }
+
+.unlike-btn:hover {
+    color: #F44336;
+}

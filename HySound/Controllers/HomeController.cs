@@ -15,6 +15,10 @@ namespace HySound.Controllers
             trackService = track;
             _logger = logger;
         }
+        public IActionResult Library()
+        {
+            return View();
+        }
 
         public IActionResult Index()
         {
