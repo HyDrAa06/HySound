@@ -15,6 +15,7 @@ namespace HySound.Models.Models
         public string Title { get; set; }
         public string? AudioUrl { get; set; } = string.Empty;
         public string? CoverImage { get; set; }
+        public int Duration { get; set; }
         public int Plays { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int? UserId { get; set; }

@@ -1,6 +1,4 @@
 ﻿using HySound.Models.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HySound.DataAccess
 {
-    public class HySoundContext : IdentityDbContext<IdentityUser>
+    public class HySoundContext : DbContext
     {
         public HySoundContext(DbContextOptions options) : base(options)
         {
@@ -124,12 +122,6 @@ namespace HySound.DataAccess
               .WithMany(l => l.Likes)
               .HasForeignKey(x => x.UserId)
               .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<User>()
-                .HasOne(c => c.UserIdentity)
-                .WithOne()
-                .HasForeignKey<User>(c => c.UserIdentityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public async Task Seed()

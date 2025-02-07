@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,9 +14,6 @@ namespace HySound.Models.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
-        public string UserIdentityId { get; set; }
-        public IdentityUser UserIdentity { get; set; }
         public string? ProfilePicture { get; set; }
         public string? Bio {  get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -46,6 +46,7 @@ namespace HySound.Controllers
             track.Title = model.Title;
             track.AudioUrl = model.AudioUrl;
             track.Plays=model.Plays;
+            track.Duration = model.Duration;
             track.GenreId = model.GenreId;
             track.UserId = model.UserId;
             track.CoverImage = model.ImageLink;
@@ -61,6 +62,7 @@ namespace HySound.Controllers
             {
                 Title=x.Title,
                 Plays=x.Plays,
+                Duration=x.Duration,
                 AudioUrl=x.AudioUrl,
                 ImageLink = x.CoverImage,
                 GenreId=x.GenreId,
@@ -90,6 +92,7 @@ namespace HySound.Controllers
                     Title = model.Title,
                     AudioUrl = model.AudioUrl,
                     UserId = model.UserId,
+                    Duration = model.Duration,
                     Plays = model.Plays,
                     GenreId = model.GenreId,
                     CoverImage= model.ImageLink
@@ -118,6 +121,7 @@ namespace HySound.Controllers
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
+                    Duration = x.Duration,
                     Plays = x.Plays,
                     ImageLink=x.CoverImage
                 }).ToList();
@@ -152,6 +156,7 @@ namespace HySound.Controllers
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
+                    Duration = x.Duration,
                     Plays = x.Plays,
                     ImageLink=x.CoverImage
                 }).ToList(),

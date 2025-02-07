@@ -44,7 +44,7 @@
                     <div class="track-info">
                         <h5 class="track-title">@track.Title</h5>
                         <p class="track-meta">Genre: @track.GenreName | User: @track.UserName</p>
-                        <p class="track-meta">Plays: @track.Plays</p>
+                        <p class="track-meta">Plays: @track.Plays | Duration: @track.Duration sec</p>
                     </div>
                     <div class="track-actions">
                         <a class="btn btn-action" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a>

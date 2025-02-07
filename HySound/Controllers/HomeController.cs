@@ -29,6 +29,7 @@ namespace HySound.Controllers
                 AudioUrl = x.AudioUrl,
                 GenreName = x.Genre.Name,
                 UserName = x.User.Username,
+                Duration = x.Duration,
                 Plays = x.Plays,
                 ImageLink = x.CoverImage
             }).ToList();
