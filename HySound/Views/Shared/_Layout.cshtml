@@ -11,33 +11,37 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <a class="navbar-brand" href="/">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-action="Library" asp-controller="Home">Library</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-action="AllTracks" asp-controller="Track">Upload</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Profile">Profile</a>
-                        </li>
-                        
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <img src="~/images/logo.png" alt="HySound Logo" />
+        </a>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search songs, artists, albums..." />
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="navbar-nav">
+            <li class="nav-item">
+                <a href="/" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/library" class="nav-link">Library</a>
+            </li>
+            <li class="nav-item">
+                <a href="/playlists" class="nav-link">Playlists</a>
+            </li>
+            <li class="nav-item">
+                <a href="/profile" class="nav-link">Profile</a>
+            </li>
         </nav>
+
+        <!-- User Profile -->
+        <div class="user-profile">
+            <img src="~/images/user-avatar.jpg" alt="User Avatar" />
+            <span class="username">John Doe</span>
+        </div>
 
 
     </header>
@@ -56,6 +60,37 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add dropdown functionality to the user profile
+            const userProfile = document.querySelector('.user-profile');
+            if (userProfile) {
+                const dropdownMenu = document.createElement('div');
+                dropdownMenu.className = 'dropdown-menu';
+                dropdownMenu.innerHTML = `
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/logout">Logout</a>
+                `;
+
+                userProfile.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent immediate closing
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!userProfile.contains(event.target) && dropdownMenu.classList.contains('show')) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+
+                // Append dropdown to the navbar
+                document.querySelector('.navbar').appendChild(dropdownMenu);
+            }
+        });
+    </script>
+
 </body>
 </html>
+
+
