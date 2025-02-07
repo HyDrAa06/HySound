@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HySound.DataAccess
 {
@@ -124,6 +125,12 @@ namespace HySound.DataAccess
               .WithMany(l => l.Likes)
               .HasForeignKey(x => x.UserId)
               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasOne(x=>x.UserIdentity)
+                .WithOne()
+                .HasForeignKey<User>(x=>x.UserIdentityId)
+                .OnDelete(DeleteBehavior.Cascade);  
         }
 
         public async Task Seed()

@@ -10,7 +10,7 @@ namespace HySound.Models.Account
 
         public string Email { get; set; }
 
-
+        public string Username { get; set; }
 
         [Required]
 

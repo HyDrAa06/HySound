@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace HySound.Models.Models
         public string? Bio {  get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public IdentityUser UserIdentity { get; set; }
+        public string UserIdentityId { get; set; }
         public ICollection<Track>? Tracks { get; set; } = new List<Track>();
         public ICollection<Playlist>? Playlists { get; set; } = new List<Playlist>();
         public ICollection<Album>? Albums { get; set; } = new List<Album>();
