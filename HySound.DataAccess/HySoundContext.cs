@@ -1,4 +1,6 @@
 ﻿using HySound.Models.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace HySound.DataAccess
 {
-    public class HySoundContext : DbContext
+    public class HySoundContext : IdentityDbContext<IdentityUser>
     {
         public HySoundContext(DbContextOptions options) : base(options)
         {
