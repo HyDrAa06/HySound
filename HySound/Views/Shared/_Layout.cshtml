@@ -11,7 +11,6 @@
 </head>
 <body>
     <header>
-
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="/">
@@ -34,12 +33,11 @@
                             <a class="nav-link" href="/Profile">Profile</a>
                         </li>
                         
-                    </ul>
+                    </ul>          
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-
-    
 
     </header>
     <div class="container">
@@ -57,37 +55,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Add dropdown functionality to the user profile
-            const userProfile = document.querySelector('.user-profile');
-            if (userProfile) {
-                const dropdownMenu = document.createElement('div');
-                dropdownMenu.className = 'dropdown-menu';
-                dropdownMenu.innerHTML = `
-                    <a href="/profile">Profile</a>
-                    <a href="/settings">Settings</a>
-                    <a href="/logout">Logout</a>
-                `;
-
-                userProfile.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent immediate closing
-                    dropdownMenu.classList.toggle('show');
-                });
-
-                document.addEventListener('click', (event) => {
-                    if (!userProfile.contains(event.target) && dropdownMenu.classList.contains('show')) {
-                        dropdownMenu.classList.remove('show');
-                    }
-                });
-
-                // Append dropdown to the navbar
-                document.querySelector('.navbar').appendChild(dropdownMenu);
-            }
-        });
-    </script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
