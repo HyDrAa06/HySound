@@ -1,30 +1,41 @@
 ﻿@using HySound.Models.Account
 @model RegisterViewModel
 
-<h2>Register</h2>
-<form method="post" asp-controller="Account">
-<div>
-    <label asp-for ="Username">
-        </label>
-        <input asp-for ="Username"   />
+<div class="register-container">
+    <h2 class="register-title">Create Your Account</h2>
+    <form method="post" asp-controller="Account" class="register-form">
+        <div class="register-input-group">
+            <label for="Username" class="register-input-label">Username</label>
+            <div class="input-with-icon">
+                <i class="fa fa-user register-input-icon"></i>
+                <input asp-for="Username" class="register-input-field" type="text" placeholder="Enter username" />
+            </div>
+        </div>
+
+        <div class="register-input-group">
+            <label for="Email" class="register-input-label">Email</label>
+            <div class="input-with-icon">
+                <i class="fa fa-envelope register-input-icon"></i>
+                <input asp-for="Email" class="register-input-field" type="email" placeholder="Enter your email" />
+            </div>
+        </div>
+
+        <div class="register-input-group">
+            <label for="Password" class="register-input-label">Password</label>
+            <div class="input-with-icon">
+                <i class="fa fa-lock register-input-icon"></i>
+                <input asp-for="Password" class="register-input-field" type="password" placeholder="Enter password" />
+            </div>
+        </div>
+
+        <div class="register-input-group">
+            <label for="ConfirmPassword" class="register-input-label">Confirm Password</label>
+            <div class="input-with-icon">
+                <i class="fa fa-lock register-input-icon"></i>
+                <input asp-for="ConfirmPassword" class="register-input-field" type="password" placeholder="Confirm password" />
+            </div>
+        </div>
+
+        <button type="submit" class="register-btn register-btn-primary">Register</button>
+    </form>
 </div>
-    <div>
-        <label asp-for ="Email">
-            </label>
-            <input asp-for ="Email"   />
-    </div>
-
-    <div>
-        <label asp-for ="Password">
-            </label>
-            <input asp-for ="Password"  type="password"   />
-    </div>
-
-    <div>
-        <label asp-for ="ConfirmPassword">
-            </label>
-            <input asp-for ="ConfirmPassword"  type="password"   />
-    </div>
-    <button class="btn btn-danger" type ="submit">
-        Register</button>
-</form>

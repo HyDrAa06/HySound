@@ -1,46 +1,41 @@
 ﻿@using HySound.Models.Models
 @model AddTrackViewModel
 
-<div class="container text-light">
-    <h1 class="mb-4">Add New Track</h1>
+<div class="add-track-container">
+    <h1 class="add-track-title">Add New Track</h1>
 
     <form method="post" class="add-track-form">
-        <div class="mb-3">
-            <label for="Title" class="form-label">Track Title</label>
-            <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter track title" asp-for="Title" required />
+        <div class="add-track-input-group">
+            <label for="Title" class="add-track-input-label">Track Title</label>
+            <input type="text" id="Title" name="Title" class="add-track-input-field" placeholder="Enter track title" asp-for="Title" required />
         </div>
 
-        <div class="mb-3">
-            <label for="AudioUrl" class="form-label">Audio URL</label>
-            <input type="text" id="AudioUrl" name="AudioUrl" class="form-control" placeholder="Enter audio file URL" asp-for="AudioUrl" required />
+        <div class="add-track-input-group">
+            <label for="AudioUrl" class="add-track-input-label">Audio URL</label>
+            <input type="text" id="AudioUrl" name="AudioUrl" class="add-track-input-field" placeholder="Enter audio file URL" asp-for="AudioUrl" />
         </div>
 
-        <div class="mb-3">
-            <label for="Plays" class="form-label">Plays</label>
-            <input type="number" id="Plays" name="Plays" class="form-control" placeholder="Enter the number of plays" asp-for="Plays" required />
+        <div class="add-track-input-group">
+            <label for="Plays" class="add-track-input-label">Plays</label>
+            <input type="number" id="Plays" name="Plays" class="add-track-input-field" placeholder="Enter the number of plays" asp-for="Plays" required />
         </div>
 
-        <div class="mb-3">
-            <label for="Duration" class="form-label">Duration (Seconds)</label>
-            <input type="number" id="Duration" name="Duration" class="form-control" placeholder="Enter track duration" asp-for="Duration" required />
-        </div>
-
-        <div class="mb-3">
-            <label for="GenreId" class="form-label">Genre</label>
-            <select asp-for="GenreId" asp-items="Model.GenresList" class="form-select" required>
+        <div class="add-track-input-group">
+            <label for="GenreId" class="add-track-input-label">Genre</label>
+            <select asp-for="GenreId" asp-items="Model.GenresList" class="add-track-input-dropdown" required>
                 <option value="">Select Genre</option>
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="UserId" class="form-label">User</label>
-            <select asp-for="UserId" asp-items="Model.UserList" class="form-select" required>
+        <div class="add-track-input-group">
+            <label for="UserId" class="add-track-input-label">User</label>
+            <select asp-for="UserId" asp-items="Model.UserList" class="add-track-input-dropdown" required>
                 <option value="">Select User</option>
             </select>
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-lg">Add Track</button>
+            <button type="submit" class="add-track-btn">Add Track</button>
         </div>
     </form>
 </div>

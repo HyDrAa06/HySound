@@ -1,20 +1,17 @@
 ﻿<div class="library-container">
-    <!-- Sidebar -->
     <aside class="library-sidebar">
         <ul class="library-nav">
-            <li class="active"><i class="fas fa-heart"></i></li>
-            <li><i class="fas fa-music"></i></li>
-            <li><i class="fas fa-compact-disc"></i></li>
-            <li><i class="fas fa-list"></i></li>
+            <li id="favourites-option" class="active"><i class="fas fa-heart"></i></li>
+            <li id="playlists-option"><i class="fas fa-music"></i></li>
+            <li id="albums-option"><i class="fas fa-compact-disc"></i></li>
+            <li id="tracklist-option"><i class="fas fa-list"></i></li>
         </ul>
     </aside>
 
-    <!-- Main Content -->
     <section class="library-content">
-        <h1 class="library-title">My Library</h1>
+        <h1 id="library-title" class="library-title">My Library</h1>
 
-        <div class="library-grid">
-            <!-- Track Card -->
+        <div id="favourites-content" class="library-grid">
             <div class="library-track-card">
                 <img src="~/Images/lyfe.jpg" alt="Track Image" class="library-track-img">
                 <div class="library-track-info">
@@ -26,10 +23,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Second Track -->
             <div class="library-track-card">
-                <img src="~/Images//starboy.jpg" alt="Track Image" class="library-track-img">
+                <img src="~/Images/starboy.jpg" alt="Track Image" class="library-track-img">
                 <div class="library-track-info">
                     <h3 class="library-track-title">Starboy</h3>
                     <p class="library-track-artist">The Weeknd</p>
@@ -40,5 +35,100 @@
                 </div>
             </div>
         </div>
+
+        <div id="playlists-content" class="library-grid" style="display: none;">
+            <div class="library-track-card">
+                <img src="~/Images/magnolia.jpg" alt="Track Image" class="library-track-img">
+                <div class="library-track-info">
+                    <h3 class="library-track-title">Magnolia</h3>
+                    <p class="library-track-artist">Playboi Carti</p>
+                    <div class="library-track-actions">
+                        <button class="track-btn"><i class="fas fa-play"></i></button>
+                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="albums-content" class="library-grid" style="display: none;">
+            <div class="library-track-card">
+                <img src="~/Images/utopia.jpg" alt="Track Image" class="library-track-img">
+                <div class="library-track-info">
+                    <h3 class="library-track-title">Utopia</h3>
+                    <p class="library-track-artist">Travis Scott</p>
+                    <div class="library-track-actions">
+                        <button class="track-btn"><i class="fas fa-play"></i></button>
+                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tracklist-content" class="library-grid" style="display: none;">
+            <div class="library-track-card">
+                <img src="~/Images/wlr.jpg" alt="Track Image" class="library-track-img">
+                <div class="library-track-info">
+                    <h3 class="library-track-title">Whole Lotta Red</h3>
+                    <p class="library-track-artist">Playboi Carti</p>
+                    <div class="library-track-actions">
+                        <button class="track-btn"><i class="fas fa-play"></i></button>
+                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </div>
+
+<script>
+    document.getElementById('favourites-option').addEventListener('click', function () {
+        toggleContent('favourites');
+        updateTitle('Favourites');
+        updateActiveState('favourites');
+    });
+    document.getElementById('playlists-option').addEventListener('click', function () {
+        toggleContent('playlists');
+        updateTitle('Playlists');
+        updateActiveState('playlists');
+    });
+    document.getElementById('albums-option').addEventListener('click', function () {
+        toggleContent('albums');
+        updateTitle('Albums');
+        updateActiveState('albums');
+    });
+    document.getElementById('tracklist-option').addEventListener('click', function () {
+        toggleContent('tracklist');
+        updateTitle('Tracklist');
+        updateActiveState('tracklist');
+    });
+
+    function toggleContent(content) {
+        // Hide all content
+        document.getElementById('favourites-content').style.display = 'none';
+        document.getElementById('playlists-content').style.display = 'none';
+        document.getElementById('albums-content').style.display = 'none';
+        document.getElementById('tracklist-content').style.display = 'none';
+
+        // Show selected content
+        if (content === 'favourites') {
+            document.getElementById('favourites-content').style.display = 'grid';
+        } else if (content === 'playlists') {
+            document.getElementById('playlists-content').style.display = 'grid';
+        } else if (content === 'albums') {
+            document.getElementById('albums-content').style.display = 'grid';
+        } else if (content === 'tracklist') {
+            document.getElementById('tracklist-content').style.display = 'grid';
+        }
+    }
+
+    function updateTitle(title) {
+        document.getElementById('library-title').textContent = title;
+    }
+
+    function updateActiveState(option) {
+        const navItems = document.querySelectorAll('.library-nav li');
+        navItems.forEach(item => item.classList.remove('active'));
+
+        document.getElementById(option + '-option').classList.add('active');
+    }
+</script>

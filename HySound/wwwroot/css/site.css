@@ -693,3 +693,399 @@ h2 {
 .unlike-btn:hover {
     color: #F44336;
 }
+
+/* Register Page Styling */
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px; /* Padding around the entire container */
+    background-color: #121212; /* Dark but not pitch black background */
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.register-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #4CAF50; /* Green title for a fresh accent */
+}
+
+.register-form {
+    width: 100%;
+    max-width: 420px; /* Adjusted card width */
+    background-color: #1c1c1c; /* Dark card background */
+    padding: 40px;
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Soft, deep shadow */
+    margin: 0 auto; /* Centers the card horizontally */
+}
+
+.register-input-group {
+    margin-bottom: 25px; /* Increased space between fields */
+}
+
+.register-input-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.register-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc; /* Lighter icon color */
+    font-size: 1.2rem;
+}
+
+.register-input-field {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #444; /* Darker border */
+    border-radius: 8px;
+    background-color: #333; /* Dark background for input fields */
+    color: #fff;
+    outline: none;
+    padding-left: 40px; /* Space for the icon */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+    .register-input-field:focus {
+        border-color: #4CAF50; /* Green border when focused */
+        background-color: #444; /* Slightly lighter background on focus */
+    }
+
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #4CAF50; /* Green button */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+    .register-btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+        transform: translateY(-2px); /* Slight lift effect on hover */
+    }
+
+    .register-btn:active {
+        transform: translateY(1px); /* Subtle press effect */
+    }
+
+
+/* Login Page Styling */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px; /* Padding around the entire container */
+    background-color: #121212; /* Dark but not pitch black background */
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #4CAF50; /* Green title for a fresh accent */
+}
+
+.login-form {
+    width: 100%;
+    max-width: 420px; /* Adjusted card width */
+    background-color: #1c1c1c; /* Dark card background */
+    padding: 40px;
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Soft, deep shadow */
+    margin: 0 auto; /* Centers the card horizontally */
+}
+
+.login-input-group {
+    margin-bottom: 25px; /* Increased space between fields */
+}
+
+.login-input-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.login-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc; /* Lighter icon color */
+    font-size: 1.2rem;
+}
+
+.login-input-field {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #444; /* Darker border */
+    border-radius: 8px;
+    background-color: #333; /* Dark background for input fields */
+    color: #fff;
+    outline: none;
+    padding-left: 40px; /* Space for the icon */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+    .login-input-field:focus {
+        border-color: #4CAF50; /* Green border when focused */
+        background-color: #444; /* Slightly lighter background on focus */
+    }
+
+.remember-me {
+    display: flex;
+    align-items: center;
+}
+
+.remember-me-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.remember-me-checkbox {
+    margin-right: 8px;
+}
+
+.remember-me-text {
+    color: #ccc;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #4CAF50; /* Green button */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+    .login-btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+        transform: translateY(-2px); /* Slight lift effect on hover */
+    }
+
+    .login-btn:active {
+        transform: translateY(1px); /* Subtle press effect */
+    }
+
+/* Add Track Page Layout */
+.add-track-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 40px;
+    background-color: #121212; /* Dark background to match the theme */
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.add-track-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #4CAF50; /* Accent color for the title */
+    text-align: center;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+.add-track-form {
+    width: 100%;
+    max-width: 800px; /* Increased width for more room */
+    padding: 30px;
+    background-color: transparent;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.add-track-input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.add-track-input-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: #fff;
+}
+
+.add-track-input-field,
+.add-track-input-dropdown {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #333;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+    .add-track-input-field:focus,
+    .add-track-input-dropdown:focus {
+        border-color: #4CAF50; /* Green highlight when focused */
+        background-color: #444;
+    }
+
+.add-track-input-dropdown {
+    padding: 12px 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #333;
+    color: #fff;
+    border-radius: 8px;
+}
+
+.add-track-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #4CAF50; /* Green accent for the button */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+    .add-track-btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+        transform: translateY(-2px);
+    }
+
+    .add-track-btn:active {
+        transform: translateY(1px); /* Press effect */
+    }
+
+@media (max-width: 768px) {
+    .add-track-container {
+        padding: 10px 20px;
+    }
+
+    .add-track-title {
+        font-size: 2rem;
+    }
+
+    .add-track-form {
+        padding: 20px;
+    }
+
+    .add-track-input-group {
+        margin-bottom: 15px;
+    }
+}
+
+.auth-navbar {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+    margin: 0;
+}
+
+    .auth-navbar .nav-item {
+        display: inline-block;
+    }
+
+    .auth-navbar .nav-link {
+        text-decoration: none;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: 0.3s ease-in-out;
+        font-weight: 500;
+    }
+
+        .auth-navbar .nav-link:hover {
+            background-color: #1DB954; /* Green hover */
+            color: black;
+        }
+
+.profile-container {
+    max-width: 800px;
+    margin: auto;
+    color: white;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #121212;
+    border-radius: 10px;
+}
+
+.profile-picture img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.profile-info h1 {
+    font-size: 28px;
+}
+
+.profile-info p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.followers {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+button {
+    background-color: #1DB954;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none;
+}

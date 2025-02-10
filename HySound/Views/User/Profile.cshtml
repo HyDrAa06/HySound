@@ -1,0 +1,51 @@
+﻿@using HySound.Models.User
+@model UserViewModel
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-picture">
+            <img id="profileImage" src="~/Images/@Model.ProfilePicture">
+            <input type="file" id="profileInput" class="hidden">
+        </div>
+        <div class="profile-info">
+            <h1>@Model.Name</h1>
+            <p>@Model.Email</p>
+            <p id="bioText">@(Model.Bio ?? "No bio set")</p>
+            <button id="editBioBtn">Edit Bio</button>
+            <input type="text" id="bioInput" class="hidden" value="@Model.Bio">
+            <button id="saveBioBtn" class="hidden">Save</button>
+            <div class="followers">
+                <p><strong>@Model.Followers?.Count</strong> Followers</p>
+                <p><strong>@Model.Following?.Count</strong> Following</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("editBioBtn").addEventListener("click", function () {
+        document.getElementById("bioText").classList.add("hidden");
+        document.getElementById("bioInput").classList.remove("hidden");
+        document.getElementById("saveBioBtn").classList.remove("hidden");
+    });
+
+    document.getElementById("saveBioBtn").addEventListener("click", function () {
+        let newBio = document.getElementById("bioInput").value;
+        document.getElementById("bioText").innerText = newBio;
+        document.getElementById("bioText").classList.remove("hidden");
+        document.getElementById("bioInput").classList.add("hidden");
+        document.getElementById("saveBioBtn").classList.add("hidden");
+    });
+
+    document.getElementById("profileImage").addEventListener("click", function () {
+        document.getElementById("profileInput").click();
+    });
+
+    document.getElementById("profileInput").addEventListener("change", function (event) {
+        let reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById("profileImage").src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
+</script>

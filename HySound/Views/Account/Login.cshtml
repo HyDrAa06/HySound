@@ -1,26 +1,34 @@
 ﻿@using HySound.Models.Account
 @model LoginViewModel
 
-<h2>Login</h2>
+<div class="login-container">
+    <h2 class="login-title">Login to Your Account</h2>
+    <form method="post" asp-controller="Account" class="login-form">
+        <div class="login-input-group">
+            <label for="Email" class="login-input-label">Email</label>
+            <div class="input-with-icon">
+                <i class="fa fa-envelope login-input-icon"></i>
+                <input asp-for="Email" class="login-input-field" type="email" placeholder="Enter your email" />
+            </div>
+        </div>
 
-<form   method="post" asp-controller="Account">
+        <div class="login-input-group">
+            <label for="Password" class="login-input-label">Password</label>
+            <div class="input-with-icon">
+                <i class="fa fa-lock login-input-icon"></i>
+                <input asp-for="Password" class="login-input-field" type="password" placeholder="Enter password" />
+            </div>
+        </div>
 
-    <div>
-        <label asp-for ="Email">
-            </label>
-            <input asp-for ="Email"   />
-    </div>
+        <div class="login-input-group">
+            <div class="remember-me">
+                <label for="RememberMe" class="remember-me-label">
+                    <input asp-for="RememberMe" class="remember-me-checkbox" type="checkbox" />
+                    <span class="remember-me-text">Remember me</span>
+                </label>
+            </div>
+        </div>
 
-    <div>
-        <label asp-for ="Password">
-            </label>
-            <input asp-for ="Password"  type="password"   />
-    </div>
-
-    <div>
-        <label asp-for ="RememberMe">
-            </label>
-            <input asp-for ="RememberMe"   />
-    </div>
-<button class="btn btn-danger" type="submit">Login</button>
-</form>
+        <button type="submit" class="login-btn login-btn-primary">Login</button>
+    </form>
+</div>

@@ -3,22 +3,24 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
+<ul class="auth-navbar">
     @if (SignInManager.IsSignedIn(User))
-    { 
-        <li  class ="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout</a>
-                    </li>
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a>
+        </li>
     }
     else
     {
-                    <li  class ="nav-item">
-                        <a  class ="nav-link text-dark"  id="register"  asp-controller="Account"  asp-action="Register">
-                            Register</a>
-                            </li>
-                            <li class ="nav-item">
-                                <a class ="nav-link text-dark"  id="login"  asp-controller="Account"  asp-action="Login">
-                                    Login</a>
-                                    </li>
+        <li class="nav-item">
+            <a class="nav-link" id="register" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="login" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
     }
 </ul>
+
+<style>
+    
+</style>
