@@ -1,5 +1,5 @@
 ﻿using HySound.Core.Service.IService;
-using HySound.Models.Account;
+using HySound.ViewModels.Account;
 using HySound.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

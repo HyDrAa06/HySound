@@ -10,16 +10,16 @@ namespace HySound.Core.Service.IService
 {
     public interface IFollowerService
     {
-        Task AddFollowerAsync(Follower entity);
-        Task UpdateFollowerAsync(Follower entity);
-        Task DeleteFollowerAsync(Follower entity);
-        IQueryable<Follower> GetAll();
+        Task AddFollowerAsync(Followed entity);
+        Task UpdateFollowerAsync(Followed entity);
+        Task DeleteFollowerAsync(Followed entity);
+        IQueryable<Followed> GetAll();
 
         Task DeleteFollowerByIdAsync(int id);
-        IQueryable<Follower> AllWithInclude(params Expression<Func<Follower, object>>[] includes);
-        Task<Follower> GetFollowerByIdAsync(int id);
-        Task<Follower> GetFollowerAsync(Expression<Func<Follower, bool>> filter);
-        Task<IEnumerable<Follower>> GetAllFollowersAsync(Expression<Func<Follower, bool>> filter);
-        Task<IEnumerable<Follower>> GetAllFollowersAsync();
+        IQueryable<Followed> AllWithInclude(params Expression<Func<Followed, object>>[] includes);
+        Task<Followed> GetFollowerByIdAsync(int id);
+        Task<Followed> GetFollowerAsync(Expression<Func<Followed, bool>> filter);
+        Task<IEnumerable<Followed>> GetAllFollowersAsync(Expression<Func<Followed, bool>> filter);
+        Task<IEnumerable<Followed>> GetAllFollowersAsync();
     }
 }

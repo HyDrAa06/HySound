@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace HySound.Models
+namespace HySound.ViewModels
 {
     public class EditTrackViewModel
     {

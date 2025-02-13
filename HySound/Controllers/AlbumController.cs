@@ -1,13 +1,14 @@
 ﻿using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models;
-using HySound.Models.Album;
+using HySound.ViewModels.Album;
 using HySound.Models.Models;
-using HySound.Models.Track;
+using HySound.ViewModels.Track;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HySound.ViewModels;
 
 namespace HySound.Controllers
 {
@@ -15,10 +16,12 @@ namespace HySound.Controllers
     {
         IAlbumService albumService;
         IUserService userService;
-        public AlbumController(IAlbumService _albumService, IUserService userService)
+        ITrackService trackService;
+        public AlbumController(ITrackService _trackService,IAlbumService _albumService, IUserService userService)
         {
             albumService = _albumService;
             this.userService = userService;
+            trackService = _trackService;
         }
         public IActionResult Index()
         {
@@ -69,16 +72,33 @@ namespace HySound.Controllers
             return RedirectToAction("AllAlbums");
 
         }
-        public async Task<IActionResult> AddAlbum()
+        public async Task<IActionResult> AddAlbum()  
         {
             var model = new AddAlbumViewModel();
-            model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
+            model.UserList = new SelectList(await userService.GetAllUsersAsync(),"Id", "Username");
+            Dictionary<int, string> pics = new Dictionary<int, string>();
+
+            var singles = await trackService.GetAllTracksAsync();
+            singles = singles.Where(x=>x.AlbumId is null).ToList();
+
+            foreach (var item in singles)
+            {
+                pics.Add(item.Id, item.CoverImage);
+            }
+            var tracks = singles.Select(t => new SelectListItem
+            {
+                Value = t.Id.ToString(),
+                Text = t.Title,
+                Selected = false
+            }).ToList();
+            model.Tracks = tracks;
+            model.TrackPictures = pics;
+
             return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> AddAlbum(AddAlbumViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 Album album = new Album
@@ -86,9 +106,30 @@ namespace HySound.Controllers
                     Title = model.Title,
                     ReleaseDate = model.ReleaseDate,
                     UserId = model.UserId,
-
+                    CoverImage = model.Picture
                 };
+                album.UserId = model.UserId;
                 await albumService.AddAlbumAsync(album);
+
+                var tracks = await trackService.GetAllTracksAsync();
+
+                if (model.SelectedTracksIds != null && model.SelectedTracksIds.Any())
+                {
+                    var selectedTracks = tracks.Where(x => model.SelectedTracksIds.Contains(x.Id)).ToList();
+
+                    foreach (var track in selectedTracks)
+                    {
+                        track.AlbumId = album.Id;
+                        await trackService.UpdateTrackAsync(track);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Please select at least one track.");
+                    return View(model);
+                }
+
                 return RedirectToAction("AllAlbums");
             }
             else
@@ -96,6 +137,7 @@ namespace HySound.Controllers
                 return View(model);
             }
         }
+
         public async Task<IActionResult> AllAlbums(AlbumFilterViewModel? filter)
         {
             var query = albumService.GetAll().AsQueryable();

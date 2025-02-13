@@ -1,4 +1,7 @@
-﻿<div class="library-container">
+﻿@using HySound.ViewModels.Main
+@model LibraryViewModel
+
+<div class="library-container">
     <aside class="library-sidebar">
         <ul class="library-nav">
             <li id="favourites-option" class="active"><i class="fas fa-heart"></i></li>
@@ -12,56 +15,63 @@
         <h1 id="library-title" class="library-title">My Library</h1>
 
         <div id="favourites-content" class="library-grid">
-            <div class="library-track-card">
-                <img src="~/Images/lyfe.jpg" alt="Track Image" class="library-track-img">
-                <div class="library-track-info">
-                    <h3 class="library-track-title">System</h3>
-                    <p class="library-track-artist">Yeat</p>
-                    <div class="library-track-actions">
-                        <button class="track-btn"><i class="fas fa-play"></i></button>
-                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+            @if(Model.Tracks != null)
+            {
+                @foreach(var track in Model.Tracks)
+                {
+                <div class="library-track-card">
+                    <img src="~/Images/@track.ImageLink" alt="Track Image" class="library-track-img">
+                    <div class="library-track-info">
+                        <h3 class="library-track-title">@track.Title</h3>
+                        <p class="library-track-artist">@track.UserName</p>
+                        <div class="library-track-actions">
+                            <button class="track-btn"><i class="fas fa-play"></i></button>
+                            <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="library-track-card">
-                <img src="~/Images/starboy.jpg" alt="Track Image" class="library-track-img">
-                <div class="library-track-info">
-                    <h3 class="library-track-title">Starboy</h3>
-                    <p class="library-track-artist">The Weeknd</p>
-                    <div class="library-track-actions">
-                        <button class="track-btn"><i class="fas fa-play"></i></button>
-                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
-                    </div>
-                </div>
-            </div>
+                }
+            }
         </div>
 
         <div id="playlists-content" class="library-grid" style="display: none;">
-            <div class="library-track-card">
-                <img src="~/Images/magnolia.jpg" alt="Track Image" class="library-track-img">
-                <div class="library-track-info">
-                    <h3 class="library-track-title">Magnolia</h3>
-                    <p class="library-track-artist">Playboi Carti</p>
-                    <div class="library-track-actions">
-                        <button class="track-btn"><i class="fas fa-play"></i></button>
-                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+            @if(Model.Playlists!=null)
+            {
+                @foreach(var playlist in Model.Playlists)
+                {
+                <div class="library-track-card">
+                    <img src="~/Images/@playlist" alt="Track Image" class="library-track-img">
+                    <div class="library-track-info">
+                        <h3 class="library-track-title">@playlist.Title</h3>
+                        <p class="library-track-artist">@playlist.UserId</p>
+                        <div class="library-track-actions">
+                            <button class="track-btn"><i class="fas fa-play"></i></button>
+                            <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                        </div>
                     </div>
                 </div>
-            </div>
+                }
+            }
         </div>
-
+        
         <div id="albums-content" class="library-grid" style="display: none;">
-            <div class="library-track-card">
-                <img src="~/Images/utopia.jpg" alt="Track Image" class="library-track-img">
-                <div class="library-track-info">
-                    <h3 class="library-track-title">Utopia</h3>
-                    <p class="library-track-artist">Travis Scott</p>
-                    <div class="library-track-actions">
-                        <button class="track-btn"><i class="fas fa-play"></i></button>
-                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+            @if(Model.Albums != null)
+            {
+                @foreach(var album in Model.Albums)
+                {
+                <div class="library-track-card">
+                    <img src="~/Images/@album.CoverImage" alt="Track Image" class="library-track-img">
+                    <div class="library-track-info">
+                        <h3 class="library-track-title">@album.Title</h3>
+                        <p class="library-track-artist">@album.UserName</p>
+                        <div class="library-track-actions">
+                            <button class="track-btn"><i class="fas fa-play"></i></button>
+                            <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                        </div>
                     </div>
                 </div>
-            </div>
+                }
+            }
         </div>
 
         <div id="tracklist-content" class="library-grid" style="display: none;">

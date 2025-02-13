@@ -1,6 +1,6 @@
 ﻿using HySound.Models.Models;
 
-namespace HySound.Models.User
+namespace HySound.ViewModels.User
 {
     public class UserViewModel
     {
@@ -8,7 +8,7 @@ namespace HySound.Models.User
         public string Email { get; set; }
         public string? Bio { get; set; }
         public string? ProfilePicture {  get; set; }
-        public ICollection<Follower>? Followers { get; set; }
-        public ICollection<Follower>? Following { get; set; }
+        public ICollection<Followed>? Followers { get; set; }
+        public ICollection<Followed>? Following { get; set; }
     }
 }

@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace HySound.Models.Models
 {
-    public class Follower
+    public class Followed
     {
-        [Key]
-        public int Id { get; set; }
-        public int? FollowedId { get; set; }
-
-        public int? FollowingId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int FollowedById { get; set; }
+        public int FollowedId { get; set; }
+        public User? FollowedByUser { get; set; }
         public User? FollowedUser { get; set; }
-        public User? FollowingUser { get; set; }
+
 
     }
 }

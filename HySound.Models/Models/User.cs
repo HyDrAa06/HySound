@@ -27,8 +27,8 @@ namespace HySound.Models.Models
         public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
         public ICollection<Like>? Likes { get; set; } = new List<Like>();
 
-        public ICollection<Follower>? Followers { get; set; }
-        public ICollection<Follower>? Following { get; set; }
+        public ICollection<Followed>? FollowedBy { get; set; }
+        public ICollection<Followed>? Following { get; set; }
 
     }
 }

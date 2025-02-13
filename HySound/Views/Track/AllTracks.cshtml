@@ -1,4 +1,4 @@
-﻿@using HySound.Models.Track
+﻿@using HySound.ViewModels.Track
 @model TrackFilterViewModel
 
 <div class="container py-5">
@@ -47,6 +47,7 @@
                         <p class="track-meta">Plays: @track.Plays |</p>
                     </div>
                     <div class="track-actions">
+                        <a class="btn btn-action" asp-controller="Like" asp-action="Like" asp-route-id="@track.TrackId">Like</a>
                         <a class="btn btn-action" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a>
                         <a class="btn btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">Delete</a>
                     </div>

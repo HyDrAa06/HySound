@@ -19,7 +19,7 @@ namespace HySound.DataAccess
 
         public DbSet<Album> Albums { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Follower> Followers { get; set; }
+        public DbSet<Followed> Followers { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
@@ -54,19 +54,21 @@ namespace HySound.DataAccess
                 .HasForeignKey(t => t.TrackId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Follower>()
-           .HasKey(f => new { f.FollowedId, f.FollowingId });
+            modelBuilder.Entity<Followed>()
+           .HasKey(f => new { f.FollowedId, f.FollowedById });
 
-            modelBuilder.Entity<Follower>()
-                .HasOne(f => f.FollowedUser)
-                .WithMany(f => f.Following)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Followed>()
+                .HasOne(x => x.FollowedByUser)
+                .WithMany(x => x.Following)
+                .HasForeignKey(x => x.FollowedById)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
-            modelBuilder.Entity<Follower>()
-                .HasOne(f => f.FollowingUser)
-                .WithMany(f => f.Followers)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Followed>()
+                .HasOne(x => x.FollowedUser)
+                .WithMany(x => x.FollowedBy)
+                .HasForeignKey(x=>x.FollowedId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Track>()
                 .HasOne(t => t.User)

@@ -1,7 +1,7 @@
 ﻿using HySound.Core.Service.IService;
-using HySound.Models;
 using HySound.Models.Models;
-using HySound.Models.Track;
+using HySound.ViewModels;
+using HySound.ViewModels.Track;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,4 @@
-namespace HySound.Models
+namespace HySound.ViewModels
 {
     public class ErrorViewModel
     {

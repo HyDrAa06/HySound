@@ -1,7 +1,7 @@
 ﻿using HySound.Models.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace HySound.Models.Track
+namespace HySound.ViewModels.Track
 {
     public class TrackFilterViewModel
     {

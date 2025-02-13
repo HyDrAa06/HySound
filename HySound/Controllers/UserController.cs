@@ -1,7 +1,7 @@
 ﻿using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
-using HySound.Models.User;
+using HySound.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +40,18 @@ namespace HySound.Controllers
                 return RedirectToAction("AllUsers");
             }
         }
-
+        [HttpPost]
+        public async Task<IActionResult> Profile(UserViewModel model)
+        {
+            User user = await userService.GetUserAsync(x => x.Email == model.Email);
+            user.Username = model.Name;
+            user.ProfilePicture = model.ProfilePicture;
+            user.Bio = model.Bio;
+            user.Email = model.Email;
+            await userService.UpdateUserAsync(user);
+            
+            return View(model);
+        }
         public async Task<IActionResult> Profile()
         {
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);

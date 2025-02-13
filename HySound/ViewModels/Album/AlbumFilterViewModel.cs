@@ -1,4 +1,4 @@
-﻿namespace HySound.Models.Album
+﻿namespace HySound.ViewModels.Album
 {
     public class AlbumFilterViewModel
     {

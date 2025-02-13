@@ -579,11 +579,20 @@ h2 {
     height: 100vh;
     background: #121212;
     color: white;
+    max-width: 100%;
+    overflow: hidden;
 }
+
+* {
+    box-sizing: border-box;
+}
+
 
 /* Sidebar */
 .library-sidebar {
-    width: 80px; /* Slimmer sidebar */
+    min-width: 80px; /* Гарантира, че не расте прекомерно */
+    max-width: 80px;
+    flex-shrink: 0;
     background: #1a1a1a;
     display: flex;
     flex-direction: column;
@@ -617,8 +626,30 @@ h2 {
 /* Main Content */
 .library-content {
     flex-grow: 1;
-    padding: 40px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: calc(100vh - 100px); /* Регулирай според нуждите */
+    overflow-y: auto; /* Вертикален scrollbar */
+    scrollbar-width: thin; /* По-тънък скролбар */
+    scrollbar-color: #1DB954 #121212; /* Зелен скролбар, тъмен бекграунд */
 }
+
+    .library-content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .library-content::-webkit-scrollbar-thumb {
+        background-color: #1DB954; /* Зелен цвят за скролбара */
+        border-radius: 10px;
+    }
+
+    .library-content::-webkit-scrollbar-track {
+        background: #121212;
+    }
+
+
+
 
 .library-title {
     font-size: 2.5rem;
@@ -628,9 +659,14 @@ h2 {
 /* Track Grid */
 .library-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 100%; /* Уверява се, че не надхвърля родителския контейнер */
+    overflow: hidden; /* Предотвратява евентуално излизане */
 }
+
+
 
 /* Track Card */
 .library-track-card {
@@ -650,7 +686,7 @@ h2 {
 
 .library-track-img {
     width: 100%;
-    height: 150px;
+    height: 120px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -1040,52 +1076,3 @@ h2 {
             color: black;
         }
 
-.profile-container {
-    max-width: 800px;
-    margin: auto;
-    color: white;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background: #121212;
-    border-radius: 10px;
-}
-
-.profile-picture img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.profile-info h1 {
-    font-size: 28px;
-}
-
-.profile-info p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
-.followers {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-button {
-    background-color: #1DB954;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    color: white;
-    border-radius: 5px;
-}
-
-.hidden {
-    display: none;
-}

@@ -13,20 +13,20 @@ namespace HySound.Core.Service
 {
     public class FollowerService : IFollowerService
     {
-        IRepository<Follower> _followerRepository;
+        IRepository<Followed> _followerRepository;
 
-        public FollowerService(IRepository<Follower> followerRepository)
+        public FollowerService(IRepository<Followed> followerRepository)
         {
             _followerRepository = followerRepository;
         }
-        public async Task AddFollowerAsync(Follower entity)
+        public async Task AddFollowerAsync(Followed entity)
         {
             await _followerRepository.AddAsync(entity);
         }
 
-        public IQueryable<Follower> AllWithInclude(params Expression<Func<Follower, object>>[] includes)
+        public IQueryable<Followed> AllWithInclude(params Expression<Func<Followed, object>>[] includes)
         {
-            IQueryable<Follower> query = _followerRepository.GetAllQuery();
+            IQueryable<Followed> query = _followerRepository.GetAllQuery();
             foreach (var include in includes)
             {
                 query = query.Include(include);
@@ -35,7 +35,7 @@ namespace HySound.Core.Service
             return query;
         }
 
-        public async Task DeleteFollowerAsync(Follower entity)
+        public async Task DeleteFollowerAsync(Followed entity)
         {
             await _followerRepository.DeleteAsync(entity);
         }
@@ -45,32 +45,32 @@ namespace HySound.Core.Service
             await _followerRepository.DeleteByIdAsync(id);
         }
 
-        public IQueryable<Follower> GetAll()
+        public IQueryable<Followed> GetAll()
         {
             return _followerRepository.GetAll();
         }
 
-        public async Task<IEnumerable<Follower>> GetAllFollowersAsync(Expression<Func<Follower, bool>> filter)
+        public async Task<IEnumerable<Followed>> GetAllFollowersAsync(Expression<Func<Followed, bool>> filter)
         {
             return await _followerRepository.GetAllAsync(filter);
         }
 
-        public async Task<IEnumerable<Follower>> GetAllFollowersAsync()
+        public async Task<IEnumerable<Followed>> GetAllFollowersAsync()
         {
             return await _followerRepository.GetAllAsync();
         }
 
-        public async Task<Follower> GetFollowerAsync(Expression<Func<Follower, bool>> filter)
+        public async Task<Followed> GetFollowerAsync(Expression<Func<Followed, bool>> filter)
         {
             return await _followerRepository.GetAsync(filter);
         }
 
-        public async Task<Follower> GetFollowerByIdAsync(int id)
+        public async Task<Followed> GetFollowerByIdAsync(int id)
         {
             return await _followerRepository.GetByIdAsync(id);
         }
 
-        public async Task UpdateFollowerAsync(Follower entity)
+        public async Task UpdateFollowerAsync(Followed entity)
         {
             await _followerRepository.UpdateAsync(entity);
         }

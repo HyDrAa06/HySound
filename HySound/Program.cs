@@ -27,6 +27,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
+builder.Services.AddScoped<ILikeService, LikeService>();
 builder.Services.AddRazorPages();
 
 
