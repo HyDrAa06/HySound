@@ -4,6 +4,7 @@ using HySound.Models.Models;
 using HySound.ViewModels;
 using HySound.ViewModels.Album;
 using HySound.ViewModels.Main;
+using HySound.ViewModels.Playlist;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,16 @@ namespace HySound.Controllers
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
         IUserService _userService;
         ITrackService _trackService;
-        private readonly ILogger<HomeController> _logger;
         ILikeService _likeService;
         IAlbumService _albumService;
-        public HomeController(IAlbumService albumService, ILikeService likeService,UserManager<IdentityUser>userManager,IUserService userService,ITrackService trackService,ILogger<HomeController> logger, ITrackService track)
+        IPlaylistService _playlistService;
+
+        public HomeController(IPlaylistService playlistService,IAlbumService albumService, ILikeService likeService,UserManager<IdentityUser>userManager,IUserService userService,ITrackService trackService,ILogger<HomeController> logger, ITrackService track)
         {
+            _playlistService = playlistService;
             _albumService=albumService;
             _likeService = likeService;
             _userManager = userManager;
@@ -59,9 +63,16 @@ namespace HySound.Controllers
                 UserName = x.User.Username
             }).ToList();
 
+            var playlistsModel = _playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()
+            {
+                CoverImage = x.CoverImage,
+                Title = x.Title,
+                UserName = x.User.Username
+            }).ToList();
 
             libraryModel.Tracks = model;
             libraryModel.Albums = albumModel;
+            libraryModel.Playlists = playlistsModel;
             return View(libraryModel);
         }
 

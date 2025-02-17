@@ -40,10 +40,10 @@
                 @foreach(var playlist in Model.Playlists)
                 {
                 <div class="library-track-card">
-                    <img src="~/Images/@playlist" alt="Track Image" class="library-track-img">
+                    <img src="~/Images/@playlist.CoverImage" alt="Track Image" class="library-track-img">
                     <div class="library-track-info">
                         <h3 class="library-track-title">@playlist.Title</h3>
-                        <p class="library-track-artist">@playlist.UserId</p>
+                        <p class="library-track-artist">@playlist.UserName</p>
                         <div class="library-track-actions">
                             <button class="track-btn"><i class="fas fa-play"></i></button>
                             <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>

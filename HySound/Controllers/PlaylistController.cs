@@ -1,7 +1,10 @@
 ﻿using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
+using HySound.ViewModels.Playlist;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace HySound.Controllers
 {
@@ -32,8 +35,15 @@ namespace HySound.Controllers
         }
         public async Task<IActionResult> AllPlaylists()
         {
-            IEnumerable<Playlist> playlists = await playlistService.GetAllPlaylistsAsync();
+            var playlists = playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()
+            {
+                CoverImage =x.CoverImage,
+                Title = x.Title,
+                UserName = x.User.Username
+            });
+
             return View(playlists);
+            
         }
 
         public async Task<IActionResult> Delete(int id)

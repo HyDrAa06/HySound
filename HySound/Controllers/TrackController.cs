@@ -17,11 +17,13 @@ namespace HySound.Controllers
         ITrackService trackService;
         IGenreService genreService;
         IUserService userService;
-        public TrackController(ITrackService trackService, IUserService userService, IGenreService genreService)
+        IPlaylistService playlistService;
+        public TrackController(IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
         {
             this.trackService = trackService;
             this.userService = userService;
             this.genreService = genreService;
+            this.playlistService = playlistService;
         }
         public async Task<IActionResult> Delete(int id)
         {
@@ -108,8 +110,10 @@ namespace HySound.Controllers
         public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {
             var query = trackService.GetAll().AsQueryable();
+            var playlists = await playlistService.GetAllPlaylistsAsync();
 
-            if(filter.GenreId == null && string.IsNullOrEmpty(filter.Title))
+
+            if (filter.GenreId == null && string.IsNullOrEmpty(filter.Title))
             {
                 var model = trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x => x.Tracks).Select(x => new TrackViewModel()
                 {
@@ -125,7 +129,8 @@ namespace HySound.Controllers
                 var filterModel = new TrackFilterViewModel
                 {
                     Tracks = model,
-                    Genres = new SelectList(genreService.GetAll(), "Id", "Name")
+                    Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
+                    Playlists = playlists.ToList()
 
                 };
                 return View(filterModel);
@@ -140,6 +145,7 @@ namespace HySound.Controllers
                 {
                     query = query.Where(x => x.Title == filter.Title);
                 }
+
 
                 var filterModel = new TrackFilterViewModel
                 {
@@ -157,11 +163,12 @@ namespace HySound.Controllers
                 }).ToList(),
                     Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
                     Title = filter.Title,
-                    GenreId = filter.GenreId
+                    GenreId = filter.GenreId,
+                    Playlists = playlists.ToList()
                 };
 
                 return View(filterModel);
-            }
+            }   
        
         }
     }

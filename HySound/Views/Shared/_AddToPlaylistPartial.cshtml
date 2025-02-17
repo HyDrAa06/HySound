@@ -1,0 +1,194 @@
+﻿@using HySound.Models.Models
+@model List<Playlist>
+
+<div id="addToPlaylistModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добави песен в плейлист</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="selectedSongId">
+                <p>Избери плейлист:</p>
+                <div class="playlist-cards">
+                    @foreach (var playlist in Model)
+                    {
+                        <div class="playlist-card" onclick="selectPlaylist(@playlist.Id)">
+                            <img src="~/Images/@playlist.CoverImage" alt="@playlist.Title" class="playlist-cover">
+                            <div class="playlist-info">
+                                <p class="playlist-title">@playlist.Title</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори</button>
+                <button type="button" class="btn btn-primary" onclick="addSongToPlaylist()">Добави</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Modal Styles */
+    .modal-dialog {
+        max-width: 500px; /* Adjusted for a slightly wider modal */
+        width: 100%;
+    }
+
+    .modal-content {
+        background-color: #1C1C1C; /* Premium black for modal background */
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+    }
+
+    /* Modal Header */
+    .modal-header {
+        border-bottom: none;
+        padding-bottom: 8px;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #4CAF50; /* HySound vibrant green */
+    }
+
+    /* Close Button */
+    .btn-close {
+        color: #4CAF50;
+    }
+
+    /* Modal Body */
+    .modal-body {
+        padding: 10px 15px;
+        max-height: 200px;
+        overflow-y: auto; /* Enable scrolling for long lists */
+    }
+
+        .modal-body p {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+    /* Horizontal Playlist Cards (Spotify style) */
+    .playlist-cards {
+        display: flex;
+        overflow-x: auto; /* Horizontal scrolling */
+        gap: 10px; /* Reduced gap between cards */
+        padding-bottom: 10px; /* Padding for a neat layout */
+    }
+
+    /* Playlist Card */
+    .playlist-card {
+        background-color: #212529; /* Darker black for cards */
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        width: 90px; /* Smaller card width */
+        flex-shrink: 0; /* Prevent shrinking */
+    }
+
+        /* Playlist Card Hover Effect */
+        .playlist-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        }
+
+    /* Playlist Image */
+    .playlist-cover {
+        width: 100%;
+        height: 90px; /* Smaller image size */
+        object-fit: cover;
+    }
+
+    /* Playlist Information */
+    .playlist-info {
+        padding: 5px;
+        background-color: #212529;
+        text-align: center;
+    }
+
+    .playlist-title {
+        font-size: 0.8rem; /* Smaller font size for playlist title */
+        font-weight: bold;
+        color: white;
+        margin-top: 5px;
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+        background-color: #212529;
+        border-top: none;
+        padding-top: 10px;
+        justify-content: space-between;
+    }
+
+    /* Buttons */
+    .btn {
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 8px 12px; /* Smaller padding */
+    }
+
+    /* Secondary Button */
+    .btn-secondary {
+        background-color: #495057;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+    /* Primary Button */
+    .btn-primary {
+        background-color: #4CAF50;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            color: white;
+        }
+    /* Styling the scrollbar for the modal body */
+    /* Styling the scrollbar for the modal body */
+    .modal-body {
+        padding: 10px 15px;
+        max-height: 200px;
+        overflow-y: auto; /* Enable scrolling for long lists */
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #495057 #212529; /* Dark thumb and track for Firefox */
+    }
+
+        /* Chrome, Safari, and Edge */
+        .modal-body::-webkit-scrollbar {
+            width: 8px; /* Thin scrollbar */
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: #212529; /* Dark track color matching the modal background */
+            border-radius: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background-color: #495057; /* Dark thumb for the scrollbar */
+            border-radius: 10px;
+            border: 2px solid #212529; /* Dark border around the thumb */
+        }
+
+            .modal-body::-webkit-scrollbar-thumb:hover {
+                background-color: #343a40; /* Slightly darker gray on hover */
+            }
+
+
+
+</style>

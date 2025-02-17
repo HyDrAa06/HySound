@@ -1,5 +1,7 @@
-﻿@using HySound.ViewModels.Track
+﻿@using HySound.Models.Models
+@using HySound.ViewModels.Track
 @model TrackFilterViewModel
+@await Html.PartialAsync("_AddToPlaylistPartial", Model.Playlists ?? new List<Playlist>())
 
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-5">
@@ -28,6 +30,18 @@
         {
             <div class="col-md-4 mb-4">
                 <div class="track-card">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal">Add to Playlist</a></li>
+                            <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a></li>
+                            <li><a class="dropdown-item" asp-controller=" Track" asp-action="Delete" asp-route-id="@track.TrackId">Delete</a></li>
+                        </ul>
+                    </div>
+
+
                     <div class="track-image">
                         @if (!string.IsNullOrEmpty(track.AudioUrl))
                         {
@@ -44,12 +58,18 @@
                     <div class="track-info">
                         <h5 class="track-title">@track.Title</h5>
                         <p class="track-meta">Genre: @track.GenreName | User: @track.UserName</p>
-                        <p class="track-meta">Plays: @track.Plays |</p>
+                        <p class="track-meta">Plays: @track.Plays</p>
                     </div>
                     <div class="track-actions">
-                        <a class="btn btn-action" asp-controller="Like" asp-action="Like" asp-route-id="@track.TrackId">Like</a>
-                        <a class="btn btn-action" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a>
-                        <a class="btn btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">Delete</a>
+                        <a class="btn btn-action" asp-controller="Like" asp-action="Like" asp-route-id="@track.TrackId">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <a class="btn btn-action" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -69,4 +89,223 @@
             });
         });
     });
+
+    ocument.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".track-options").forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.stopPropagation();
+                let optionsMenu = this.nextElementSibling;
+
+                document.querySelectorAll(".track-options-menu").forEach(menu => {
+                    if (menu !== optionsMenu) {
+                        menu.style.display = "none";
+                    }
+                });
+
+                optionsMenu.style.display = optionsMenu.style.display === "block" ? "none" : "block";
+            });
+        });
+
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".track-options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+    });
 </script>
+
+
+  <style>
+
+    /* More Options (⋮) Button */
+    .track-options-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: inline-block;
+    }
+
+    .track-options-menu {
+        position: absolute;
+        top: 35px; /* Adjusted spacing */
+        right: 0;
+        background-color: #333;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        padding: 8px 0;
+        width: 180px;
+        display: none;
+        flex-direction: column;
+        z-index: 50; /* Ensures it's above other elements */
+    }
+
+        .track-options-menu .dropdown-item {
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            display: block;
+        }
+
+            .track-options-menu .dropdown-item:hover {
+                background-color: #444;
+                color: #FFC107;
+            }
+
+        .track-options-menu .delete {
+            color: red;
+        }
+
+    .track-card {
+        position: relative; /* Make the track card the reference for absolute positioning */
+        background-color: #2b2b2b;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 20px;
+    }
+
+        .track-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4);
+        }
+
+    .track-options {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .track-options:hover {
+            color: #1DB954;
+        }
+
+    .track-image {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .track-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+        .track-img:hover {
+            transform: scale(1.1);
+        }
+
+    .track-info {
+        padding: 15px;
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .track-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .track-meta {
+        font-size: 0.9rem;
+        color: #b0b0b0;
+    }
+
+    .track-actions {
+        text-align: center;
+        display: flex;
+        justify-content: space-evenly;
+        margin-top: 15px;
+    }
+
+        .track-actions .btn {
+            font-weight: bold;
+            border-radius: 30px;
+            padding: 0.5rem 1.5rem;
+            margin: 0 5px;
+            text-transform: uppercase;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+
+
+    .btn-options {
+        background-color: transparent;
+        border: none;
+        color: white; /* Ensures the button text is visible */
+        font-size: 24px; /* Adjust the size of the button */
+        cursor: pointer;
+        padding: 8px 12px;
+        position: absolute;
+        top: 8px; /* Space from the top */
+        right: 8px; /* Space from the right */
+        z-index: 20; /* Make sure it's above other content */
+    }
+
+        .btn-options:hover {
+            color: #FFC107; /* Hover effect for the button */
+        }
+
+    .dropdown-menu {
+        min-width: 180px; /* Slightly wider for better spacing */
+        transform: translate(-50%, 10px) !important; /* Center below button */
+        left: 50% !important; /* Center horizontally */
+        top: 100% !important; /* Ensure it's positioned below */
+        z-index: 1050; /* Keep above other elements */
+        background-color: #333;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .dropdown-item {
+        color: white; /* Text color */
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+        .dropdown-item:hover {
+            background-color: #444; /* Darker background on hover */
+            color: #FFC107; /* Highlight text color on hover */
+        }
+
+    .dropdown .btn-options {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+    }
+
+    .dropdown-menu-dark {
+        background-color: #333;
+        border: 1px solid #444;
+    }
+
+        .dropdown-menu-dark .dropdown-item {
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+            .dropdown-menu-dark .dropdown-item:hover {
+                background-color: #555;
+            }
+
+</style>

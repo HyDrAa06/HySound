@@ -1,35 +1,292 @@
-﻿@using HySound.Models.Models
-@model IEnumerable<Playlist>
+﻿@using HySound.ViewModels.Playlist
+@model IEnumerable<PlaylistViewModel>
 
-
-<div class="row">
-    <div class="col-10">
-        <h1>All Playlists</h1>
+<div class="playlist-container">
+    <div class="playlist-header">
+        <h2>Моите плейлисти</h2>
+        <button class="add-btn" onclick="openModal('addPlaylistModal')">Добави плейлист</button>
     </div>
-    <div class="col-2">
-        <a class="btn-danger" asp-controller="Playlist" asp-action="AddPlaylist">Add Playlist</a>
+
+    <div class="playlist-grid">
+        @foreach (var playlist in Model)
+        {
+            <div class="playlist-card">
+                <div class="playlist-image-container">
+                    <img src="~/Images/@playlist.CoverImage" alt="Cover" class="playlist-cover">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="playlist-info">
+                    <div class="playlist-title">@playlist.Title</div>
+                    <div class="playlist-user">@playlist.UserName</div>
+                </div>
+                <div class="playlist-buttons">
+                    <button class="edit-btn" onclick="openModal('editPlaylistModal', '@playlist.Id', '@playlist.Title')">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="delete-btn" onclick="deletePlaylist('@playlist.Id')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var playlist in Model)
-        {
-            <tr>
-                <th>@playlist.Title</th>
-                <th>@playlist.Description</th>
-                <td>
-                    <a class="btn-info" asp-controller="Playlist" asp-action="Update" asp-route-id="@playlist.Id">Update</a>
-                    <a class="btn-danger" asp-controller="Playlist" asp-action="Delete" asp-route-id="@playlist.Id">Delete</a>
-                </td>
-            </tr>
+<!-- Add Playlist Modal -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="addPlaylistModal">
+    <h3>Добави нов плейлист</h3>
+    <input type="text" id="playlistTitle" placeholder="Заглавие">
+    <input type="file" id="playlistCover">
+    <div class="modal-btns">
+        <button class="save-btn" onclick="savePlaylist()">Запази</button>
+        <button class="cancel-btn" onclick="closeModal()">Отказ</button>
+    </div>
+</div>
+
+<!-- Edit Playlist Modal -->
+<div class="modal" id="editPlaylistModal">
+    <h3>Редактирай плейлист</h3>
+    <input type="hidden" id="editPlaylistId">
+    <input type="text" id="editPlaylistTitle" placeholder="Заглавие">
+    <input type="file" id="editPlaylistCover">
+    <div class="modal-btns">
+        <button class="save-btn" onclick="updatePlaylist()">Запази</button>
+        <button class="cancel-btn" onclick="closeModal()">Отказ</button>
+    </div>
+</div>
+
+<style>
+    .playlist-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .playlist-image-container {
+        position: relative;
+        width: 100%;
+        height: 180px;
+    }
+
+    .playlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .playlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .playlist-card {
+        position: relative;
+        background: #181818;
+        padding: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        height: 280px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, background 0.3s ease-in-out;
+    }
+
+        .playlist-card:hover {
+            background: #282828;
+            transform: scale(1.03);
         }
-    </tbody>
-</table>
+
+    .playlist-cover {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .playlist-info {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .playlist-title {
+        font-weight: bold;
+    }
+
+    .playlist-buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 12px;
+    }
+
+        .playlist-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .playlist-buttons .edit-btn {
+            color: #1db954;
+        }
+
+            .playlist-buttons .edit-btn:hover {
+                transform: scale(1.2);
+                color: #17a44a;
+            }
+
+        .playlist-buttons .delete-btn {
+            color: #f44336;
+        }
+
+            .playlist-buttons .delete-btn:hover {
+                transform: scale(1.2);
+                color: #d32f2f;
+            }
+
+    .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #1db954;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .playlist-card:hover .play-button {
+        opacity: 1;
+    }
+
+    .play-button i {
+        font-size: 20px;
+        color: white;
+    }
+
+    .add-btn {
+        background: #1db954;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .add-btn:hover {
+            background: #17a44a;
+        }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #121212;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        width: 350px;
+        height: 300px;
+        text-align: center;
+    }
+
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 8px;
+            background: #282828;
+            color: white;
+        }
+
+    .modal-btns {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .modal-btns button {
+            padding: 10px 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+    .save-btn {
+        background: #1db954;
+        color: white;
+    }
+
+    .cancel-btn {
+        background: #f44336;
+        color: white;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+</style>
+
+<script>
+    function openModal(modalId, id = null, title = null) {
+        document.getElementById('overlay').style.display = 'block';
+        let modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+
+        if (modalId === 'editPlaylistModal') {
+            document.getElementById('editPlaylistId').value = id;
+            document.getElementById('editPlaylistTitle').value = title;
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('overlay').style.display = 'none';
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+    }
+
+    function savePlaylist() {
+        alert("Плейлистът е добавен! (Тук ще има AJAX заявка)");
+        closeModal();
+    }
+
+    function updatePlaylist() {
+        alert("Плейлистът е редактиран! (Тук ще има AJAX заявка)");
+        closeModal();
+    }
+
+    function deletePlaylist(id) {
+        if (confirm("Сигурни ли сте, че искате да изтриете този плейлист?")) {
+            alert("Плейлистът е изтрит! (Тук ще има AJAX заявка)");
+        }
+    }
+</script>

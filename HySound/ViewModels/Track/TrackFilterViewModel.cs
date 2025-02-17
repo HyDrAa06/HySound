@@ -10,6 +10,6 @@ namespace HySound.ViewModels.Track
 
         public List<TrackViewModel> Tracks { get; set; }
         public string? Title { get; set; }
-
+        public List<HySound.Models.Models.Playlist> Playlists { get; set; }
     }
 }
