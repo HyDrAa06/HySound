@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using HySound.Core.Service.IService;
 using HySound.Core.Service;
 using Microsoft.AspNetCore.Identity;
+using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +29,17 @@ builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
 builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddRazorPages();
 
+var cloudinarySettings = builder.Configuration.GetSection("Cloudinary");
+var cloudinaryAccount = new Account(
+    cloudinarySettings["CloudName"],
+    cloudinarySettings["ApiKey"],
+    cloudinarySettings["ApiSecret"]
+);
+var cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary); 
 
 var app = builder.Build();
 

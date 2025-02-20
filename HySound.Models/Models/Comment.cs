@@ -16,8 +16,9 @@ namespace HySound.Models.Models
         public int? UserId { get; set; }
 
         public int? TrackId { get; set; }
-        public string Content { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        [MaxLength(500)]
+        public string Content { get; set; }
 
         public User? User { get; set; }
         public Track? Track {  get; set; }

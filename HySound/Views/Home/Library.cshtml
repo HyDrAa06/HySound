@@ -4,76 +4,88 @@
 <div class="library-container">
     <aside class="library-sidebar">
         <ul class="library-nav">
-            <li id="favourites-option" class="active"><i class="fas fa-heart"></i></li>
-            <li id="playlists-option"><i class="fas fa-music"></i></li>
-            <li id="albums-option"><i class="fas fa-compact-disc"></i></li>
-            <li id="tracklist-option"><i class="fas fa-list"></i></li>
+            <li id="favourites-option" class="active"><i class="fas fa-heart" aria-label="Favourites"></i></li>
+            <li id="playlists-option"><i class="fas fa-music" aria-label="Playlists"></i></li>
+            <li id="albums-option"><i class="fas fa-compact-disc" aria-label="Albums"></i></li>
+            <li id="tracklist-option"><i class="fas fa-list" aria-label="Tracklist"></i></li>
         </ul>
     </aside>
-
     <section class="library-content">
         <h1 id="library-title" class="library-title">My Library</h1>
-
         <div id="favourites-content" class="library-grid">
-            @if(Model.Tracks != null)
+            @if (Model.Tracks != null)
             {
-                @foreach(var track in Model.Tracks)
+                @foreach (var track in Model.Tracks)
                 {
-                <div class="library-track-card">
-                    <img src="~/Images/@track.ImageLink" alt="Track Image" class="library-track-img">
-                    <div class="library-track-info">
-                        <h3 class="library-track-title">@track.Title</h3>
-                        <p class="library-track-artist">@track.UserName</p>
-                        <div class="library-track-actions">
-                            <button class="track-btn"><i class="fas fa-play"></i></button>
-                            <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></a>
+                    <div class="library-track-card">
+                        <img src="~/Images/@track.ImageLink" alt="Track Image" class="library-track-img">
+                        <div class="library-track-info">
+                            <h3 class="library-track-title">@track.Title</h3>
+                            <p class="library-track-artist">@track.UserName</p>
+                            <div class="library-track-actions">
+                                <button class="play-track-btn"
+                                        data-src="@track.AudioUrl"
+                                        data-title="@track.Title"
+                                        data-artist="@track.UserName"
+                                        data-image="/Images/@track.ImageLink">
+                                    <i class="fas fa-play"></i>
+                                </button>
+
+                                <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
+                                    <i class="fas fa-heart-broken"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
             }
         </div>
-
         <div id="playlists-content" class="library-grid" style="display: none;">
-            @if(Model.Playlists!=null)
+            @if (Model.Playlists != null)
             {
-                @foreach(var playlist in Model.Playlists)
+                @foreach (var playlist in Model.Playlists)
                 {
-                <div class="library-track-card">
-                    <img src="~/Images/@playlist.CoverImage" alt="Track Image" class="library-track-img">
-                    <div class="library-track-info">
-                        <h3 class="library-track-title">@playlist.Title</h3>
-                        <p class="library-track-artist">@playlist.UserName</p>
-                        <div class="library-track-actions">
-                            <button class="track-btn"><i class="fas fa-play"></i></button>
-                            <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                    <div class="library-track-card">
+                        <img src="~/Images/@playlist.CoverImage" alt="Playlist Cover" class="library-track-img">
+                        <div class="library-track-info">
+                            <h3 class="library-track-title">@playlist.Title</h3>
+                            <p class="library-track-artist">@playlist.UserName</p>
+                            <div class="library-track-actions">
+                                <button class="track-btn" aria-label="Play playlist">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="track-btn unlike-btn" aria-label="Unlike playlist">
+                                    <i class="fas fa-heart-broken"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
             }
         </div>
-        
         <div id="albums-content" class="library-grid" style="display: none;">
-            @if(Model.Albums != null)
+            @if (Model.Albums != null)
             {
-                @foreach(var album in Model.Albums)
+                @foreach (var album in Model.Albums)
                 {
-                <div class="library-track-card">
-                    <img src="~/Images/@album.CoverImage" alt="Track Image" class="library-track-img">
-                    <div class="library-track-info">
-                        <h3 class="library-track-title">@album.Title</h3>
-                        <p class="library-track-artist">@album.UserName</p>
-                        <div class="library-track-actions">
-                            <button class="track-btn"><i class="fas fa-play"></i></button>
-                            <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                    <div class="library-track-card">
+                        <img src="~/Images/@album.CoverImage" alt="Album Cover" class="library-track-img">
+                        <div class="library-track-info">
+                            <h3 class="library-track-title">@album.Title</h3>
+                            <p class="library-track-artist">@album.UserName</p>
+                            <div class="library-track-actions">
+                                <button class="track-btn" aria-label="Play album">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="track-btn unlike-btn" aria-label="Unlike album">
+                                    <i class="fas fa-heart-broken"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
             }
         </div>
-
         <div id="tracklist-content" class="library-grid" style="display: none;">
             <div class="library-track-card">
                 <img src="~/Images/wlr.jpg" alt="Track Image" class="library-track-img">
@@ -81,8 +93,12 @@
                     <h3 class="library-track-title">Whole Lotta Red</h3>
                     <p class="library-track-artist">Playboi Carti</p>
                     <div class="library-track-actions">
-                        <button class="track-btn"><i class="fas fa-play"></i></button>
-                        <button class="track-btn unlike-btn"><i class="fas fa-heart-broken"></i></button>
+                        <button class="track-btn" aria-label="Play track">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="track-btn unlike-btn" aria-label="Unlike track">
+                            <i class="fas fa-heart-broken"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -90,55 +106,24 @@
     </section>
 </div>
 
-<script>
-    document.getElementById('favourites-option').addEventListener('click', function () {
-        toggleContent('favourites');
-        updateTitle('Favourites');
-        updateActiveState('favourites');
-    });
-    document.getElementById('playlists-option').addEventListener('click', function () {
-        toggleContent('playlists');
-        updateTitle('Playlists');
-        updateActiveState('playlists');
-    });
-    document.getElementById('albums-option').addEventListener('click', function () {
-        toggleContent('albums');
-        updateTitle('Albums');
-        updateActiveState('albums');
-    });
-    document.getElementById('tracklist-option').addEventListener('click', function () {
-        toggleContent('tracklist');
-        updateTitle('Tracklist');
-        updateActiveState('tracklist');
-    });
+                    <style>
+    /* Play button */
+    .play-track-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+    }
 
-    function toggleContent(content) {
-        // Hide all content
-        document.getElementById('favourites-content').style.display = 'none';
-        document.getElementById('playlists-content').style.display = 'none';
-        document.getElementById('albums-content').style.display = 'none';
-        document.getElementById('tracklist-content').style.display = 'none';
-
-        // Show selected content
-        if (content === 'favourites') {
-            document.getElementById('favourites-content').style.display = 'grid';
-        } else if (content === 'playlists') {
-            document.getElementById('playlists-content').style.display = 'grid';
-        } else if (content === 'albums') {
-            document.getElementById('albums-content').style.display = 'grid';
-        } else if (content === 'tracklist') {
-            document.getElementById('tracklist-content').style.display = 'grid';
+        .play-track-btn .fas.fa-play {
+            font-size: 24px;
+            color: #aaa; /* Normal color (gray or any neutral color) */
+            transition: color 0.3s ease-in-out;
         }
-    }
 
-    function updateTitle(title) {
-        document.getElementById('library-title').textContent = title;
-    }
+        .play-track-btn:hover .fas.fa-play {
+            color: #4CAF50; /* Green color on hover */
+        }
 
-    function updateActiveState(option) {
-        const navItems = document.querySelectorAll('.library-nav li');
-        navItems.forEach(item => item.classList.remove('active'));
-
-        document.getElementById(option + '-option').classList.add('active');
-    }
-</script>
+                    </style>

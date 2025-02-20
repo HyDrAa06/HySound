@@ -43,7 +43,7 @@
 
 
                     <div class="track-image">
-                        @if (!string.IsNullOrEmpty(track.AudioUrl))
+                        @if (track.IsYoutube)
                         {
                             <iframe class="track-iframe"
                                     src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"

@@ -1,4 +1,6 @@
-﻿using HySound.Core.Service.IService;
+﻿using CloudinaryDotNet;
+using HySound.Core.Service;
+using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels;
 using HySound.ViewModels.Track;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Numerics;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -14,16 +17,28 @@ namespace HySound.Controllers
 {
     public class TrackController : Controller
     {
+        private readonly Cloudinary _cloudinary;
+        private readonly IConfiguration _configuration;
+        CloudinaryService cloudService;
         ITrackService trackService;
         IGenreService genreService;
         IUserService userService;
         IPlaylistService playlistService;
-        public TrackController(IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
+        public TrackController(CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
         {
+            this.cloudService = cloud;
             this.trackService = trackService;
             this.userService = userService;
             this.genreService = genreService;
             this.playlistService = playlistService;
+
+            _configuration = configuration;
+            var account = new Account(
+           _configuration["Cloudinary:CloudName"],
+           _configuration["Cloudinary:ApiKey"],
+           _configuration["Cloudinary:ApiSecret"]
+       );
+            _cloudinary = new Cloudinary(account);
         }
         public async Task<IActionResult> Delete(int id)
         {
@@ -87,17 +102,38 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
-                Track track = new Track()
+                if (model.IsYoutube)
                 {
-                    Title = model.Title,
-                    AudioUrl = model.AudioUrl,
-                    UserId = model.UserId,
-                    Plays = model.Plays,
-                    GenreId = model.GenreId,
-                    CoverImage= model.ImageLink
-                };
-                await trackService.AddTrackAsync(track);
-                return RedirectToAction("AllTracks");
+                    Track track = new Track()
+                    {
+                        Title = model.Title,
+                        IsYoutube=true,
+                        AudioUrl = model.AudioUrl,
+                        UserId = model.UserId,
+                        Plays = model.Plays,
+                        GenreId = model.GenreId,
+                        CoverImage = model.ImageLink
+                    };
+                    await trackService.AddTrackAsync(track);
+                    return RedirectToAction("AllTracks");
+                }
+                else
+                {
+                    var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
+                    Track track = new Track()
+                    {
+                        Title = model.Title,
+                        IsYoutube = false,
+                        AudioUrl = audioUploadResult,
+                        UserId = model.UserId,
+                        Plays = model.Plays,
+                        GenreId = model.GenreId,
+                        CoverImage = model.ImageLink
+                    };
+                    await trackService.AddTrackAsync(track);
+                    return RedirectToAction("AllTracks");
+                }
+                
             }
             else
             {
@@ -123,6 +159,7 @@ namespace HySound.Controllers
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
                     Plays = x.Plays,
+                    IsYoutube = x.IsYoutube,
                     ImageLink=x.CoverImage
                 }).ToList();
 

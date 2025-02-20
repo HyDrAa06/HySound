@@ -12,11 +12,14 @@ namespace HySound.Models.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        [MaxLength(100)]    
         public string Title { get; set; }
         public string? AudioUrl { get; set; } = string.Empty;
+        public bool IsYoutube { get; set; }
         public string? CoverImage { get; set; }
-        public int Plays { get; set; } = 0;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Range(0, int.MaxValue)]
+        public int Plays { get; set; }
         public int? UserId { get; set; }
 
         public int? AlbumId { get; set; }

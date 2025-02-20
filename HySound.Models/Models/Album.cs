@@ -11,11 +11,12 @@ namespace HySound.Models.Models
     public class Album
     {
         [Key]
-        public int Id { get; set; } 
+        public int Id { get; set; }
+        [Required]
+        [MaxLength(100)]
         public string Title { get; set; }
         public string? CoverImage { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int? UserId { get; set; }
         public User? User {  get; set; }

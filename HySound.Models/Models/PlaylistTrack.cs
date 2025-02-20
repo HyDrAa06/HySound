@@ -17,7 +17,6 @@ namespace HySound.Models.Models
         public int? PlaylistId { get; set; }
 
         public int? TrackId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Playlist? Playlist { get; set; }
         public Track? Track { get; set; }

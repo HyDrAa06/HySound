@@ -14,9 +14,15 @@ namespace HySound.Models.Models
         [Key]
         public int Id { get; set; }
         public int? TrackId { get; set; }
-        public int Plays { get; set; } = 0;
-        public int Likes { get; set; } = 0;
-        public int Comments { get; set; } = 0;
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int Plays { get; set; }
+        [Range(0, int.MaxValue)]
+
+        public int Likes { get; set; }
+        [Range(0, int.MaxValue)]
+
+        public int Comments { get; set; } 
         public Track? Track { get; set; }
     }
 }

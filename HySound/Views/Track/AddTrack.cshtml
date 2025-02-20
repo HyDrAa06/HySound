@@ -4,20 +4,35 @@
 <div class="add-track-container">
     <h1 class="add-track-title">Add New Track</h1>
 
-    <form method="post" class="add-track-form">
+    <form method="post" enctype="multipart/form-data" class="add-track-form">
         <div class="add-track-input-group">
             <label for="Title" class="add-track-input-label">Track Title</label>
-            <input type="text" id="Title" name="Title" class="add-track-input-field" placeholder="Enter track title" asp-for="Title" required />
+            <input type="text" id="Title" asp-for="Title" class="add-track-input-field" placeholder="Enter track title" required />
+        </div>
+
+        <div class="add-track-input-group" id="fileUploadGroup">
+            <label for="audioFile" class="add-track-input-label">Upload Track</label>
+            <input type="file" id="audioFile" asp-for="audioFile" class="add-track-input-field" accept=".mp3,.wav,.ogg" />
+        </div>
+
+        <div class="add-track-input-group hidden" id="audioUrlGroup">
+            <label for="AudioUrl" class="add-track-input-label">Enter YouTube Audio URL</label>
+            <input type="text" id="AudioUrl" asp-for="AudioUrl" class="add-track-input-field" placeholder="Enter the YouTube URL" />
         </div>
 
         <div class="add-track-input-group">
-            <label for="AudioUrl" class="add-track-input-label">Audio URL</label>
-            <input type="text" id="AudioUrl" name="AudioUrl" class="add-track-input-field" placeholder="Enter audio file URL" asp-for="AudioUrl" />
+            <label class="add-track-checkbox-label">
+                <input type="checkbox" id="IsYoutube" asp-for="IsYoutube" class="add-track-checkbox" onchange="toggleInput()" />
+                <span class="add-track-checkbox-custom"></span>
+                Is this track from YouTube?
+            </label>
         </div>
+
+       
 
         <div class="add-track-input-group">
             <label for="Plays" class="add-track-input-label">Plays</label>
-            <input type="number" id="Plays" name="Plays" class="add-track-input-field" placeholder="Enter the number of plays" asp-for="Plays" required />
+            <input type="number" id="Plays" asp-for="Plays" class="add-track-input-field" placeholder="Enter the number of plays" required />
         </div>
 
         <div class="add-track-input-group">
@@ -39,3 +54,29 @@
         </div>
     </form>
 </div>
+
+<script>
+    function toggleInput() {
+        let isYoutube = document.getElementById("IsYoutube").checked;
+        let fileUploadGroup = document.getElementById("fileUploadGroup");
+        let audioUrlGroup = document.getElementById("audioUrlGroup");
+        let fileInput = document.getElementById("audioFile");
+        let audioUrlInput = document.getElementById("AudioUrl");
+
+        if (isYoutube) {
+            fileUploadGroup.classList.add("hidden");
+            fileInput.value = ""; // Clear the file input
+            fileInput.removeAttribute("required");
+
+            audioUrlGroup.classList.remove("hidden");
+            audioUrlInput.setAttribute("required", "required");
+        } else {
+            audioUrlGroup.classList.add("hidden");
+            audioUrlInput.value = ""; // Clear the URL input
+            audioUrlInput.removeAttribute("required");
+
+            fileUploadGroup.classList.remove("hidden");
+            fileInput.setAttribute("required", "required");
+        }
+    }
+</script>

@@ -164,6 +164,7 @@ namespace HySound.DataAccess
                     new Genre { Name = "Balkan Beats" }
                 );
                 await SaveChangesAsync();
+
             }
         }
     }
