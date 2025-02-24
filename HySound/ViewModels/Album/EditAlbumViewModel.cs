@@ -10,6 +10,6 @@ namespace HySound.ViewModels.Album
         public SelectList? UserList { get; set; }
         public int? UserId { get; set; }
         public string? AlbumCover { get; set; }
-
+        public IFormFile? ImageFile {  get; set; }
     }
 }

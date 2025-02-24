@@ -3,11 +3,14 @@
 
 <h1>Add Album</h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <input type="text" placeholder="Title" asp-for="Title" />
     <br />
-    <input type="text" placeholder="CoverImage" asp-for="AlbumCover" />
-    <br />
+
+    <div class="add-track-input-group" id="fileUploadGroup">
+        <label for="imageFile" class="add-track-input-label">Cover image</label>
+        <input type="file" id="ImageFile" asp-for="ImageFile" class="add-track-input-field" accept="image/*" />
+    </div>
     <input type="date" placeholder="ReleaseDate" asp-for="ReleaseDate" />
     <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
         <option value="">Select an User</option>

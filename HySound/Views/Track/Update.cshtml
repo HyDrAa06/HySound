@@ -4,7 +4,7 @@
 <div class="add-track-container">
     <h1 class="add-track-title">Update Track</h1>
 
-    <form method="post" class="add-track-form">
+    <form method="post" class="add-track-form" enctype="multipart/form-data">
         <div class="add-track-input-group">
             <label for="Title" class="add-track-input-label">Track Title</label>
             <input type="text" id="Title" name="Title" class="add-track-input-field" placeholder="Enter track title" asp-for="Title" required />
@@ -15,14 +15,14 @@
             <input type="text" id="AudioUrl" name="AudioUrl" class="add-track-input-field" placeholder="Enter audio file URL" asp-for="AudioUrl" />
         </div>
 
-        <div class="add-track-input-group">
-            <label for="Plays" class="add-track-input-label">Plays</label>
-            <input type="number" id="Plays" name="Plays" class="add-track-input-field" placeholder="Enter the number of plays" asp-for="Plays" required />
+        <div class="add-track-input-group" id="fileUploadGroup">
+            <label for="ImageFile" class="add-track-input-label">Cover image</label>
+            <input type="file" id="ImageFile" asp-for="ImageFile" class="add-track-input-field" accept="image/*" />
         </div>
 
         <div class="add-track-input-group">
-            <label for="ImageLink" class="add-track-input-label">Image URL</label>
-            <input type="text" id="ImageLink" name="ImageLink" class="add-track-input-field" placeholder="Enter image URL" asp-for="ImageLink" />
+            <label for="Plays" class="add-track-input-label">Plays</label>
+            <input type="number" id="Plays" name="Plays" class="add-track-input-field" placeholder="Enter the number of plays" asp-for="Plays" required />
         </div>
 
         <div class="add-track-input-group">

@@ -18,7 +18,7 @@
                 @foreach (var track in Model.Tracks)
                 {
                     <div class="library-track-card">
-                        <img src="~/Images/@track.ImageLink" alt="Track Image" class="library-track-img">
+                        <img src="@track.ImageLink" alt="Track Image" class="library-track-img">
                         <div class="library-track-info">
                             <h3 class="library-track-title">@track.Title</h3>
                             <p class="library-track-artist">@track.UserName</p>
@@ -27,7 +27,7 @@
                                         data-src="@track.AudioUrl"
                                         data-title="@track.Title"
                                         data-artist="@track.UserName"
-                                        data-image="/Images/@track.ImageLink">
+                                        data-image="@track.ImageLink">
                                     <i class="fas fa-play"></i>
                                 </button>
 
@@ -46,7 +46,7 @@
                 @foreach (var playlist in Model.Playlists)
                 {
                     <div class="library-track-card">
-                        <img src="~/Images/@playlist.CoverImage" alt="Playlist Cover" class="library-track-img">
+                        <img src="@playlist.CoverImage" alt="Playlist Cover" class="library-track-img">
                         <div class="library-track-info">
                             <h3 class="library-track-title">@playlist.Title</h3>
                             <p class="library-track-artist">@playlist.UserName</p>
@@ -69,7 +69,7 @@
                 @foreach (var album in Model.Albums)
                 {
                     <div class="library-track-card">
-                        <img src="~/Images/@album.CoverImage" alt="Album Cover" class="library-track-img">
+                        <img src="@album.CoverImage" alt="Album Cover" class="library-track-img">
                         <div class="library-track-info">
                             <h3 class="library-track-title">@album.Title</h3>
                             <p class="library-track-artist">@album.UserName</p>

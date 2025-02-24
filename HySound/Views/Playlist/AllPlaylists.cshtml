@@ -12,7 +12,7 @@
         {
             <div class="playlist-card">
                 <div class="playlist-image-container">
-                    <img src="~/Images/@playlist.CoverImage" alt="Cover" class="playlist-cover">
+                    <img src="@playlist.CoverImage" alt="Cover" class="playlist-cover">
                     <div class="play-button">
                         <i class="fas fa-play"></i>
                     </div>
@@ -34,19 +34,20 @@
     </div>
 </div>
 
-<!-- Add Playlist Modal -->
+
 <div class="overlay" id="overlay" onclick="closeModal()"></div>
 <div class="modal" id="addPlaylistModal">
-    <h3>Добави нов плейлист</h3>
-    <input type="text" id="playlistTitle" placeholder="Заглавие">
-    <input type="file" id="playlistCover">
-    <div class="modal-btns">
-        <button class="save-btn" onclick="savePlaylist()">Запази</button>
-        <button class="cancel-btn" onclick="closeModal()">Отказ</button>
-    </div>
+    <form method="post" asp-action="AddPlaylist" asp-controller="Playlist" enctype="multipart/form-data">
+        <h3>Добави нов плейлист</h3>
+        <input type="text" name="Title" id="playlistTitle" placeholder="Заглавие" required>
+        <input type="file" name="Picture" id="Picture" required>
+        <div class="modal-btns">
+            <button type="submit" class="btn save-btn">Запази</button>
+            <button type="button" class="cancel-btn" onclick="closeModal()">Отказ</button>
+        </div>
+    </form>
 </div>
 
-<!-- Edit Playlist Modal -->
 <div class="modal" id="editPlaylistModal">
     <h3>Редактирай плейлист</h3>
     <input type="hidden" id="editPlaylistId">

@@ -4,10 +4,14 @@
 <div class="album-container">
     <h1 class="album-title">Create New Album</h1>
 
-    <form method="post" class="album-form">
+    <form method="post" class="album-form" enctype="multipart/form-data">
         <input type="text" placeholder="Album Title" asp-for="Title" class="album-input" required />
         <input type="date" asp-for="ReleaseDate" class="album-input" required />
-        <input type="text" placeholder="Album picture" asp-for="Picture" class="album-input" required />
+
+        <div class="add-track-input-group" id="fileUploadGroup">
+            <label for="imageFile" class="add-track-input-label">Cover image</label>
+            <input type="file" id="Picture" asp-for="Picture" class="add-track-input-field" accept="image/*" />
+        </div>
 
         <select asp-for="UserId" asp-items="Model.UserList" class="album-select">
             <option value="">Select an Artist</option>
@@ -20,7 +24,7 @@
                 {
                     <label class="track-item" data-track-id="@track.Value">
                         <div class="track-card">
-                            <img src="~/Images/@Model.TrackPictures.FirstOrDefault(x=>x.Key.ToString() == track.Value).Value" alt="@track.Text" class="track-image" />
+                            <img src="@Model.TrackPictures.FirstOrDefault(x=>x.Key.ToString() == track.Value).Value" alt="@track.Text" class="track-image" />
                             <span class="track-name">@track.Text</span>
                         </div>
                         <input type="checkbox" name="SelectedTracksIds" value="@track.Value" class="track-checkbox" />

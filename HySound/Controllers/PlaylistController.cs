@@ -1,37 +1,60 @@
-﻿using HySound.Core.Service;
+﻿using CloudinaryDotNet;
+using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels.Playlist;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices;
 
 namespace HySound.Controllers
 {
     public class PlaylistController : Controller
     {
+        CloudinaryService cloudService;
+        private readonly Cloudinary _cloudinary;
+        private readonly IConfiguration _configuration;
+
         IPlaylistService playlistService;
-        public PlaylistController(IPlaylistService _playlistService)
+
+
+        public PlaylistController(IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
         {
             playlistService = _playlistService;
+
+            this.cloudService = cloud;
+
+            _configuration = configuration;
+            var account = new Account(
+           _configuration["Cloudinary:CloudName"],
+           _configuration["Cloudinary:ApiKey"],
+           _configuration["Cloudinary:ApiSecret"]
+       );
+            _cloudinary = new Cloudinary(account);
         }
-        public async Task<IActionResult> AddPlaylist()
-        {
-            Playlist playlist = new Playlist();
-            return View(playlist);
-        }
+
         [HttpPost]
-        public async Task<IActionResult> AddPlaylist(Playlist model)
+        [HttpPost]
+        public async Task<IActionResult> AddPlaylist(PlaylistViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model == null) return Content("Model is null");
+            if (model.Picture == null) return Content("Picture is null");
+            if (!ModelState.IsValid)
             {
-                await playlistService.AddPlaylistAsync(model);
-                return RedirectToAction("AllPlaylists");
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return Content("Validation failed: " + string.Join(", ", errors));
             }
-            else
+
+            var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
+            Playlist playlist = new Playlist()
             {
-                return View(model);
-            }
+                Title = model.Title,
+                CoverImage = imageUploadResult
+            };
+            await playlistService.AddPlaylistAsync(playlist);
+            return RedirectToAction("AllPlaylists");
         }
         public async Task<IActionResult> AllPlaylists()
         {

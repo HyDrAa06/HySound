@@ -1122,7 +1122,6 @@ h2 {
     display: none;
 }
 
-/* Overall Player Container */
 .player-container {
     display: flex;
     align-items: center;
@@ -1134,7 +1133,13 @@ h2 {
     width: 100%;
     z-index: 1000;
     box-sizing: border-box;
+    display: none; /* Initially hidden */
 }
+
+    /* Add a class to show the player */
+    .player-container.visible {
+        display: flex;
+    }
 
 /* Left Section */
 .player-left {
@@ -1215,8 +1220,9 @@ h2 {
     border-radius: 2px;
     outline: none;
     margin: 0;
+    background: linear-gradient(to right, #1db954 0%, #1db954 0%, #1e1e1e 0%, #1e1e1e 100%); /* Green fill */
 }
-    /* Adjust thumb: reduce negative margin so it sits lower */
+
     .player-timebar::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -1234,7 +1240,6 @@ h2 {
         border-radius: 50%;
         background: #1db954;
         cursor: pointer;
-        /* Firefox may need a transform adjustment if needed */
     }
 
 /* Right Section: Volume Control */
@@ -1261,6 +1266,7 @@ h2 {
     border-radius: 2px;
     outline: none;
     margin: 0;
+    background: linear-gradient(to right, #1db954 0%, #1db954 100%, #1e1e1e 100%, #1e1e1e 100%); /* Green fill */
 }
 
     .player-sound-bar::-webkit-slider-thumb {
@@ -1280,5 +1286,34 @@ h2 {
         border-radius: 50%;
         background: #1db954;
         cursor: pointer;
+    }
+
+/* Remove outlines from the dropdown items */
+.nav-item.dropdown .dropdown-menu {
+    background-color: #1d2124; /* Darker background */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove any shadow */
+}
+
+/* Style the dropdown items */
+.nav-item.dropdown .dropdown-item {
+    color: #f8f9fa; /* Light text */
+    padding: 10px 20px;
+    border-radius: 5px; /* Optional: Slightly rounded corners */
+}
+
+    /* Hover effect for dropdown items */
+    .nav-item.dropdown .dropdown-item:hover {
+        background-color: #4CAF50; /* Green hover effect */
+        color: #fff;
+    }
+
+/* Style for the dropdown toggle button */
+.nav-item.dropdown .dropdown-toggle {
+    color: #f8f9fa; /* Light text color for the button */
+}
+
+    .nav-item.dropdown .dropdown-toggle:hover {
+        color: #4CAF50; /* Green on hover */
     }
 

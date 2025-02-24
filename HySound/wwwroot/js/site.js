@@ -1,5 +1,5 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    // Get the global audio element
+    // Get the global audio element and other elements
     const globalAudio = document.getElementById("global-audio");
     const globalAudioSource = document.getElementById("global-audio-source");
     const playButton = document.getElementById("play-btn");
@@ -9,18 +9,23 @@
     const songTitle = document.getElementById("song-title");
     const artistName = document.getElementById("artist-name");
     const timebar = document.getElementById("timebar");
+    const playerContainer = document.querySelector('.player-container');
+    const soundBar = document.getElementById("sound-bar"); // Add sound bar
 
     const navLinks = document.getElementsByClassName("nav-link");
 
-    let trackList = []; // List of tracks to play
+    let trackList = [];
     let currentTrackIndex = 0;
-    let isPlaying = false; // Track whether the song is playing or paused
+    let isPlaying = false;
+
+    // Function to update the progress bar fill (for both timebar and sound bar)
+    function updateProgressBar(bar, value) {
+        bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
+    }
 
     // Function to load and display the stored track without auto-playing
     function loadStoredTrack() {
         const storedTrack = localStorage.getItem("currentTrack");
-
-        console.log(storedTrack);
 
         if (storedTrack) {
             const { file, title, artist, image, time, isCurrentlyPlayed } = JSON.parse(storedTrack);
@@ -30,25 +35,27 @@
             songImage.src = image;
             songTitle.textContent = title;
             artistName.textContent = artist;
+            timebar.value = (time / globalAudio.duration) * 100 || 0;
+            updateProgressBar(timebar, timebar.value);
+
+            // Set initial volume and sound bar
+            globalAudio.volume = 1.0; // Default to full volume if not stored
+            soundBar.value = globalAudio.volume * 100;
+            updateProgressBar(soundBar, soundBar.value);
 
             if (isCurrentlyPlayed) {
                 globalAudio.play();
                 playButton.querySelector("i").classList.replace("fa-play", "fa-pause");
                 isPlaying = true;
+                playerContainer.classList.add('visible');
             }
-
-            // Don't autoplay, just load the track and set up the player state
         } else {
-            // Default to the first track if no track is stored
-            loadTrack(0, false); // Don't autoplay
+            loadTrack(0, false);
         }
     }
 
-    console.log(navLinks);
-
-    for(let navLink of navLinks){
+    for (let navLink of navLinks) {
         navLink.addEventListener("click", function () {
-            // Save the current state to localStorage
             saveTrackState();
         })
     }
@@ -59,13 +66,12 @@
             globalAudio.play();
             playButton.querySelector("i").classList.replace("fa-play", "fa-pause");
             isPlaying = true;
+            playerContainer.classList.add('visible');
         } else {
             globalAudio.pause();
             playButton.querySelector("i").classList.replace("fa-pause", "fa-play");
             isPlaying = false;
         }
-
-        // Save the current state to localStorage
         saveTrackState();
     });
 
@@ -89,21 +95,30 @@
         songTitle.textContent = track.title;
         artistName.textContent = track.artist;
         globalAudio.load();
+        globalAudio.currentTime = 0;
+        timebar.value = 0;
+        updateProgressBar(timebar, 0);
+
+        // Reset volume to default if new track
+        globalAudio.volume = 1.0;
+        soundBar.value = 100;
+        updateProgressBar(soundBar, 100);
+
         if (shouldPlay) {
             globalAudio.play();
+            playButton.querySelector("i").classList.replace("fa-play", "fa-pause");
+            isPlaying = true;
+            playerContainer.classList.add('visible');
         }
 
-        // Store the current track in localStorage
         localStorage.setItem("currentTrack", JSON.stringify({
             file: track.file,
             title: track.title,
             artist: track.artist,
             image: track.image,
             time: globalAudio.currentTime,
+            isCurrentlyPlayed: shouldPlay
         }));
-
-        // Save the playback state (playing or paused)
-        saveTrackState();
     }
 
     // Save the current track and state to localStorage
@@ -115,22 +130,32 @@
             image: songImage.src,
             time: globalAudio.currentTime,
             isCurrentlyPlayed: isPlaying
-
         }));
     }
 
     // Update timebar as the song plays
     globalAudio.addEventListener("timeupdate", function () {
-        const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
-        timebar.value = progress;
+        if (!isNaN(globalAudio.duration)) {
+            const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
+            timebar.value = progress || 0;
+            updateProgressBar(timebar, timebar.value);
+        }
     });
 
     // Set timebar to change the position of the song
     timebar.addEventListener("input", function () {
         globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
+        updateProgressBar(timebar, timebar.value);
+        saveTrackState();
     });
 
-    // Example of tracklist initialization (you will need to add your own tracks)
+    // Set sound bar to change volume
+    soundBar.addEventListener("input", function () {
+        globalAudio.volume = soundBar.value / 100;
+        updateProgressBar(soundBar, soundBar.value);
+    });
+
+    // Example of tracklist initialization
     trackList = [
         {
             file: 'path-to-song1.mp3',
@@ -181,13 +206,11 @@
     });
 
     function toggleContent(content) {
-        // Hide all content
         document.getElementById('favourites-content').style.display = 'none';
         document.getElementById('playlists-content').style.display = 'none';
         document.getElementById('albums-content').style.display = 'none';
         document.getElementById('tracklist-content').style.display = 'none';
 
-        // Show selected content
         if (content === 'favourites') {
             document.getElementById('favourites-content').style.display = 'grid';
         } else if (content === 'playlists') {
@@ -219,7 +242,6 @@
         const artist = btn.dataset.artist;
         const image = btn.dataset.image;
 
-        // Update track list and play the selected track
         trackList = [{ file, title, artist, image }];
         loadTrack(0, true);
     });

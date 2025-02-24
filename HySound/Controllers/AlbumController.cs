@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HySound.ViewModels;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace HySound.Controllers
 {
@@ -17,11 +19,25 @@ namespace HySound.Controllers
         IAlbumService albumService;
         IUserService userService;
         ITrackService trackService;
-        public AlbumController(ITrackService _trackService,IAlbumService _albumService, IUserService userService)
+
+        private readonly Cloudinary _cloudinary;
+        private readonly IConfiguration _configuration;
+        CloudinaryService cloudService;
+        public AlbumController(IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService,IAlbumService _albumService, IUserService userService)
         {
             albumService = _albumService;
             this.userService = userService;
             trackService = _trackService;
+
+            this.cloudService = cloud;
+
+            _configuration = configuration;
+            var account = new Account(
+           _configuration["Cloudinary:CloudName"],
+           _configuration["Cloudinary:ApiKey"],
+           _configuration["Cloudinary:ApiSecret"]
+       );
+            _cloudinary = new Cloudinary(account);
         }
         public IActionResult Index()
         {
@@ -53,14 +69,32 @@ namespace HySound.Controllers
                 return View(model);
             }
 
-            Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
-            album.Title = model.Title;
-            album.CoverImage = model.AlbumCover;
-            album.ReleaseDate = model.ReleaseDate;
-            album.UserId = model.UserId;
+            if(model.ImageFile != null)
+            {
+                var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
 
-            await albumService.UpdateAlbumAsync(album);
-            return RedirectToAction("AllAlbums");
+                Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
+                album.Title = model.Title;
+                album.CoverImage = imageUploadResult;
+                album.ReleaseDate = model.ReleaseDate;
+                album.UserId = model.UserId;
+
+                await albumService.UpdateAlbumAsync(album);
+                return RedirectToAction("AllAlbums");
+            }
+            else
+            {
+                Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
+                album.Title = model.Title;
+                album.CoverImage = model.AlbumCover;
+                album.ReleaseDate = model.ReleaseDate;
+                album.UserId = model.UserId;
+
+                await albumService.UpdateAlbumAsync(album);
+                return RedirectToAction("AllAlbums");
+            }
+
+            
         }
         public async Task<IActionResult> Delete(int id)
         {
@@ -101,12 +135,14 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
+                var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
+
                 Album album = new Album
                 {
                     Title = model.Title,
                     ReleaseDate = model.ReleaseDate,
                     UserId = model.UserId,
-                    CoverImage = model.Picture
+                    CoverImage = imageUploadResult
                 };
                 album.UserId = model.UserId;
                 await albumService.AddAlbumAsync(album);

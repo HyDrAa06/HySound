@@ -1,4 +1,5 @@
-﻿using HySound.Core.Service;
+﻿using CloudinaryDotNet;
+using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels.User;
@@ -16,12 +17,26 @@ namespace HySound.Controllers
         private readonly UserManager<IdentityUser> userManager;
         IFollowerService followerService;
 
-        public UserController(IFollowerService _followerService, UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IUserService _userService)
+        private readonly Cloudinary _cloudinary;
+        private readonly IConfiguration _configuration;
+        CloudinaryService cloudService;
+
+        public UserController(IConfiguration configuration, CloudinaryService cloud, IFollowerService _followerService, UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IUserService _userService)
         {
             userManager = _userManager;
             userService = _userService;
             signInManager = _signInManager;
             followerService = _followerService;
+
+            this.cloudService = cloud;
+
+            _configuration = configuration;
+            var account = new Account(
+           _configuration["Cloudinary:CloudName"],
+           _configuration["Cloudinary:ApiKey"],
+           _configuration["Cloudinary:ApiSecret"]
+       );
+            _cloudinary = new Cloudinary(account);
         }
         public async Task<IActionResult> AllUsers()
         {
@@ -55,7 +70,15 @@ namespace HySound.Controllers
         public async Task<IActionResult> Profile()
         {
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-            User user = await userService.GetUserAsync(x=>x.Email==tempUser.Email);
+            if (tempUser == null)
+            {
+                return NotFound("No Identity user found.");
+            }
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+            if (user == null)
+            {
+                return NotFound("No application user found for email: " + tempUser.Email);
+            }
             UserViewModel model = new UserViewModel
             {
                 Email = user.Email,
@@ -68,21 +91,48 @@ namespace HySound.Controllers
         }
 
         [HttpPost]
-
-        public async Task<IActionResult> Update(User user)
+        public async Task<IActionResult> Update(int id, UserViewModel user)
         {
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User userModel = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
             if (!ModelState.IsValid)
             {
                 return View(user);
             }
+            if (userModel == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
 
-            await userService.UpdateUserAsync(user);
-            return RedirectToAction("AllUsers");
+            userModel.Username = user.Name;
+            userModel.Email = user.Email;
+            userModel.Bio = user.Bio;
+            userModel.FollowedBy = user.Followers;
+            userModel.Following = user.Following;
+            
+            if (user.ImageFile != null)
+            {
+                var imageUploadResult = await cloudService.UploadImageAsync(user.ImageFile);
+                userModel.ProfilePicture = imageUploadResult;
+            }
+
+            await userService.UpdateUserAsync(userModel);
+            return RedirectToAction("Profile");
         }
         public async Task<IActionResult> Update(int id)
         {
             User user = await userService.GetUserByIdAsync(id);
-            return View(user);
+            UserViewModel model = new UserViewModel
+            {
+                Email = user.Email,
+                Bio = user.Bio,
+                Followers = user.FollowedBy,
+                Following = user.Following,
+                ProfilePicture = user.ProfilePicture,
+                Name = user.Username,
+            };
+            return View(model);
         }
         public IActionResult AddUser()
         {

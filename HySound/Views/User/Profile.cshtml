@@ -6,7 +6,7 @@
 <div class="profile-container">
     <!-- Profile Header -->
     <div class="profile-header">
-        <img src="~/Images/@Model.ProfilePicture" class="profile-pic">
+        <img src="@Model.ProfilePicture" class="profile-pic">
         <div class="profile-info">
             <h1 class="profile-name">@Model.Name</h1>
             <p class="profile-bio">@(Model.Bio ?? "No bio available")</p>
@@ -24,16 +24,16 @@
     </div>
 </div>
 
-<!-- Edit Profile Modal -->
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeEditModal()">&times;</span>
         <h2>Edit Profile</h2>
-        <form method="post" enctype="multipart/form-data">
+        <form asp-action="Update" asp-controller="User" method="post" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="Name" value="@Model.Name" required>
             </div>
+
             <div class="input-group">
                 <label for="bio">Bio</label>
                 <textarea id="bio" name="Bio">@Model.Bio</textarea>
@@ -41,10 +41,11 @@
             <div class="hidden">
                 <input type="text" id="email" name="Email" value="@Model.Email" />
             </div>
-            <div class="input-group">
-                <label for="profilePicture">Profile Picture</label>
-                <input type="tel" id="profilePicture" value="@Model.ProfilePicture" name="ProfilePicture">
+            <div class="add-track-input-group" id="fileUploadGroup">
+                <label for="ImageFile" class="add-track-input-label">Profile image</label>
+                <input type="file" id="ImageFile" asp-for="ImageFile" class="add-track-input-field" accept="image/*" />
             </div>
+
             <button type="submit" class="save-btn">Save Changes</button>
         </form>
     </div>

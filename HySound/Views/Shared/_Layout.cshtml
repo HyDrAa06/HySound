@@ -29,9 +29,16 @@
                                 <a class="nav-link" asp-action="Library" asp-controller="Home">Library</a>
                             </li>
                         } 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-action="AllTracks" asp-controller="Track">Upload</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="uploadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Upload
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="uploadDropdown">
+                                <li><a class="dropdown-item text-light" asp-controller="Track" asp-action="AllTracks">Track</a></li>
+                                <li><a class="dropdown-item text-light" asp-controller="Album" asp-action="AllAlbums">Album</a></li>
+                            </ul>
                         </li>
+
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
@@ -67,7 +74,6 @@
 
 
     <div class="player-container">
-        <!-- Left Section: Song image & info -->
         <div class="player-left">
             <img class="player-image" id="song-image" src="" alt="Song Image">
             <div class="player-info">
@@ -76,7 +82,6 @@
             </div>
         </div>
 
-        <!-- Center Section: Playback controls & Time bar -->
         <div class="player-center">
             <div class="player-btn-container">
                 <button class="player-btn player-prev" id="prev-btn">
@@ -95,14 +100,13 @@
             </div>
         </div>
 
-        <!-- Right Section: Volume control -->
         <div class="player-right">
             <i class="volume-icon fas fa-volume-up"></i>
             <input type="range" class="player-sound-bar" id="sound-bar" min="0" max="100" value="50">
         </div>
     </div>
 
-    <audio id="global-audio" controls>
+    <audio id="global-audio" class="hidden" controls>
         <source id="global-audio-source" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>

@@ -48,6 +48,7 @@ namespace HySound.Controllers
             }
             return RedirectToAction("AllTracks");
         }
+
         [HttpPost]
         public async Task<IActionResult> Update(int id, EditTrackViewModel model)
         {
@@ -58,6 +59,7 @@ namespace HySound.Controllers
 
                 return View(model);
             }
+            var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
 
             Track track = trackService.GetAll().Where(x => x.Id == id).FirstOrDefault();
             track.Title = model.Title;
@@ -65,7 +67,7 @@ namespace HySound.Controllers
             track.Plays=model.Plays;
             track.GenreId = model.GenreId;
             track.UserId = model.UserId;
-            track.CoverImage = model.ImageLink;
+            track.CoverImage = imageUploadResult;
             await trackService.UpdateTrackAsync(track);
             return RedirectToAction("AllTracks");
         }
@@ -79,7 +81,7 @@ namespace HySound.Controllers
                 Title=x.Title,
                 Plays=x.Plays,
                 AudioUrl=x.AudioUrl,
-                ImageLink = x.CoverImage,
+                ImageUrl = x.CoverImage,
                 GenreId=x.GenreId,
                 GenresList= new SelectList(genreService.GetAll(), "Id", "Name"),
                 UserId=x.UserId,
@@ -102,6 +104,8 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
+                var imageUploadResult = await cloudService.UploadImageAsync(model.imageFile);
+
                 if (model.IsYoutube)
                 {
                     Track track = new Track()
@@ -112,7 +116,7 @@ namespace HySound.Controllers
                         UserId = model.UserId,
                         Plays = model.Plays,
                         GenreId = model.GenreId,
-                        CoverImage = model.ImageLink
+                        CoverImage = imageUploadResult
                     };
                     await trackService.AddTrackAsync(track);
                     return RedirectToAction("AllTracks");
@@ -128,7 +132,7 @@ namespace HySound.Controllers
                         UserId = model.UserId,
                         Plays = model.Plays,
                         GenreId = model.GenreId,
-                        CoverImage = model.ImageLink
+                        CoverImage = imageUploadResult
                     };
                     await trackService.AddTrackAsync(track);
                     return RedirectToAction("AllTracks");

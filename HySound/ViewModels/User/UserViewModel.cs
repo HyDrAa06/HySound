@@ -8,6 +8,8 @@ namespace HySound.ViewModels.User
         public string Email { get; set; }
         public string? Bio { get; set; }
         public string? ProfilePicture {  get; set; }
+
+        public IFormFile? ImageFile {  get; set; }
         public ICollection<Followed>? Followers { get; set; }
         public ICollection<Followed>? Following { get; set; }
     }
