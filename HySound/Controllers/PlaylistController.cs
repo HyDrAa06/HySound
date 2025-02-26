@@ -89,7 +89,6 @@ namespace HySound.Controllers
         {
             try
             {
-                // Log incoming data for debugging (use your logging system if available)
                 Console.WriteLine($"Update called with ID: {id}, Title: {title}, Picture: {(picture != null ? picture.FileName : "null")}");
                 var imageUploadResult = await cloudService.UploadImageAsync(picture);
 
@@ -122,7 +121,6 @@ namespace HySound.Controllers
             }
             catch (Exception ex)
             {
-                // Log the full exception if you have logging
                 Console.WriteLine($"Update error: {ex.Message}");
                 return StatusCode(500, $"Error updating playlist: {ex.Message}");
             }
