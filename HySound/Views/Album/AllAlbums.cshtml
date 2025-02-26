@@ -1,316 +1,259 @@
 ﻿@using HySound.ViewModels.Album
 @model AlbumFilterViewModel
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <!-- Your Navbar Content (unchanged as requested) -->
-    </nav>
-</header>
-
-<main class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="albums-title">All Albums</h1>
-            <div class="albums-actions">
-                <a asp-controller="Album" asp-action="AddAlbum" class="albums-create-button">Create an Album</a>
-            </div>
+<div class="albums-header">
+    <h1 class="albums-title">Албуми</h1>
+    <form>
+        <div class="search-container">
+            <input type="text" asp-for="Search" class="search-bar" placeholder="Търси албуми...">
+            <button class="search-btn">
+                <i class="fas fa-search"></i> <!-- Search icon with i tag -->
+            </button>
         </div>
-    </div>
-
-    <form asp-action="AllAlbums" method="get" class="albums-search-form mb-4">
-        <input type="text" asp-for="ArtistName" class="albums-search-input" placeholder="Search albums by artist" />
-        <button type="submit" class="albums-search-button">Search</button>
     </form>
+    <a asp-controller="Album" asp-action="AddAlbum" class="add-album-btn">Добави албум</a>
+</div>
 
-    <section class="albums-grid">
+<div class="albums-container">
+    <h2 class="page-title">Албуми</h2>
+    <div class="albums-grid">
         @foreach (var album in Model.Albums)
         {
-            <div class="albums-card">
-                <img src="@album.CoverImage" alt="@album.Title" class="albums-card-image" />
-                <div class="albums-card-content">
-                    <h5 class="albums-card-title">@album.Title</h5>
-                    <p class="albums-card-artist">@album.UserName • @album.ReleaseDate.ToString("yyyy-MM-dd")</p>
-                    <div class="albums-card-actions">
-                        <a asp-controller="Album" asp-action="Update" asp-route-id="@album.Id" class="albums-action-btn albums-btn-primary">Update</a>
-                        <a asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id" class="albums-action-btn albums-btn-danger">Delete</a>
+            <div class="album-card">
+                <div class="album-cover">
+                    <img src="@album.CoverImage" alt="@album.Title">
+                    <div class="play-overlay">
+                        <button class="play-button"><i class="fas fa-play"></i></button>
                     </div>
+                </div>
+                <div class="album-info">
+                    <h3 class="album-title">@album.Title</h3>
+                    <p class="album-artist">@album.UserName</p>
+                </div>
+                <div class="card-buttons">
+                    <a asp-controller="Album" asp-action="Update" asp-route-id="@album.Id" class="edit-btn">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id" class="delete-btn">
+                        <i class="fas fa-trash"></i>
+                    </a>
                 </div>
             </div>
         }
-    </section>
-</main>
+    </div>
+</div>
+
+<!-- Link for Google Fonts (optional, if not already in your base layout) -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-    /* Albums Page Styles (using site’s color scheme and themes, but unique layout) */
-    body {
-        background: linear-gradient(135deg, #121212, #1e1e1e); /* Match site’s gradient background */
-        color: #e0e0e0; /* Light text for contrast */
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match site font */
-        margin: 0;
-        padding: 0;
-    }
-
-    main {
-        padding-top: 100px; /* Space for fixed navbar */
-        padding: 40px 10%; /* Consistent padding like site */
-    }
-
-    /* Main Title and Actions */
-    .albums-title {
-        font-size: 2.5rem;
-        font-weight: bold;
+    .albums-container {
+        padding: 20px;
         color: white;
-        text-align: center;
+        background: #121212;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
         margin-bottom: 20px;
-        letter-spacing: 1px;
     }
 
-    .albums-actions {
-        text-align: center;
-        margin-bottom: 30px;
+    .albums-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
     }
 
-    .albums-create-button {
-        background: linear-gradient(135deg, #1DB954, #388E3C); /* Site’s green gradient */
-        color: white;
-        font-weight: bold;
-        padding: 0.75rem 2rem;
-        text-transform: uppercase;
-        border-radius: 30px; /* Match site button style */
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Match site shadow */
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 1rem;
+    .album-card {
+        background: #181818;
+        border-radius: 10px;
+        padding: 15px;
+        transition: transform 0.2s, background 0.2s;
+        position: relative;
     }
 
-    .albums-create-button:hover {
-        background: linear-gradient(135deg, #388E3C, #1DB954); /* Match site hover */
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        .album-card:hover {
+            background: #282828;
+            transform: scale(1.05);
+        }
+
+    .album-cover {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
     }
 
-    /* Search Form */
-    .albums-search-form {
+        .album-cover img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 40px;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        transition: opacity 0.2s;
     }
 
-    .albums-search-input {
-        background-color: #333; /* Dark input field */
-        border: 1px solid #444; /* Match site border */
-        color: white;
-        font-size: 1rem;
-        padding: 12px 20px;
-        border-radius: 30px; /* Rounded like site buttons */
-        width: 70%;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    .album-card:hover .play-overlay {
+        opacity: 1;
     }
 
-    .albums-search-input:focus {
-        outline: none;
-        box-shadow: 0 0 5px #1DB954; /* Green focus effect from site */
-        background-color: #444; /* Slightly lighter on focus */
-    }
-
-    .albums-search-input::placeholder {
-        color: #b0b0b0; /* Match site placeholder color */
-    }
-
-    .albums-search-button {
-        background: linear-gradient(135deg, #1DB954, #388E3C); /* Site’s green gradient */
-        color: white;
-        font-weight: bold;
-        padding: 0.75rem 2rem;
-        text-transform: uppercase;
-        border-radius: 30px; /* Match site button style */
+    .play-button {
+        background: #1db954;
         border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Match site shadow */
-        transition: all 0.3s ease;
-        margin-left: 10px;
-        font-size: 1rem;
-    }
-
-    .albums-search-button:hover {
-        background: linear-gradient(135deg, #388E3C, #1DB954); /* Match site hover */
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Albums Grid */
-    .albums-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Larger, more engaging cards */
-        gap: 40px; /* More spacious gap for visual appeal */
-        padding-bottom: 150px; /* Space for player */
-    }
-
-    .albums-card {
-        background-color: #2b2b2b; /* Match site card background */
-        border-radius: 20px; /* Larger radius for a softer look */
-        overflow: hidden;
-        transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Stronger shadow for depth */
-        position: relative;
-        height: 100%;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.2s;
     }
 
-    .albums-card:hover {
-        transform: translateY(-12px); /* More pronounced lift */
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); /* Deeper shadow on hover */
-        background-color: #333; /* Slightly darker on hover for contrast */
-    }
+        .play-button:hover {
+            background: #1ed760;
+        }
 
-    .albums-card-image {
-        width: 100%;
-        height: 250px; /* Larger, more engaging image */
-        object-fit: cover;
-        border-radius: 15px 15px 0 0; /* Match card radius */
-        transition: transform 0.4s ease, filter 0.4s ease;
-    }
-
-    .albums-card:hover .albums-card-image {
-        transform: scale(1.05); /* Slight zoom on hover */
-        filter: brightness(110%); /* Slightly brighter for interest */
-    }
-
-    .albums-card-content {
-        padding: 25px;
+    .album-info {
         text-align: center;
-        flex-grow: 1;
+        margin-top: 10px;
+    }
+
+    .album-title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .album-artist {
+        font-size: 14px;
+        color: #b3b3b3;
+    }
+
+    .albums-header {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 30px;
+        padding: 0 20px;
+    }
+
+    .albums-title {
+        font-size: 36px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-bar {
+        padding: 12px 20px;
+        font-size: 18px;
+        border-radius: 30px; /* More rounded corners */
+        border: none;
+        width: 320px; /* Increased width */
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        outline: none;
+        transition: background 0.3s;
+    }
+
+        .search-bar::placeholder {
+            color: #bbb;
+        }
+
+        .search-bar:focus {
+            background-color: #444;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Subtle glow effect */
+        }
+
+    .search-btn {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+        .search-btn i {
+            font-size: 22px;
+        }
+
+        .search-btn:hover i {
+            color: #4CAF50; /* Green glow on icon */
+            transform: scale(1.1);
+        }
+
+    .add-album-btn {
+        background-color: #1DB954;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        font-size: 18px;
+        border-radius: 8px; /* Slightly curved corners */
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .add-album-btn:hover {
+            background-color: #1aa34a;
+        }
+
+    .card-buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
         justify-content: space-between;
     }
 
-    .albums-card-title {
-        font-size: 1.8rem; /* Larger, more prominent title */
-        font-weight: bold;
-        color: white;
-        margin-bottom: 15px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Subtle shadow for readability */
-    }
-
-    .albums-card-artist {
-        font-size: 1rem; /* Larger secondary text */
-        color: #b0b0b0; /* Match site meta color */
-        margin-bottom: 25px;
-        line-height: 1.5;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-    }
-
-    .albums-card-actions {
-        display: flex;
-        justify-content: center;
-        gap: 20px; /* More spacing for buttons */
-        margin-top: 20px;
-    }
-
-    .albums-action-btn {
-        font-weight: bold;
-        border-radius: 30px; /* Match site button style */
-        padding: 0.6rem 1.8rem; /* Slightly larger buttons */
-        margin: 0 5px;
-        text-transform: uppercase;
-        display: inline-block;
-        transition: all 0.3s ease;
-        font-size: 1rem;
-    }
-
-    .albums-btn-primary {
-        background-color: #FFC107; /* Amber for update, like site’s action button */
-        color: white;
+    .edit-btn,
+    .delete-btn {
+        background: none;
         border: none;
+        color: #bbb;
+        font-size: 20px;
+        cursor: pointer;
+        transition: color 0.3s;
     }
 
-    .albums-btn-primary:hover {
-        background-color: #FFB300; /* Match site hover */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .albums-btn-danger {
-        background-color: #F44336; /* Red for delete, like site */
-        color: white;
-        border: none;
-    }
-
-    .albums-btn-danger:hover {
-        background-color: #E53935; /* Match site hover */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Responsive Adjustments */
-    @@media (max-width: 768px) {
-        .albums-title {
-            font-size: 2rem;
+        .edit-btn:hover,
+        .delete-btn:hover {
+            color: #1db954; /* Green color for edit button */
         }
 
-        .albums-actions {
-            text-align: center;
+        .delete-btn:hover {
+            color: #f44336; /* Red color for delete button */
         }
 
-        .albums-create-button {
-            width: 80%;
-            padding: 0.6rem 1.5rem;
+        .edit-btn i,
+        .delete-btn i {
+            transition: transform 0.2s;
         }
 
-        .albums-search-form {
-            flex-direction: column;
-            align-items: stretch;
+        .edit-btn:hover i,
+        .delete-btn:hover i {
+            transform: scale(1.2); /* Slight grow effect for the icons */
         }
-
-        .albums-search-button {
-            margin-left: 0;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .albums-search-input {
-            width: 100%;
-        }
-
-        .albums-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Smaller cards on mobile */
-            gap: 25px;
-        }
-
-        .albums-card-image {
-            height: 180px; /* Smaller images on mobile */
-        }
-
-        .albums-card-title {
-            font-size: 1.5rem;
-        }
-
-        .albums-card-artist {
-            font-size: 0.9rem;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        main {
-            padding: 20px 5%;
-        }
-
-        .albums-card-image {
-            height: 150px;
-        }
-
-        .albums-create-button {
-            width: 90%;
-            padding: 0.5rem 1.2rem;
-        }
-    }
 </style>

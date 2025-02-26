@@ -21,5 +21,6 @@ namespace HySound.Core.Service.IService
         Task<User> GetUserAsync(Expression<Func<User, bool>> filter);
         Task<IEnumerable<User>> GetAllUsersAsync(Expression<Func<User, bool>> filter);
         Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<IEnumerable<string>> GetAllUserNamesAsync();
     }
 }

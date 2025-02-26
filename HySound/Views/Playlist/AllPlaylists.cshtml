@@ -25,15 +25,14 @@
                     <button class="edit-btn" onclick="openModal('editPlaylistModal', '@playlist.Id', '@playlist.Title')">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button class="delete-btn" onclick="deletePlaylist('@playlist.Id')">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                        <a asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id" class="delete-btn">
+                            <i class="fas fa-trash"></i>
+                        </a>
                 </div>
             </div>
         }
     </div>
 </div>
-
 
 <div class="overlay" id="overlay" onclick="closeModal()"></div>
 <div class="modal" id="addPlaylistModal">
@@ -50,15 +49,81 @@
 
 <div class="modal" id="editPlaylistModal">
     <h3>Редактирай плейлист</h3>
-    <input type="hidden" id="editPlaylistId">
-    <input type="text" id="editPlaylistTitle" placeholder="Заглавие">
-    <input type="file" id="editPlaylistCover">
+    <input type="hidden" id="editPlaylistId" name="id">
+    <input type="text" id="editPlaylistTitle" name="title" placeholder="Заглавие">
+    <input type="file" id="editPlaylistCover" name="picture">
     <div class="modal-btns">
-        <button class="save-btn" onclick="updatePlaylist()">Запази</button>
+        <button class="save-btn" onclick="updatePlaylist(event)">Запази</button>
         <button class="cancel-btn" onclick="closeModal()">Отказ</button>
     </div>
 </div>
 
+<script>
+    function openModal(modalId, id = null, title = null) {
+        document.getElementById('overlay').style.display = 'block';
+        let modal = document.getElementById(modalId);
+        modal.style.display = 'block';
+
+        if (modalId === 'editPlaylistModal') {
+            document.getElementById('editPlaylistId').value = id;
+            document.getElementById('editPlaylistTitle').value = title;
+            document.getElementById('editPlaylistCover').value = ''; // Reset file input
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('overlay').style.display = 'none';
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+    }
+
+    function updatePlaylist(event) {
+        event.preventDefault(); // Prevent any default form submission
+
+        const id = document.getElementById('editPlaylistId').value;
+        const title = document.getElementById('editPlaylistTitle').value;
+        const fileInput = document.getElementById('editPlaylistCover');
+        const formData = new FormData();
+
+        // Debugging: Log values to console
+        console.log('ID:', id);
+        console.log('Title:', title);
+        console.log('File selected:', fileInput.files.length > 0 ? fileInput.files[0].name : 'No file');
+
+        formData.append('id', id);
+        formData.append('title', title);
+        if (fileInput.files.length > 0) {
+            formData.append('picture', fileInput.files[0]);
+        }
+
+        fetch('/Playlist/Update', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text || 'Update failed'}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Update Error:', error);
+                alert('Грешка при редактирането: ' + error.message);
+            })
+            .finally(() => closeModal());
+    }
+</script>
 <style>
     .playlist-container {
         max-width: 1200px;
@@ -133,7 +198,6 @@
         .playlist-buttons button {
             background: none;
             border: none;
-            color: white;
             font-size: 18px;
             cursor: pointer;
             transition: transform 0.2s ease, color 0.2s ease;
@@ -148,14 +212,26 @@
                 color: #17a44a;
             }
 
-        .playlist-buttons .delete-btn {
-            color: #f44336;
-        }
+    .delete-form {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
 
-            .playlist-buttons .delete-btn:hover {
-                transform: scale(1.2);
-                color: #d32f2f;
-            }
+    .delete-btn {
+        background: none;
+        border: none;
+        color: #f44336;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.2s ease, color 0.2s ease;
+        padding: 0;
+    }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+            color: #d32f2f;
+        }
 
     .play-button {
         position: absolute;
@@ -255,39 +331,3 @@
         z-index: 999;
     }
 </style>
-
-<script>
-    function openModal(modalId, id = null, title = null) {
-        document.getElementById('overlay').style.display = 'block';
-        let modal = document.getElementById(modalId);
-        modal.style.display = 'block';
-
-        if (modalId === 'editPlaylistModal') {
-            document.getElementById('editPlaylistId').value = id;
-            document.getElementById('editPlaylistTitle').value = title;
-        }
-    }
-
-    function closeModal() {
-        document.getElementById('overlay').style.display = 'none';
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.style.display = 'none';
-        });
-    }
-
-    function savePlaylist() {
-        alert("Плейлистът е добавен! (Тук ще има AJAX заявка)");
-        closeModal();
-    }
-
-    function updatePlaylist() {
-        alert("Плейлистът е редактиран! (Тук ще има AJAX заявка)");
-        closeModal();
-    }
-
-    function deletePlaylist(id) {
-        if (confirm("Сигурни ли сте, че искате да изтриете този плейлист?")) {
-            alert("Плейлистът е изтрит! (Тук ще има AJAX заявка)");
-        }
-    }
-</script>

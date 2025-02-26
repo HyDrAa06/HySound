@@ -14,8 +14,6 @@ namespace HySound.ViewModels
 
         public SelectList? GenresList { get; set; }
         public int? GenreId { get; set; }
-        public SelectList? UserList { get; set; }
-
-        public int? UserId { get; set; }
+  
     }
 }

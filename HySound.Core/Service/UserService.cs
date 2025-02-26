@@ -73,5 +73,14 @@ namespace HySound.Core.Service
         {
             await _userRepository.UpdateAsync(entity);
         }
+
+        public async Task<IEnumerable<string>> GetAllUserNamesAsync()
+        {
+            List<string> names = new List<string>();
+            var users = GetAll().ToList();
+
+            users.ForEach(x => names.Add(x.Username));
+            return names.ToList();
+        }
     }
 }

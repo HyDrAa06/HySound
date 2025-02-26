@@ -4,6 +4,7 @@ using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels;
 using HySound.ViewModels.Track;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace HySound.Controllers
 {
     public class TrackController : Controller
     {
+        private readonly UserManager<IdentityUser> userManager;
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
         CloudinaryService cloudService;
@@ -24,8 +26,9 @@ namespace HySound.Controllers
         IGenreService genreService;
         IUserService userService;
         IPlaylistService playlistService;
-        public TrackController(CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
+        public TrackController(UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
         {
+            userManager = _userManager;
             this.cloudService = cloud;
             this.trackService = trackService;
             this.userService = userService;
@@ -95,7 +98,6 @@ namespace HySound.Controllers
         {
             var model = new AddTrackViewModel();
             model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-            model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
 
             return View(model);
         }
@@ -104,6 +106,9 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
                 var imageUploadResult = await cloudService.UploadImageAsync(model.imageFile);
 
                 if (model.IsYoutube)
@@ -113,7 +118,7 @@ namespace HySound.Controllers
                         Title = model.Title,
                         IsYoutube=true,
                         AudioUrl = model.AudioUrl,
-                        UserId = model.UserId,
+                        UserId = user.Id,
                         Plays = model.Plays,
                         GenreId = model.GenreId,
                         CoverImage = imageUploadResult
@@ -129,7 +134,7 @@ namespace HySound.Controllers
                         Title = model.Title,
                         IsYoutube = false,
                         AudioUrl = audioUploadResult,
-                        UserId = model.UserId,
+                        UserId = user.Id,
                         Plays = model.Plays,
                         GenreId = model.GenreId,
                         CoverImage = imageUploadResult
@@ -142,7 +147,6 @@ namespace HySound.Controllers
             else
             {
                 model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
                 return View(model);
             }
 

@@ -74,5 +74,16 @@ namespace HySound.Core.Service
         {
             await _albumService.UpdateAsync(entity);
         }
+
+        public async Task<IEnumerable<string>> GetAllAlbumNamesAsync()
+        {
+            List<string> names = new List<string>();
+
+            var albums = GetAll().ToList();
+
+            albums.ForEach(x => names.Add(x.Title));
+
+            return names;
+        }
     }
 }

@@ -8,10 +8,7 @@ namespace HySound.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+       
         private readonly UserManager<IdentityUser> _userManager;
 
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -29,6 +26,10 @@ namespace HySound.Controllers
             _userService = user;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
         public IActionResult Login() => View();
 
         [HttpPost]

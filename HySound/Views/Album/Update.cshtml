@@ -1,20 +1,125 @@
 ﻿@using HySound.ViewModels.Album
 @model EditAlbumViewModel
 
-<h1>Add Album</h1>
+<h1 class="page-title">Edit Album</h1>
 
-<form method="post" enctype="multipart/form-data">
-    <input type="text" placeholder="Title" asp-for="Title" />
+<form method="post" enctype="multipart/form-data" class="add-album-form">
+    <input type="text" placeholder="Заглавие" asp-for="Title" class="input-field" />
     <br />
 
     <div class="add-track-input-group" id="fileUploadGroup">
-        <label for="imageFile" class="add-track-input-label">Cover image</label>
+        <label for="imageFile" class="add-track-input-label">Обложка</label>
         <input type="file" id="ImageFile" asp-for="ImageFile" class="add-track-input-field" accept="image/*" />
     </div>
-    <input type="date" placeholder="ReleaseDate" asp-for="ReleaseDate" />
-    <select asp-for="UserId" asp-items="Model.UserList" class="form-control">
-        <option value="">Select an User</option>
+
+    <input type="date" placeholder="Дата на издаване" asp-for="ReleaseDate" class="input-field" />
+
+    <select asp-for="UserId" asp-items="Model.UserList" class="input-field select-input">
+        <option value="">Избери потребител</option>
     </select>
     <br />
-    <button type="submit">Submit</button>
+
+    <button type="submit" class="submit-btn">Запази</button>
 </form>
+
+<style>
+    /* Main page styling */
+    .page-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 30px;
+    }
+
+    /* Form styling */
+    .add-album-form {
+        background-color: #181818;
+        padding: 30px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Input field styling */
+    .input-field {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background-color: #333;
+        color: white;
+        margin-bottom: 20px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+        .input-field:focus {
+            border-color: #1db954;
+            background-color: #444;
+        }
+
+    /* Label styling */
+    .add-track-input-label {
+        font-size: 16px;
+        color: #bbb;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* File upload group */
+    .add-track-input-group {
+        margin-bottom: 20px;
+    }
+
+    .add-track-input-field {
+        width: 100%;
+        padding: 12px;
+        background-color: #333;
+        color: white;
+        border-radius: 8px;
+        border: 1px solid #444;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .add-track-input-field:hover {
+            background-color: #444;
+        }
+
+    /* Select input styling */
+    .select-input {
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background-color: #333;
+        color: white;
+        margin-bottom: 20px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+        .select-input:focus {
+            border-color: #1db954;
+            background-color: #444;
+        }
+
+    /* Submit button styling */
+    .submit-btn {
+        background-color: #1DB954;
+        color: white;
+        padding: 15px 20px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .submit-btn:hover {
+            background-color: #1aa34a;
+        }
+</style>

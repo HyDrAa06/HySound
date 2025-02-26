@@ -21,5 +21,6 @@ namespace HySound.Core.Service.IService
         Task<Album> GetAlbumAsync(Expression<Func<Album, bool>> filter);
         Task<IEnumerable<Album>> GetAllAlbumAsync(Expression<Func<Album, bool>> filter);
         Task<IEnumerable<Album>> GetAllAlbumAsync();
+        Task<IEnumerable<string>> GetAllAlbumNamesAsync();
     }
 }

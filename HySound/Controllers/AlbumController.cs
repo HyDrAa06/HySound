@@ -11,11 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using HySound.ViewModels;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace HySound.Controllers
 {
     public class AlbumController : Controller
     {
+        private readonly UserManager<IdentityUser> userManager;
         IAlbumService albumService;
         IUserService userService;
         ITrackService trackService;
@@ -23,11 +26,13 @@ namespace HySound.Controllers
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
         CloudinaryService cloudService;
-        public AlbumController(IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService,IAlbumService _albumService, IUserService userService)
+        public AlbumController(UserManager<IdentityUser> _userManager,IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService,IAlbumService _albumService, IUserService userService)
         {
             albumService = _albumService;
             this.userService = userService;
             trackService = _trackService;
+
+            userManager = _userManager;
 
             this.cloudService = cloud;
 
@@ -100,7 +105,15 @@ namespace HySound.Controllers
         {
             if (id != null)
             {
+                var tracks = await trackService.GetAllTracksAsync(x => x.AlbumId == id);
+                tracks.ToList().ForEach(x=> x.AlbumId = null);
+
+                foreach(var track in tracks)
+                {
+                    await trackService.UpdateTrackAsync(track);
+                }
                 await albumService.DeleteAlbumByIdAsync(id);
+                
                 return RedirectToAction("AllAlbums");
             }
             return RedirectToAction("AllAlbums");
@@ -109,7 +122,6 @@ namespace HySound.Controllers
         public async Task<IActionResult> AddAlbum()  
         {
             var model = new AddAlbumViewModel();
-            model.UserList = new SelectList(await userService.GetAllUsersAsync(),"Id", "Username");
             Dictionary<int, string> pics = new Dictionary<int, string>();
 
             var singles = await trackService.GetAllTracksAsync();
@@ -135,16 +147,19 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
                 var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
 
                 Album album = new Album
                 {
                     Title = model.Title,
                     ReleaseDate = model.ReleaseDate,
-                    UserId = model.UserId,
+                    UserId = user.Id,
                     CoverImage = imageUploadResult
                 };
-                album.UserId = model.UserId;
+                album.UserId = user.Id;
                 await albumService.AddAlbumAsync(album);
 
                 var tracks = await trackService.GetAllTracksAsync();
@@ -177,9 +192,11 @@ namespace HySound.Controllers
         public async Task<IActionResult> AllAlbums(AlbumFilterViewModel? filter)
         {
             var query = albumService.GetAll().AsQueryable();
+            var filterModel = new AlbumFilterViewModel();
 
-            if (string.IsNullOrEmpty(filter.ArtistName))
+            if (string.IsNullOrEmpty(filter.Search))
             {
+                
                 var model = albumService.AllWithInclude().Include(x => x.User).Select(x => new AlbumViewModel()
                 {
                     Id = x.Id,
@@ -189,22 +206,28 @@ namespace HySound.Controllers
                     UserName = x.User.Username
                 }).ToList();
 
-                var filterModel = new AlbumFilterViewModel
+                filterModel = new AlbumFilterViewModel
                 {
                     Albums = model,
                     ArtistId = filter.ArtistId,
-                    ArtistName = filter.ArtistName
-
+                    Search = filter.Search,
+                    
                 };
-                return View(filterModel);
             }
             else
             {
-                if (filter.ArtistName != null)
+                var tempUsers = await userService.GetAllUserNamesAsync();
+                var tempAlbums = await albumService.GetAllAlbumNamesAsync();
+                if (tempUsers.Contains(filter.Search))
                 {
-                    query = query.Where(x => x.User.Username == filter.ArtistName);
+                    query = query.Where(x => x.User.Username == filter.Search);
                 }
-                var filterModel = new AlbumFilterViewModel
+                if (tempAlbums.Contains(filter.Search))
+                {
+                    query = query.Where(x=>x.Title ==filter.Search);
+                }
+                
+                filterModel = new AlbumFilterViewModel
                 {
                     Albums = query.Include(x => x.User)
                 .Select(x => new AlbumViewModel()
@@ -216,11 +239,12 @@ namespace HySound.Controllers
                     UserName = x.User.Username
                 }).ToList(),
                     ArtistId = filter.ArtistId,
-                    ArtistName = filter.ArtistName
+                    Search = filter.Search
                 };
 
-                return View(filterModel);
             }
+            return View(filterModel);
+
         }
     }
 }

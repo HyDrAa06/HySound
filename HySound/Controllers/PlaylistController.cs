@@ -3,6 +3,7 @@ using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels.Playlist;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,16 +14,20 @@ namespace HySound.Controllers
 {
     public class PlaylistController : Controller
     {
+        private readonly UserManager<IdentityUser> userManager;
         CloudinaryService cloudService;
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
 
         IPlaylistService playlistService;
+        IUserService userService;
 
 
-        public PlaylistController(IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
+        public PlaylistController(IUserService _userService,UserManager<IdentityUser>_userManager,IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
         {
             playlistService = _playlistService;
+            userManager = _userManager;
+            userService = _userService;
 
             this.cloudService = cloud;
 
@@ -36,7 +41,6 @@ namespace HySound.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> AddPlaylist(PlaylistViewModel model)
         {
             if (model == null) return Content("Model is null");
@@ -46,12 +50,16 @@ namespace HySound.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 return Content("Validation failed: " + string.Join(", ", errors));
             }
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
             var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
             Playlist playlist = new Playlist()
             {
                 Title = model.Title,
-                CoverImage = imageUploadResult
+                CoverImage = imageUploadResult,
+                UserId = user.Id,
+                
             };
             await playlistService.AddPlaylistAsync(playlist);
             return RedirectToAction("AllPlaylists");
@@ -62,36 +70,63 @@ namespace HySound.Controllers
             {
                 CoverImage =x.CoverImage,
                 Title = x.Title,
-                UserName = x.User.Username
+                UserName = x.User.Username,
+                Id = x.Id
             });
 
             return View(playlists);
             
         }
 
+       
         public async Task<IActionResult> Delete(int id)
         {
             await playlistService.DeletePlaylistByIdAsync(id);
             return RedirectToAction("AllPlaylists");
         }
-        public async Task<IActionResult> Update(int id)
-        {
-            Playlist playlist = await playlistService.GetPlaylistByIdAsync(id);
-            return View(playlist);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Update(Playlist model)
+        public async Task<IActionResult> Update(int id, string title, IFormFile picture)
         {
-            if(ModelState.IsValid)
+            try
             {
-                await playlistService.UpdatePlaylistAsync(model);
-                return RedirectToAction("AllPlaylists");
+                // Log incoming data for debugging (use your logging system if available)
+                Console.WriteLine($"Update called with ID: {id}, Title: {title}, Picture: {(picture != null ? picture.FileName : "null")}");
+                var imageUploadResult = await cloudService.UploadImageAsync(picture);
+
+                if (id <= 0)
+                {
+                    return BadRequest("Invalid playlist ID");
+                }
+
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    return BadRequest("Title cannot be empty");
+                }
+
+                var playlist = await playlistService.GetPlaylistByIdAsync(id);
+                if (playlist == null)
+                {
+                    return NotFound("Playlist not found");
+                }
+
+                playlist.Title = title;
+                if (picture != null && picture.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await picture.CopyToAsync(memoryStream);
+                    playlist.CoverImage = imageUploadResult;
+                }
+
+                await playlistService.UpdatePlaylistAsync(playlist);
+                return Ok("Playlist updated successfully");
             }
-            else
+            catch (Exception ex)
             {
-                return View(model);
+                // Log the full exception if you have logging
+                Console.WriteLine($"Update error: {ex.Message}");
+                return StatusCode(500, $"Error updating playlist: {ex.Message}");
             }
         }
+       
     }
 }
