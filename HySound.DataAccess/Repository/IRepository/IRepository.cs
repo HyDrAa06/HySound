@@ -16,6 +16,8 @@ namespace HySound.DataAccess.Repository.IRepository
         Task DeleteByIdAsync(int id);
         Task SaveAsync();
         Task<T> GetByIdAsync(int id);
+
+
         IQueryable<T> GetAll();
         Task<T> GetAsync(Expression<Func<T, bool>> filter);
         IQueryable<T> GetAllQuery(Expression<Func<T, bool>> filter);

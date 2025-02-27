@@ -17,8 +17,12 @@ namespace HySound.Core.Service.IService
         Task UpdateTrackAsync(Track entity);
         Task DeleteTrackAsync(Track entity);
         Task DeleteTrackByIdAsync(int id);
+
+
         IQueryable<Track> AllWithInclude(params Expression<Func<Track, object>>[] includes);
         Task<Track> GetTrackByIdAsync(int id);
+
+
         Task<Track> GetTrackAsync(Expression<Func<Track, bool>> filter);
         Task<IEnumerable<Track>> GetAllTracksAsync(Expression<Func<Track, bool>> filter);
         Task<IEnumerable<Track>> GetAllTracksAsync();

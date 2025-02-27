@@ -72,5 +72,7 @@ namespace HySound.Core.Service
         {
             await _repository.UpdateAsync(entity);
         }
+
+    
     }
 }

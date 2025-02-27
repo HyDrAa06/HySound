@@ -26,7 +26,8 @@ namespace HySound.Controllers
         IGenreService genreService;
         IUserService userService;
         IPlaylistService playlistService;
-        public TrackController(UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
+        ICommentService commentService;
+        public TrackController(ICommentService commentService,UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
         {
             userManager = _userManager;
             this.cloudService = cloud;
@@ -34,6 +35,7 @@ namespace HySound.Controllers
             this.userService = userService;
             this.genreService = genreService;
             this.playlistService = playlistService;
+            this.commentService = commentService;
 
             _configuration = configuration;
             var account = new Account(
@@ -150,6 +152,38 @@ namespace HySound.Controllers
                 return View(model);
             }
 
+        }
+
+        public async Task<IActionResult> TrackDetails(int id)
+        {
+            Track track = await trackService.GetTrackByIdAsync(id);
+
+            var comments = commentService.AllWithInclude().Include(x => x.User).Where(x=>x.TrackId==id);
+            User trackUser = null;
+            Genre trackGenre = null;
+
+            if (track.UserId.HasValue)
+            {
+                trackUser = await userService.GetUserByIdAsync(track.UserId.Value); // Assuming you have a UserService
+            }
+
+            if (track.GenreId.HasValue)
+            {
+                trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value); // Assuming you have a GenreService
+            }
+            TrackDetailsViewModel model = new TrackDetailsViewModel
+            
+            {
+                Id = id,
+                Title = track.Title,
+                Plays = track.Plays,
+                TrackImage = track.CoverImage,
+                Comments = comments.ToList(),
+                Username = track.User.Username,
+                Genre = trackGenre.Name 
+
+            };
+            return View(model);
         }
         public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {

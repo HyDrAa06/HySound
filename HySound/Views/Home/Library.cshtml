@@ -18,22 +18,37 @@
                 @foreach (var track in Model.Tracks)
                 {
                     <div class="library-track-card">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal">Add to Playlist</a></li>
+                                <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">Details</a></li>
+                                <li><a class="dropdown-item" asp-controller=" Track" asp-action="Delete" asp-route-id="@track.TrackId">Add to playlist</a></li>
+                            </ul>
+                        </div>
                         <img src="@track.ImageLink" alt="Track Image" class="library-track-img">
                         <div class="library-track-info">
                             <h3 class="library-track-title">@track.Title</h3>
                             <p class="library-track-artist">@track.UserName</p>
                             <div class="library-track-actions">
-                                <button class="play-track-btn"
-                                        data-src="@track.AudioUrl"
-                                        data-title="@track.Title"
-                                        data-artist="@track.UserName"
-                                        data-image="@track.ImageLink">
-                                    <i class="fas fa-play"></i>
-                                </button>
+                                <div class="play-dislike-container">
+                                    <button class="play-track-btn"
+                                            data-src="@track.AudioUrl"
+                                            data-title="@track.Title"
+                                            data-artist="@track.UserName"
+                                            data-image="@track.ImageLink">
+                                        <i class="fas fa-play"></i>
+                                    </button>
 
-                                <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
-                                    <i class="fas fa-heart-broken"></i>
-                                </a>
+                                    <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
+                                        <i class="fas fa-heart-broken"></i>
+                                    </a>
+                                </div>
+
+                                
+
                             </div>
                         </div>
                     </div>
@@ -106,24 +121,169 @@
     </section>
 </div>
 
-                    <style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".track-card");
+        cards.forEach(card => {
+            card.addEventListener("mouseenter", () => {
+                card.style.boxShadow = "0 8px 35px rgba(0, 0, 0, 0.4)";
+            });
+            card.addEventListener("mouseleave", () => {
+                card.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
+            });
+        });
+    });
+
+    ocument.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".track-options").forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.stopPropagation();
+                let optionsMenu = this.nextElementSibling;
+
+                document.querySelectorAll(".track-options-menu").forEach(menu => {
+                    if (menu !== optionsMenu) {
+                        menu.style.display = "none";
+                    }
+                });
+
+                optionsMenu.style.display = optionsMenu.style.display === "block" ? "none" : "block";
+            });
+        });
+
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".track-options-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+    });
+</script>
+
+<style>
+    /* More Options (⋮) Button */
+    .track-options-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: inline-block;
+    }
+
+    .track-options-menu {
+        position: absolute;
+        top: 35px; /* Adjusted spacing */
+        right: 0;
+        background-color: #333;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        padding: 8px 0;
+        width: 180px;
+        display: none;
+        flex-direction: column;
+        z-index: 50; /* Ensures it's above other elements */
+    }
+
+        .track-options-menu .dropdown-item {
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            display: block;
+        }
+
+            .track-options-menu .dropdown-item:hover {
+                background-color: #444;
+                color: #FFC107;
+            }
+
+        .track-options-menu .delete {
+            color: red;
+        }
+
+    .btn-options {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 4px 8px; /* Reduced padding for tighter positioning */
+        position: absolute;
+        top: 4px; /* Moved closer to top */
+        right: 4px; /* Moved closer to right */
+        z-index: 20;
+    }
+
+        .btn-options:hover {
+            color: #FFC107;
+        }
+
+    .dropdown-menu {
+        min-width: 180px;
+        transform: translate(-50%, 10px) !important;
+        left: 50% !important;
+        top: 100% !important;
+        z-index: 1050;
+        background-color: rgba(51, 51, 51, 0.9); /* Added 0.9 opacity */
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .dropdown-item {
+        color: white;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+        .dropdown-item:hover {
+            background-color: rgba(68, 68, 68, 0.9); /* Added opacity to hover state */
+            color: #FFC107;
+        }
+
+    .dropdown .btn-options {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+    }
+
+    .dropdown-menu-dark {
+        background-color: rgba(51, 51, 51, 0.9); /* Added 0.9 opacity */
+        border: 1px solid #444;
+    }
+
+        .dropdown-menu-dark .dropdown-item {
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+            .dropdown-menu-dark .dropdown-item:hover {
+                background-color: rgba(85, 85, 85, 0.9); /* Added opacity to hover state */
+            }
+
+    .play-dislike-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
     /* Play button */
     .play-track-btn {
         background: none;
         border: none;
         cursor: pointer;
         outline: none;
-        position: relative;
+        z-index: 2; /* Ensure the play button stays on top of other elements */
     }
 
         .play-track-btn .fas.fa-play {
             font-size: 24px;
-            color: #aaa; /* Normal color (gray or any neutral color) */
+            color: #aaa;
             transition: color 0.3s ease-in-out;
         }
 
+        /* Hover effect for play button */
         .play-track-btn:hover .fas.fa-play {
-            color: #4CAF50; /* Green color on hover */
+            color: #4CAF50; /* Green on hover */
         }
-
-                    </style>
+</style>

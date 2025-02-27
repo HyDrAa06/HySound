@@ -1,0 +1,216 @@
+﻿@using HySound.ViewModels.Track
+@model TrackDetailsViewModel
+
+<div class="track-details-container">
+    <div class="track-image-container">
+        <img src="@Model.TrackImage" alt="@Model.Title" class="track-image" />
+    </div>
+
+    <div class="track-info">
+        <h1 class="track-name">@Model.Title</h1>
+        <p class="track-artist">Изпълнител: <span>@Model.Username</span></p>
+        <p class="track-genre">Жанр: <span>@Model.Genre</span></p>
+        <div class="track-stats">
+            <p class="track-likes">💚 30 Likes</p>
+            <p class="track-plays">🎧 @Model.Plays Plays</p>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h2>Коментари</h2>
+        <div class="comments-list">
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment-item">
+                    <p class="comment-user">@comment.User.Username:</p>
+                    <p class="comment-text">@comment.Content</p>
+                </div>
+            }
+        </div>
+
+        <form id="commentForm" asp-controller="Comment" asp-action="AddComment" method="post">
+            <input type="hidden" name="TrackId" value="@Model.Id" />
+            <textarea name="Content" class="comment-input" placeholder="Добави коментар..." rows="4"></textarea>
+            <button type="submit" class="submit-comment-btn">Добави коментар</button>
+        </form>
+
+    </div>
+</div>
+
+<style>
+    /* Main Container */
+    .track-details-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        background: #121212;
+        padding: 40px 30px;
+        border-radius: 16px;
+        max-width: 950px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Track Image */
+    .track-image-container {
+        width: 320px;
+        height: 320px;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .track-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .track-image:hover {
+        transform: scale(1.05);
+    }
+
+    /* Track Info */
+    .track-info {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .track-name {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .track-artist,
+    .track-genre {
+        font-size: 18px;
+        color: #b3b3b3;
+    }
+
+    .track-artist span,
+    .track-genre span {
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .track-stats {
+        margin-top: 20px;
+    }
+
+    .track-likes,
+    .track-plays {
+        font-size: 18px;
+        margin-top: 8px;
+        color: #1DB954;
+    }
+
+    /* Comments Section */
+    .comments-section {
+        width: 100%;
+        margin-top: 35px;
+    }
+
+    .comments-list {
+        margin-bottom: 25px;
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+    .comment-item {
+        background-color: #181818;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .comment-user {
+        font-weight: bold;
+        font-size: 16px;
+        color: #4CAF50;
+    }
+
+    .comment-text {
+        font-size: 14px;
+        margin-top: 8px;
+        color: #b3b3b3;
+    }
+
+    /* Comment Form */
+    .comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .comment-input {
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        background-color: #333;
+        color: white;
+        border: 1px solid #444;
+        outline: none;
+        resize: none;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+
+    .comment-input:focus {
+        background-color: #444;
+        border-color: #1DB954;
+    }
+
+    .submit-comment-btn {
+        background-color: #1DB954;
+        color: white;
+        padding: 12px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .submit-comment-btn:hover {
+        background-color: #1aa34a;
+        transform: translateY(-2px);
+    }
+
+    .submit-comment-btn:active {
+        transform: translateY(2px);
+    }
+
+    /* Responsive Styles */
+    @@media (max-width: 768px) {
+        .track-details-container {
+            padding: 30px 20px;
+        }
+
+        .track-image-container {
+            width: 280px;
+            height: 280px;
+        }
+
+        .track-name {
+            font-size: 28px;
+        }
+
+        .track-artist,
+        .track-genre {
+            font-size: 16px;
+        }
+
+        .track-likes,
+        .track-plays {
+            font-size: 16px;
+        }
+    }
+</style>

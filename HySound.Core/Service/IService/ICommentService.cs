@@ -10,6 +10,7 @@ namespace HySound.Core.Service.IService
 {
     public interface ICommentService
     {
+        IQueryable<Comment> GetAll();
         Task AddCommentAsync(Comment entity);
         Task UpdateCommentAsync(Comment entity);
         Task DeleteCommentAsync(Comment entity);

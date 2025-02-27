@@ -64,8 +64,9 @@
                         <a class="btn btn-action" asp-controller="Like" asp-action="Like" asp-route-id="@track.TrackId">
                             <i class="fas fa-heart"></i>
                         </a>
-                        <a class="btn btn-action" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">
-                            <i class="fas fa-edit"></i>
+                        <a class="btn btn-action" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+
                         </a>
                         <a class="btn btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">
                             <i class="fas fa-trash-alt"></i>
