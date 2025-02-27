@@ -65,6 +65,7 @@ namespace HySound.Controllers
 
             var playlistsModel = _playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()
             {
+                Id=x.Id,    
                 CoverImage = x.CoverImage,
                 Title = x.Title,
                 UserName = x.User.Username

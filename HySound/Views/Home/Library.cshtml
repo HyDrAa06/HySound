@@ -1,6 +1,8 @@
 ﻿@using HySound.ViewModels.Main
 @model LibraryViewModel
 
+
+
 <div class="library-container">
     <aside class="library-sidebar">
         <ul class="library-nav">
@@ -23,9 +25,12 @@
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal">Add to Playlist</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="#" onclick="openAddToPlaylistModal(@track.TrackId)">
+                                        Add to Playlist
+                                    </a>
+                                </li>
                                 <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">Details</a></li>
-                                <li><a class="dropdown-item" asp-controller=" Track" asp-action="Delete" asp-route-id="@track.TrackId">Add to playlist</a></li>
                             </ul>
                         </div>
                         <img src="@track.ImageLink" alt="Track Image" class="library-track-img">
@@ -121,44 +126,134 @@
     </section>
 </div>
 
+<!-- Updated Modal with Cover Images -->
+<div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content spotify-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToPlaylistModalLabel">Add to Playlist</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="selected-track-id" name="trackId" value="">
+                <form id="add-to-playlist-form">
+                    <div class="playlist-checkboxes">
+                        @if (Model.Playlists != null && Model.Playlists.Any())
+                        {
+                            @foreach (var playlist in Model.Playlists)
+                            {
+                                <div class="form-check spotify-playlist-item">
+                                    <input class="form-check-input" type="checkbox" value="@playlist.Id" id="playlist-@playlist.Id">
+                                    <label class="form-check-label" for="playlist-@playlist.Id">
+                                        <div class="playlist-item-content">
+                                            <img src="@playlist.CoverImage" alt="@playlist.Title Cover" class="playlist-cover">
+                                            <span class="playlist-title">@playlist.Title</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="no-playlists">No playlists available.</p>
+                        }
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary spotify-btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary spotify-btn-primary" id="add-to-playlist-btn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    function openAddToPlaylistModal(trackId) {
+        const hiddenInput = document.getElementById('selected-track-id');
+        if (hiddenInput) {
+            hiddenInput.value = trackId;
+        }
+        $('#addToPlaylistModal').modal('show');
+        const errorDiv = document.querySelector('.playlist-error');
+        if (errorDiv) errorDiv.remove();
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
-        const cards = document.querySelectorAll(".track-card");
-        cards.forEach(card => {
-            card.addEventListener("mouseenter", () => {
-                card.style.boxShadow = "0 8px 35px rgba(0, 0, 0, 0.4)";
-            });
-            card.addEventListener("mouseleave", () => {
-                card.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
-            });
-        });
-    });
+        document.getElementById("add-to-playlist-btn").addEventListener("click", function () {
+            const hiddenInput = document.getElementById('selected-track-id');
+            const trackId = hiddenInput ? parseInt(hiddenInput.value) : null;
+            const selectedPlaylists = [];
+            const modalBody = document.querySelector('#addToPlaylistModal .modal-body');
 
-    ocument.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".track-options").forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.stopPropagation();
-                let optionsMenu = this.nextElementSibling;
+            const existingError = document.querySelector('.playlist-error');
+            if (existingError) existingError.remove();
 
-                document.querySelectorAll(".track-options-menu").forEach(menu => {
-                    if (menu !== optionsMenu) {
-                        menu.style.display = "none";
+            if (!trackId || isNaN(trackId) || trackId <= 0) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'playlist-error text-danger';
+                errorDiv.textContent = 'Error: No track selected. Please try again.';
+                modalBody.insertBefore(errorDiv, modalBody.firstChild);
+                return;
+            }
+
+            document.querySelectorAll('.playlist-checkboxes input:checked').forEach(checkbox => {
+                const playlistId = parseInt(checkbox.value);
+                if (!isNaN(playlistId) && playlistId > 0) {
+                    selectedPlaylists.push(playlistId);
+                }
+            });
+
+            if (selectedPlaylists.length === 0) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'playlist-error text-danger';
+                errorDiv.textContent = 'Please select at least one playlist.';
+                modalBody.insertBefore(errorDiv, modalBody.firstChild);
+                return;
+            }
+
+            fetch('/Track/AddToPlaylists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    trackId: trackId,
+                    playlistIds: selectedPlaylists
+                })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert("Track added to selected playlists!");
+                        $('#addToPlaylistModal').modal('hide');
+                    } else {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'playlist-error text-danger';
+                        errorDiv.textContent = data.message || "Error adding track to playlists.";
+                        modalBody.insertBefore(errorDiv, modalBody.firstChild);
                     }
+                })
+                .catch(error => {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'playlist-error text-danger';
+                    errorDiv.textContent = 'An error occurred while adding the track.';
+                    modalBody.insertBefore(errorDiv, modalBody.firstChild);
                 });
-
-                optionsMenu.style.display = optionsMenu.style.display === "block" ? "none" : "block";
-            });
-        });
-
-        document.addEventListener("click", function () {
-            document.querySelectorAll(".track-options-menu").forEach(menu => {
-                menu.style.display = "none";
-            });
         });
     });
 </script>
 
 <style>
+    .playlist-error {
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: rgba(255, 0, 0, 0.1);
+        border-radius: 4px;
+    }
     /* More Options (⋮) Button */
     .track-options-container {
         position: absolute;
@@ -286,4 +381,186 @@
         .play-track-btn:hover .fas.fa-play {
             color: #4CAF50; /* Green on hover */
         }
+
+    /* Existing styles remain unchanged */
+    /* Spotify-inspired modal styling */
+    .spotify-modal {
+        background-color: #212121;
+        border-radius: 8px;
+        color: #fff;
+        font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        border: none;
+        width: 100%;
+        max-width: 480px;
+    }
+
+    .modal-dialog {
+        margin: 0 auto;
+    }
+
+    .modal-header {
+        background-color: #212121;
+        border-bottom: none;
+        padding: 16px 20px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+
+    .btn-close-white {
+        filter: invert(1);
+        opacity: 0.6;
+        background: none;
+        font-size: 14px;
+    }
+
+        .btn-close-white:hover {
+            opacity: 1;
+        }
+
+    .modal-body {
+        padding: 0 20px;
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: #212121;
+    }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: #212121;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #535353;
+            border-radius: 4px;
+        }
+
+            .modal-body::-webkit-scrollbar-thumb:hover {
+                background: #828282;
+            }
+
+    .spotify-playlist-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        margin: 0 8px; /* Added 8px margin to the left and right to create space */
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+
+        .spotify-playlist-item:hover {
+            background-color: #333;
+        }
+
+    .form-check-input {
+        margin: 0 12px 0 16px; /* Increased left margin from 0 to 16px to shift checkbox right */
+        background-color: #333;
+        border: 1px solid #535353;
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+    }
+
+        .form-check-input:checked {
+            background-color: #1db954;
+            border-color: #1db954;
+        }
+
+    .form-check-label {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .playlist-item-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .playlist-cover {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 12px;
+        border-radius: 4px;
+        background-color: #333;
+    }
+
+    .playlist-title {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .spotify-playlist-item:hover .playlist-title {
+        color: #fff;
+    }
+
+    .no-playlists {
+        color: #b3b3b3;
+        font-size: 14px;
+        text-align: center;
+        padding: 16px;
+    }
+
+    .modal-footer {
+        background-color: #212121;
+        border-top: none;
+        padding: 16px 20px;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .spotify-btn-secondary {
+        background-color: transparent;
+        border: 1px solid #b3b3b3;
+        color: #b3b3b3;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        padding: 8px 20px;
+        border-radius: 500px;
+        transition: all 0.2s ease;
+    }
+
+        .spotify-btn-secondary:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+    .spotify-btn-primary {
+        background-color: #1db954;
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        padding: 8px 20px;
+        border-radius: 500px;
+        transition: all 0.2s ease;
+    }
+
+        .spotify-btn-primary:hover {
+            background-color: #1ed760;
+        }
+
+    .playlist-error {
+        background-color: rgba(255, 0, 0, 0.2);
+        color: #ff4d4d;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin: 8px 0;
+        font-size: 13px;
+    }
 </style>

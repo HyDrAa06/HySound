@@ -14,10 +14,12 @@ namespace HySound.Core.Service
     public class PlaylistService : IPlaylistService
     {
         IRepository<Playlist> _playlistRepository;
+        IRepository<PlaylistTrack> _playlistTrackRepository;
 
-        public PlaylistService(IRepository<Playlist> repository)
+        public PlaylistService(IRepository<PlaylistTrack> repo,IRepository<Playlist> repository)
         {
             _playlistRepository = repository;
+            _playlistTrackRepository = repo;
         }
         public async Task AddPlaylistAsync(Playlist entity)
         {
@@ -65,6 +67,14 @@ namespace HySound.Core.Service
             return await _playlistRepository.GetByIdAsync(id);
         }
 
+        public async Task AddTrackToPlaylistAsync(Playlist playlist, Track track)
+        {
+            PlaylistTrack playlistTrack = new PlaylistTrack();
+            playlistTrack.TrackId = track.Id;
+            playlistTrack.PlaylistId = playlist.Id;
+
+            await _playlistTrackRepository.AddAsync(playlistTrack);
+        }
         public async Task UpdatePlaylistAsync(Playlist entity)
         {
             await _playlistRepository.UpdateAsync(entity);

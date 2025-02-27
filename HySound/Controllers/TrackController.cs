@@ -154,6 +154,53 @@ namespace HySound.Controllers
 
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> AddToPlaylists([FromBody] AddToPlaylistsRequest request)
+        {
+            if (request == null || request.TrackId <= 0)
+            {
+                return Json(new { success = false, message = "No track selected." });
+            }
+
+            if (request.PlaylistIds == null || request.PlaylistIds.Count == 0)
+            {
+                return Json(new { success = false, message = "No playlists selected." });
+            }
+
+            try
+            {
+                foreach (var playlistId in request.PlaylistIds)
+                {
+                    if (playlistId <= 0)
+                    {
+                        return Json(new { success = false, message = $"Invalid playlist ID: {playlistId}" });
+                    }
+
+                    var track = await trackService.GetTrackByIdAsync(request.TrackId);
+                    var playlist = await playlistService.GetPlaylistByIdAsync(playlistId);
+                    if (track != null && playlist != null)
+                    {
+                        await playlistService.AddTrackToPlaylistAsync(playlist, track);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = $"Invalid track or playlist: TrackId={request.TrackId}, PlaylistId={playlistId}" });
+                    }
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class AddToPlaylistsRequest
+        {
+            public int TrackId { get; set; }
+            public List<int> PlaylistIds { get; set; } // Changed to List<int>
+        }
         public async Task<IActionResult> TrackDetails(int id)
         {
             Track track = await trackService.GetTrackByIdAsync(id);
