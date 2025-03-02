@@ -54,13 +54,24 @@ namespace HySound.Controllers
 
             model = model.Where(x => trackIds.Contains(x.TrackId)).ToList();
 
-            var albumModel = _albumService.AllWithInclude().Include(x => x.User).Select(x => new AlbumViewModel()
+            var albumModel = _albumService.AllWithInclude().Include(x=>x.Tracks).Include(x => x.User).Select(x => new AlbumViewModel()
             {
                 Id = x.Id,
                 Title = x.Title,
                 CoverImage = x.CoverImage,
                 ReleaseDate = x.ReleaseDate,
-                UserName = x.User.Username
+                UserName = x.User.Username,
+                Tracks = x.Tracks.Select(t=> new Track
+                {
+                    Id=t.Id,
+                    Title=t.Title,
+                    AlbumId=t.AlbumId,
+                    AudioUrl=t.AudioUrl,
+                    CoverImage=t.CoverImage,
+                    UserId=t.UserId,
+                    IsYoutube=t.IsYoutube,
+                    Plays = t.Plays
+                }).ToList()
             }).ToList();
 
             var playlistsModel = _playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()

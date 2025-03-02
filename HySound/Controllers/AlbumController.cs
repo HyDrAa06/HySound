@@ -26,7 +26,7 @@ namespace HySound.Controllers
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
         CloudinaryService cloudService;
-        public AlbumController(UserManager<IdentityUser> _userManager,IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService,IAlbumService _albumService, IUserService userService)
+        public AlbumController(UserManager<IdentityUser> _userManager, IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService, IAlbumService _albumService, IUserService userService)
         {
             albumService = _albumService;
             this.userService = userService;
@@ -53,7 +53,7 @@ namespace HySound.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var model = albumService.GetAll().Where(x => x.Id == id).Include(x => x.User)
-                .Select(x=>new EditAlbumViewModel()
+                .Select(x => new EditAlbumViewModel()
                 {
                     AlbumCover = x.CoverImage,
                     ReleaseDate = x.ReleaseDate,
@@ -74,7 +74,7 @@ namespace HySound.Controllers
                 return View(model);
             }
 
-            if(model.ImageFile != null)
+            if (model.ImageFile != null)
             {
                 var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
 
@@ -99,33 +99,33 @@ namespace HySound.Controllers
                 return RedirectToAction("AllAlbums");
             }
 
-            
+
         }
         public async Task<IActionResult> Delete(int id)
         {
             if (id != null)
             {
                 var tracks = await trackService.GetAllTracksAsync(x => x.AlbumId == id);
-                tracks.ToList().ForEach(x=> x.AlbumId = null);
+                tracks.ToList().ForEach(x => x.AlbumId = null);
 
-                foreach(var track in tracks)
+                foreach (var track in tracks)
                 {
                     await trackService.UpdateTrackAsync(track);
                 }
                 await albumService.DeleteAlbumByIdAsync(id);
-                
+
                 return RedirectToAction("AllAlbums");
             }
             return RedirectToAction("AllAlbums");
 
         }
-        public async Task<IActionResult> AddAlbum()  
+        public async Task<IActionResult> AddAlbum()
         {
             var model = new AddAlbumViewModel();
             Dictionary<int, string> pics = new Dictionary<int, string>();
 
             var singles = await trackService.GetAllTracksAsync();
-            singles = singles.Where(x=>x.AlbumId is null).ToList();
+            singles = singles.Where(x => x.AlbumId is null).ToList();
 
             foreach (var item in singles)
             {
@@ -196,7 +196,7 @@ namespace HySound.Controllers
 
             if (string.IsNullOrEmpty(filter.Search))
             {
-                
+
                 var model = albumService.AllWithInclude().Include(x => x.User).Select(x => new AlbumViewModel()
                 {
                     Id = x.Id,
@@ -211,7 +211,7 @@ namespace HySound.Controllers
                     Albums = model,
                     ArtistId = filter.ArtistId,
                     Search = filter.Search,
-                    
+
                 };
             }
             else
@@ -224,9 +224,9 @@ namespace HySound.Controllers
                 }
                 if (tempAlbums.Contains(filter.Search))
                 {
-                    query = query.Where(x=>x.Title ==filter.Search);
+                    query = query.Where(x => x.Title == filter.Search);
                 }
-                
+
                 filterModel = new AlbumFilterViewModel
                 {
                     Albums = query.Include(x => x.User)
@@ -245,6 +245,24 @@ namespace HySound.Controllers
             }
             return View(filterModel);
 
+        }
+
+
+        [HttpGet]
+        public IActionResult Tracks(int albumId)
+        {
+            var tracks = trackService.AllWithInclude().Include(x=>x.User)
+                .Where(t => t.AlbumId == albumId)
+                .Select(t => new
+                {
+                    TrackId = t.Id,
+                    Name = t.Title,
+                    UserName = t.User.Username,
+                    ImageLink = t.CoverImage,
+                    AudioUrl = t.AudioUrl // This must be a valid URL
+                })
+                .ToList();
+            return Ok(tracks);
         }
     }
 }

@@ -1317,3 +1317,224 @@ h2 {
         color: #4CAF50; /* Green on hover */
     }
 
+/* Album Card Styles */
+.album-card {
+    background-color: #181818; /* Card background color */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Ensure content stays within borders */
+    position: relative; /* For absolute positioning of buttons */
+    transition: transform 0.2s ease; /* Smooth hover effect */
+    text-align: left; /* Align text to left like Spotify */
+    width: 200px; /* Fixed width for consistency */
+    height: 320px; /* Increased height for more bottom space */
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0; /* Increased vertical margin for spacing between rows */
+}
+
+    .album-card:hover {
+        transform: scale(1.02); /* Slight zoom on hover, Spotify-like */
+    }
+
+.album-image {
+    width: 100%;
+    height: 200px; /* Fixed height for consistency */
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+.album-info {
+    padding: 20px 10px 0 10px; /* Increased top padding for space between image and title */
+    color: #fff; /* White text */
+    font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Spotify font */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Stack content from top */
+    align-items: center; /* Center-align content horizontally */
+}
+
+.album-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 20px 0 5px 0; /* Increased top margin for bigger space, reduced bottom margin */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Truncate long titles */
+    max-width: 100%; /* Ensure full width */
+    text-align: center; /* Center the title */
+    padding-left: 5px; /* Slight left shift */
+}
+
+.album-artist {
+    font-size: 14px;
+    color: #b3b3b3; /* Lighter gray for artist name */
+    margin: 0 0 20px 0; /* Increased bottom margin, no left margin for left alignment */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Truncate long artist names */
+    max-width: 100%; /* Ensure full width */
+    text-align: center; /* Center the artist name */
+    padding-left: 5px; /* Slight left shift to align with title */
+}
+
+.album-actions {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center;
+    gap: 15px; /* Increased gap for better spacing */
+    padding: 0 10px 25px 10px; /* Increased bottom padding for more space */
+    text-align: center; /* Ensure centered alignment */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Play Button for Album Card */
+.album-play-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: #fff; /* White icon */
+    font-size: 24px; /* Match Spotify play button size */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    margin: 0; /* Remove any default margins */
+}
+
+    .album-play-btn:hover {
+        color: #1db954; /* Green glow on hover, matching Spotify */
+        text-shadow: 0 0 2px #1db954; /* Minimal glow */
+    }
+
+/* Unlike (Trash Can) Button for Album Card */
+.album-unlike-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: #fff; /* White icon */
+    font-size: 20px; /* Slightly smaller than play button for balance */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    margin: 0; /* Remove any default margins */
+}
+
+    .album-unlike-btn:hover {
+        color: #ff3333; /* Red glow on hover */
+        text-shadow: 0 0 2px #ff3333; /* Minimal glow */
+    }
+
+/* Album Tracklist Grid Styles (Flexbox Layout) */
+.tracklist-grid {
+    display: flex; /* Use flexbox for better control */
+    flex-direction: column;
+    width: 100%;
+    background-color: #121212; /* Dark background like Spotify */
+    padding: 0; /* Remove padding to align with table */
+}
+
+.tracklist-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the left */
+    transition: background-color 0.2s ease; /* Smooth hover effect */
+    height: 60px; /* Increased height for better spacing between rows */
+    padding: 0 16px; /* Match Spotify padding */
+    margin-bottom: 5px; /* Add space between rows */
+}
+
+    .tracklist-row:hover {
+        background-color: #282828; /* Spotify hover color */
+    }
+
+.tracklist-cell {
+    flex: 1;
+    color: #fff;
+    font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Spotify font */
+    text-align: left; /* Align all content to the left */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px; /* Add padding for spacing */
+}
+
+    .tracklist-cell.image {
+        flex: 0 0 40px; /* Fixed width for image column */
+        padding-right: 15px; /* Increased spacing between image and title */
+    }
+
+.tracklist-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Ensure image fits properly */
+    border-radius: 4px; /* Match Spotify's rounded corners */
+}
+
+.tracklist-cell.title {
+    font-size: 16px;
+    font-weight: 500;
+    padding-right: 10px; /* Add spacing */
+    padding-bottom: 2px; /* Reduced vertical spacing for alignment */
+    padding-left: 5px; /* Slight left shift */
+}
+
+.tracklist-cell.artist {
+    font-size: 14px;
+    color: #b3b3b3; /* Lighter gray for artist */
+    padding-right: 10px; /* Add spacing */
+    padding-bottom: 2px; /* Reduced vertical spacing for alignment */
+    padding-left: 5px; /* Slight left shift to align with title */
+}
+
+.tracklist-cell.actions {
+    flex: 0 0 40px; /* Fixed width for action column */
+    text-align: right; /* Align play button to the right */
+    padding-left: 8px; /* Add spacing */
+}
+
+.tracklist-play-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: #fff; /* White icon */
+    font-size: 20px; /* Slightly smaller for table context */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    vertical-align: middle; /* Align with text */
+    margin: 0; /* Remove any default margins */
+    display: inline-block; /* Ensure proper rendering */
+}
+
+    .tracklist-play-btn:hover {
+        color: #1db954; /* Green glow on hover, matching Spotify */
+        text-shadow: 0 0 2px #1db954; /* Minimal glow */
+    }
+
+/* Back to Albums Button */
+.back-button {
+    display: block; /* Ensure it can be centered */
+    padding: 10px 20px; /* Slightly bigger but not too big */
+    background-color: #1db954; /* Green matching site theme */
+    color: #fff;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px; /* Slightly bigger font */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 15px auto; /* Increased top margin and center horizontally */
+    width: fit-content; /* Adjust width to content */
+}
+
+    .back-button:hover {
+        background-color: #1aa34a; /* Darker green on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+    }
+
+/* Ensure library content is visible */
+.library-content {
+    flex-grow: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: calc(100vh - 100px); /* Adjust based on your layout */
+    overflow-y: auto;
+    background-color: #121212; /* Match Spotify background */
+}

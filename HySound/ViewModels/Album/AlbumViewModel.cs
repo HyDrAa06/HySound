@@ -8,5 +8,7 @@
         public string UserName { get; set; }
         public string CoverImage { get; set; }
 
+        public List<HySound.Models.Models.Track> Tracks { get; set; } = new List<Models.Models.Track>();
+
     }
 }

@@ -6,6 +6,8 @@ using HySound.Core.Service.IService;
 using HySound.Core.Service;
 using Microsoft.AspNetCore.Identity;
 using CloudinaryDotNet;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,12 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddRazorPages();
 
+// Add this to your Program.cs
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 var cloudinarySettings = builder.Configuration.GetSection("Cloudinary");
 var cloudinaryAccount = new Account(
     cloudinarySettings["CloudName"],
