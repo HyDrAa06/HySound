@@ -79,5 +79,10 @@ namespace HySound.Core.Service
         {
             await _playlistRepository.UpdateAsync(entity);
         }
+
+        public IQueryable<Playlist> GetAll()
+        {
+            return _playlistRepository.GetAll();
+        }
     }
 }

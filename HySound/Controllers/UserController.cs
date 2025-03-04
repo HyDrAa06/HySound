@@ -81,6 +81,7 @@ namespace HySound.Controllers
             }
             UserViewModel model = new UserViewModel
             {
+                Id = user.Id,
                 Email = user.Email,
                 Bio = user.Bio,
                 Followers = followerService.GetAll().Where(x => x.FollowedId == user.Id).ToList(),
@@ -88,6 +89,24 @@ namespace HySound.Controllers
                 ProfilePicture = user.ProfilePicture
             };
             return View(model);
+        }
+
+        public async Task<IActionResult> UserDetails(int id)
+        {
+            var model = await userService.GetAll().Include(x=>x.FollowedBy)
+                .Include(x=>x.Following).Select(x=>new UserViewModel 
+            {
+                Bio = x.Bio,
+                Email = x.Email,
+                Followers = x.FollowedBy,
+                Following = x.Following,
+                ProfilePicture = x.ProfilePicture,
+                Name = x.Username,
+                Id = x.Id
+            }).FirstOrDefaultAsync();
+
+            return View(model);
+
         }
 
         [HttpPost]
@@ -110,7 +129,7 @@ namespace HySound.Controllers
             userModel.Bio = user.Bio;
             userModel.FollowedBy = user.Followers;
             userModel.Following = user.Following;
-            
+            userModel.Id = user.Id;
             if (user.ImageFile != null)
             {
                 var imageUploadResult = await cloudService.UploadImageAsync(user.ImageFile);
@@ -131,6 +150,7 @@ namespace HySound.Controllers
                 Following = user.Following,
                 ProfilePicture = user.ProfilePicture,
                 Name = user.Username,
+                Id= id
             };
             return View(model);
         }

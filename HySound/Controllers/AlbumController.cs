@@ -124,8 +124,11 @@ namespace HySound.Controllers
             var model = new AddAlbumViewModel();
             Dictionary<int, string> pics = new Dictionary<int, string>();
 
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
             var singles = await trackService.GetAllTracksAsync();
-            singles = singles.Where(x => x.AlbumId is null).ToList();
+            singles = singles.Where(x => x.AlbumId is null && x.UserId==user.Id).ToList();
 
             foreach (var item in singles)
             {

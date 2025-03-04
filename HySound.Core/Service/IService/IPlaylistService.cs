@@ -20,6 +20,8 @@ namespace HySound.Core.Service.IService
         Task<IEnumerable<Playlist>> GetAllPlaylistsAsync(Expression<Func<Playlist, bool>> filter);
         Task<IEnumerable<Playlist>> GetAllPlaylistsAsync();
         Task AddTrackToPlaylistAsync(Playlist playlist, Track track);
+        IQueryable<Playlist> GetAll();
+
 
     }
 }

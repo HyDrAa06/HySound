@@ -5,9 +5,12 @@ using HySound.ViewModels;
 using HySound.ViewModels.Album;
 using HySound.ViewModels.Main;
 using HySound.ViewModels.Playlist;
+using HySound.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace HySound.Controllers
@@ -31,6 +34,100 @@ namespace HySound.Controllers
             _userService = userService;
             _trackService = trackService;
             _logger = logger;
+        }
+
+        public async Task<IActionResult> Search(SearchViewModel? model)
+        {
+            if(model.filter == "songs")
+            {
+                var query = _trackService.GetAll().AsQueryable().Where(x=>x.Title == model.SearchFilter);
+
+                if (!query.IsNullOrEmpty())
+                {
+                    model.Tracks = query.Include(x => x.Genre)
+                .Include(x => x.User)
+                .Select(x => new TrackViewModel()
+                {
+                    TrackId = x.Id,
+                    Title = x.Title,
+                    AudioUrl = x.AudioUrl,
+                    GenreName = x.Genre.Name,
+                    UserName = x.User.Username,
+                    Plays = x.Plays,
+                    ImageLink = x.CoverImage
+                }).ToList();
+                    
+                    return View(model);
+                }
+            }
+            if(model.filter == "albums")
+            {
+                var query = _albumService.GetAll().AsQueryable().Where(x => x.Title == model.SearchFilter);
+
+                if (!query.IsNullOrEmpty())
+                {
+                    
+                    var tracks = await _trackService.GetAllTracksAsync();
+                    model.Albums = query.Include(x=>x.Tracks)
+                .Include(x => x.User)
+                .Select(x => new AlbumViewModel()
+                {
+                    Title = x.Title,
+                    CoverImage = x.CoverImage,
+                    ReleaseDate = x.ReleaseDate,
+                    Id = x.Id,
+                    UserName= x.User.Username
+                }).ToList();
+
+
+                    foreach(var album in model.Albums)
+                    {
+                        tracks = tracks.Where(x => x.AlbumId == album.Id);
+
+                        album.Tracks = tracks.ToList();
+                    }
+                    return View(model);
+                }
+            }
+            if (model.filter == "playlists")
+            {
+                var query = _playlistService.GetAll().Where(x => x.Title == model.SearchFilter);
+
+                if (!query.IsNullOrEmpty())
+                {
+                    model.Playlists = query.Include(x => x.User)
+                        .Select(x => new PlaylistViewModel()
+                        {
+                            CoverImage=x.CoverImage,
+                            Id = x.Id,
+                            Title = x.Title,
+                            UserName= x.User.Username
+                        }).ToList();
+                }
+
+                return View(model);
+            }
+            if (model.filter == "users")
+            {
+                var query = _userService.GetAll().Where(x => x.Username == model.SearchFilter);
+
+                if (!query.IsNullOrEmpty())
+                {
+                    model.User = query
+                        .Select(x => new UserViewModel()
+                        {
+                            Bio=x.Bio,
+                            Email=x.Email,
+                            Followers=x.FollowedBy,
+                            Following=x.Following,
+                            ProfilePicture=x.ProfilePicture,
+                            Name=x.Username,
+                            Id=x.Id
+                        }).ToList();
+                }
+            }
+
+            return View(model);
         }
         public async Task<IActionResult> Library()
         {

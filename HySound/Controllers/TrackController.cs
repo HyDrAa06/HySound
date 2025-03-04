@@ -208,29 +208,36 @@ namespace HySound.Controllers
             var comments = commentService.AllWithInclude().Include(x => x.User).Where(x=>x.TrackId==id);
             User trackUser = null;
             Genre trackGenre = null;
-
-            if (track.UserId.HasValue)
+            if( track != null)
             {
-                trackUser = await userService.GetUserByIdAsync(track.UserId.Value); // Assuming you have a UserService
-            }
+                if (track.UserId.HasValue)
+                {
+                    trackUser = await userService.GetUserByIdAsync(track.UserId.Value); // Assuming you have a UserService
+                }
 
-            if (track.GenreId.HasValue)
-            {
-                trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value); // Assuming you have a GenreService
+                if (track.GenreId.HasValue)
+                {
+                    trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value); // Assuming you have a GenreService
+                }
+                TrackDetailsViewModel model = new TrackDetailsViewModel
+
+                {
+                    Id = id,
+                    Title = track.Title,
+                    Plays = track.Plays,
+                    TrackImage = track.CoverImage,
+                    Comments = comments.ToList(),
+                    Username = track.User.Username,
+                    Genre = trackGenre.Name
+
+                };
+                return View(model);
             }
-            TrackDetailsViewModel model = new TrackDetailsViewModel
+            else
+            {
+                return RedirectToAction("Home", "Index");
+            }
             
-            {
-                Id = id,
-                Title = track.Title,
-                Plays = track.Plays,
-                TrackImage = track.CoverImage,
-                Comments = comments.ToList(),
-                Username = track.User.Username,
-                Genre = trackGenre.Name 
-
-            };
-            return View(model);
         }
         public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {

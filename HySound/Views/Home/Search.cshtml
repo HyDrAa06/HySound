@@ -1,0 +1,278 @@
+﻿@using HySound.ViewModels.Main
+@model SearchViewModel
+
+<div class="search-container">
+    <!-- Title Section -->
+    <div class="page-title">
+        <h1>Търсене на съдържание</h1>
+        <p class="subtitle">Търсете песни, албуми, изпълнители или плейлисти.</p>
+    </div>
+
+    <form asp-action="Search" asp-controller="Home" class="search-form">
+        <div class="search-box">
+            <input type="text" asp-for="SearchFilter" class="search-input" placeholder="Търси песни, албуми, изпълнители...">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="search-filters">
+            <input type="radio" id="filter-songs" asp-for="filter" value="songs" checked>
+            <label for="filter-songs">Песни</label>
+
+            <input type="radio" id="filter-users" asp-for="filter" value="users">
+            <label for="filter-users">Изпълнители</label>
+
+            <input type="radio" id="filter-albums" asp-for="filter" value="albums">
+            <label for="filter-albums">Албуми</label>
+
+            <input type="radio" id="filter-playlists" asp-for="filter" value="playlists">
+            <label for="filter-playlists">Плейлисти</label>
+        </div>
+    </form>
+
+    @if (Model != null)
+    {
+        <div class="search-results">
+            @if (Model.User?.Any() == true)
+            {
+                <h2 class="section-title">Изпълнители</h2>
+                <div class="artist-grid">
+                    @foreach (var user in Model.User)
+                    {
+                        <div class="artist-card">
+                            <a asp-controller="User" asp-action="UserDetails" asp-route-id="@user.Id">
+                            <img src="@user.ProfilePicture" class="artist-img" alt="@user.Name">
+                            <h3>@user.Name</h3>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            @if (Model.Tracks?.Any() == true)
+            {
+                <h2 class="section-title">Песни</h2>
+                <div class="grid">
+                    @foreach (var track in Model.Tracks)
+                    {
+                        <div class="result-card">
+                            <a asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">
+                            <img src="@track.ImageLink" class="result-img" alt="@track.Title">
+                            <div class="result-info">
+                                <h3>@track.Title</h3>
+                                <p>@track.UserName • @track.GenreName</p>
+                            </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            @if (Model.Albums?.Any() == true)
+            {
+                <h2 class="section-title">Албуми</h2>
+                <div class="grid">
+                    @foreach (var album in Model.Albums)
+                    {
+                        <div class="result-card">
+                            <img src="@album.CoverImage" class="result-img" alt="@album.Title">
+                            <div class="result-info">
+                                <h3>@album.Title</h3>
+                                <p>@album.UserName</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            @if (Model.Playlists?.Any() == true)
+            {
+                <h2 class="section-title">Плейлисти</h2>
+                <div class="grid">
+                    @foreach (var playlist in Model.Playlists)
+                    {
+                        <div class="result-card">
+                            <img src="@playlist.CoverImage" class="result-img" alt="@playlist.Title">
+                            <div class="result-info">
+                                <h3>@playlist.Title</h3>
+                                <p>@playlist.UserName</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+/* 🔥 Search Container */
+.search-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    background: rgba(24, 24, 24, 0.9);
+    border-radius: 15px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* 🔍 Search Box */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border-radius: 50px;
+    padding: 5px;
+    width: 100%;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 50px;
+    background: transparent;
+    color: white;
+    outline: none;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    color: #1db954;
+}
+
+/* 🎚️ Filters */
+.search-filters {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+
+.search-filters input[type="radio"] {
+    display: none;
+}
+
+.search-filters label {
+    padding: 12px 20px;
+    border-radius: 50px;
+    background: #242424;
+    color: #b3b3b3;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.search-filters input[type="radio"]:checked + label {
+    background: #1db954;
+    color: black;
+    transform: scale(1.05);
+}
+
+/* 🎵 Grid Layout */
+.grid, .artist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* 🎵 Song, Album & Playlist Cards */
+.result-card {
+    background: #181818;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.result-card:hover {
+    background: #242424;
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 20px rgba(29, 185, 84, 0.4);
+}
+
+/* 🖼️ Images */
+.result-img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* 🎵 Card Info */
+.result-info h3 {
+    margin: 10px 0 5px;
+    font-size: 14px;
+}
+
+.result-info p {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+
+/* 🎤 Circular Artist Cards */
+.artist-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #181818;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.artist-card:hover {
+    background: #242424;
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 20px rgba(29, 185, 84, 0.4);
+}
+
+.artist-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.artist-card h3 {
+    font-size: 14px;
+}
+
+    /* 🔥 Page Title Section */
+    .page-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .page-title h1 {
+            font-size: 32px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .page-title .subtitle {
+            font-size: 18px;
+            color: #b3b3b3;
+            font-weight: normal;
+        }
+
+    /* Keep the rest of the styles unchanged, the card and form styles are already refined */
+
+                    </style>
