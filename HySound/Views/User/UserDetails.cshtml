@@ -10,10 +10,17 @@
             <h1 class="user-name">@Model.Name</h1>
             <p class="user-bio">@Model.Bio</p>
             <div class="follow-info">
-                <span class="followers-count">20 Followers</span>
-                <span class="following-count">20 Following</span>
+                <span class="followers-count">@Model.FollowersCount Followers</span>
+                <span class="following-count">@Model.FollowingCount Following</span>
             </div>
-            <button class="btn follow-btn">Follow</button>
+            @if(Model.IsFollowed == false)
+            {
+                <a asp-controller="User" asp-action="Follow" asp-route-followedId="@Model.Id" class="btn follow-btn">Follow</a>
+            }
+            @if (Model.IsFollowed == true)
+            {
+                <a asp-controller="User" asp-action="Unfollow" asp-route-followedId="@Model.Id" class="btn unfollow-btn">Unfollow</a>
+            }
         </div>
     </div>
 
@@ -107,25 +114,45 @@ body {
     margin-right: 20px;
 }
 
-.follow-btn {
-    background-color: #1db954;
-    border: none;
-    padding: 12px 30px;
-    font-size: 18px;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 200px;
-    text-align: center;
-    display: block;
-    margin-left: 0; /* Bring follow button more to the left */
-    margin-top: 10px; /* Adjust spacing above button */
-}
+    /* Follow Button - Spotify Green */
+    .follow-btn {
+        background-color: #1DB954; /* Spotify Green */
+        color: #fff;
+        border: none;
+        padding: 12px 20px; /* Bigger for better interaction */
+        border-radius: 25px; /* Rounded style */
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
 
-.follow-btn:hover {
-    background-color: #1ed760;
-}
+        .follow-btn:hover {
+            background-color: #1aa34a; /* Darker green on hover */
+            transform: scale(1.05);
+        }
+
+    /* Unfollow Button - Spotify Grey */
+    .unfollow-btn {
+        background-color: #535353; /* Spotify Grey */
+        color: #fff;
+        border: none;
+        padding: 12px 20px; /* Same size as follow */
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .unfollow-btn:hover {
+            background-color: #3e3e3e; /* Darker grey on hover */
+            transform: scale(1.05);
+        }
+
+
+
+
 
 /* Playlists Section */
 .user-playlists {
@@ -257,4 +284,5 @@ body {
         margin-left: 0;
     }
 }
-        </style>
+
+</style>

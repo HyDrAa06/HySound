@@ -1,4 +1,4 @@
-using HySound.Core.Service;
+﻿using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
 using HySound.ViewModels;
@@ -38,9 +38,20 @@ namespace HySound.Controllers
 
         public async Task<IActionResult> Search(SearchViewModel? model)
         {
-            if(model.filter == "songs")
+            
+            if(!User.IsInRole("User") && !User.IsInRole("Artist") && !User.IsInRole("Ädmin"))
             {
-                var query = _trackService.GetAll().AsQueryable().Where(x=>x.Title == model.SearchFilter);
+                return RedirectToAction("Login","Account");
+            }
+
+            if(model.filter == "songs" || string.IsNullOrEmpty(model.filter))
+            {
+                var query = _trackService.GetAll().AsQueryable();
+
+                if (!string.IsNullOrEmpty(model.SearchFilter))
+                {
+                    query = query.Where(x => x.Title == model.SearchFilter);
+                }
 
                 if (!query.IsNullOrEmpty())
                 {
@@ -62,7 +73,12 @@ namespace HySound.Controllers
             }
             if(model.filter == "albums")
             {
-                var query = _albumService.GetAll().AsQueryable().Where(x => x.Title == model.SearchFilter);
+                var query = _albumService.GetAll().AsQueryable();
+
+                if (!string.IsNullOrEmpty(model.SearchFilter))
+                {
+                    query = query.Where(x => x.Title == model.SearchFilter);
+                }
 
                 if (!query.IsNullOrEmpty())
                 {
@@ -91,7 +107,12 @@ namespace HySound.Controllers
             }
             if (model.filter == "playlists")
             {
-                var query = _playlistService.GetAll().Where(x => x.Title == model.SearchFilter);
+                var query = _playlistService.GetAll();
+
+                if (!string.IsNullOrEmpty(model.SearchFilter))
+                {
+                    query = query.Where(x => x.Title == model.SearchFilter);
+                }
 
                 if (!query.IsNullOrEmpty())
                 {
@@ -109,11 +130,20 @@ namespace HySound.Controllers
             }
             if (model.filter == "users")
             {
-                var query = _userService.GetAll().Where(x => x.Username == model.SearchFilter);
+                var tempUser = await _userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await _userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+                var query = _userService.GetAll();
+
+                if (!string.IsNullOrEmpty(model.SearchFilter))
+                {
+                    query = query.Where(x => x.Username == model.SearchFilter);
+                }
 
                 if (!query.IsNullOrEmpty())
                 {
-                    model.User = query
+                    
+                    model.User = query.Where(x=>x.Id != user.Id)
                         .Select(x => new UserViewModel()
                         {
                             Bio=x.Bio,

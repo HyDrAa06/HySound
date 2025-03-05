@@ -10,6 +10,9 @@ namespace HySound.ViewModels.User
         public string? Bio { get; set; }
         public string? ProfilePicture {  get; set; }
 
+        public bool? IsFollowed { get; set; }
+        public int? FollowingCount { get; set; }
+        public int? FollowersCount { get; set; }
         public IFormFile? ImageFile {  get; set; }
         public ICollection<Followed>? Followers { get; set; }
         public ICollection<Followed>? Following { get; set; }

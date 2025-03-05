@@ -13,10 +13,10 @@
             <p class="profile-email">@Model.Email</p>
             <div class="profile-stats">
                 <span class="profile-followers" onclick="openFollowersModal()">
-                    <strong>@(Model.Followers?.Count ?? 0)</strong> Followers
+                    <strong>@Model.FollowersCount</strong> Followers
                 </span>
                 <span class="profile-following" onclick="openFollowingModal()">
-                    <strong>@(Model.Following?.Count ?? 0)</strong> Following
+                    <strong>@Model.FollowingCount</strong> Following
                 </span>
             </div>
             <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>

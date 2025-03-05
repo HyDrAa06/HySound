@@ -55,18 +55,18 @@ namespace HySound.Controllers
                 return RedirectToAction("AllUsers");
             }
         }
-        [HttpPost]
-        public async Task<IActionResult> Profile(UserViewModel model)
-        {
-            User user = await userService.GetUserAsync(x => x.Email == model.Email);
-            user.Username = model.Name;
-            user.ProfilePicture = model.ProfilePicture;
-            user.Bio = model.Bio;
-            user.Email = model.Email;
-            await userService.UpdateUserAsync(user);
-            
-            return View(model);
-        }
+     //  [HttpPost]
+     //  public async Task<IActionResult> Profile(UserViewModel model)
+     //  {
+     //      User user = await userService.GetUserAsync(x => x.Email == model.Email);
+     //      user.Username = model.Name;
+     //      user.ProfilePicture = model.ProfilePicture;
+     //      user.Bio = model.Bio;
+     //      user.Email = model.Email;
+     //      await userService.UpdateUserAsync(user);
+     //      
+     //      return View(model);
+     //  }
         public async Task<IActionResult> Profile()
         {
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
@@ -79,21 +79,69 @@ namespace HySound.Controllers
             {
                 return NotFound("No application user found for email: " + tempUser.Email);
             }
+
+            int followers = 0;
+            int following = 0;
+
+            var followedByUsers = await followerService.GetAllFollowersAsync(x => x.FollowedId == user.Id);
+            var followingUsers = await followerService.GetAllFollowersAsync(x => x.FollowedById == user.Id);
+
+            if (followedByUsers != null)
+            {
+                followers = followedByUsers.ToList().Count();
+            }
+            if (followingUsers != null)
+            {
+                following = followingUsers.ToList().Count();
+            }
+
             UserViewModel model = new UserViewModel
             {
-                Id = user.Id,
                 Email = user.Email,
                 Bio = user.Bio,
                 Followers = followerService.GetAll().Where(x => x.FollowedId == user.Id).ToList(),
                 Name = user.Username,
-                ProfilePicture = user.ProfilePicture
+                ProfilePicture = user.ProfilePicture,
+                FollowersCount = followers,
+                FollowingCount = following
             };
             return View(model);
         }
 
         public async Task<IActionResult> UserDetails(int id)
         {
-            var model = await userService.GetAll().Include(x=>x.FollowedBy)
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            if (tempUser == null)
+            {
+                return NotFound("No Identity user found.");
+            }
+            
+            User followingUser = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+            Followed follow = await followerService.GetFollowerAsync(x => x.FollowedId == id && x.FollowedById == followingUser.Id);
+            bool isFollowed = false;
+            if (follow != null)
+            {
+                isFollowed = true;
+            }
+
+            int followers = 0;
+            int following = 0;
+
+            var followedByUsers = await followerService.GetAllFollowersAsync(x => x.FollowedId == id);
+            var followingUsers = await followerService.GetAllFollowersAsync(x=>x.FollowedById == id);
+            
+            if(followedByUsers != null)
+            {
+                followers = followedByUsers.ToList().Count();
+            }
+            if(followingUsers != null)
+            {
+                following = followingUsers.ToList().Count();
+            }
+            
+
+            var model = await userService.GetAll().Where(x => x.Id == id).Include(x=>x.FollowedBy)
                 .Include(x=>x.Following).Select(x=>new UserViewModel 
             {
                 Bio = x.Bio,
@@ -102,7 +150,10 @@ namespace HySound.Controllers
                 Following = x.Following,
                 ProfilePicture = x.ProfilePicture,
                 Name = x.Username,
-                Id = x.Id
+                Id = id,
+                IsFollowed = isFollowed,
+                FollowersCount = followers,
+                FollowingCount = following,
             }).FirstOrDefaultAsync();
 
             return View(model);
@@ -129,7 +180,6 @@ namespace HySound.Controllers
             userModel.Bio = user.Bio;
             userModel.FollowedBy = user.Followers;
             userModel.Following = user.Following;
-            userModel.Id = user.Id;
             if (user.ImageFile != null)
             {
                 var imageUploadResult = await cloudService.UploadImageAsync(user.ImageFile);
@@ -159,6 +209,44 @@ namespace HySound.Controllers
             User user = new User();
             return View(user);
         }
+
+     
+        public async Task<IActionResult> Unfollow(int followedId)
+        {
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User followingUser = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+            Followed follow = await followerService.GetFollowerAsync(x => x.FollowedId == followedId && x.FollowedById == followingUser.Id);
+
+            if(follow != null)
+            {
+                await followerService.DeleteFollowerAsync(follow);
+            }
+            return RedirectToAction("UserDetails", "User", new { id = followedId });
+
+        }
+
+        public async Task<IActionResult> Follow(int followedId)
+        {
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User followingUser = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+            User followedUser = await userService.GetUserAsync(x => x.Id == followedId);
+
+            if (followingUser == null || followedUser == null)
+            {
+                return NotFound(); // One of the users doesn't exist
+            }
+
+            Followed follow = new Followed
+            {
+                FollowedById = followingUser.Id,
+                FollowedId = followedId
+            };
+
+            await followerService.AddFollowerAsync(follow);
+            return RedirectToAction("UserDetails", "User", new { id = followedId });
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddUser(User user)
         {
