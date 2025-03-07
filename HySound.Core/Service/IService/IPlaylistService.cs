@@ -22,6 +22,7 @@ namespace HySound.Core.Service.IService
         Task AddTrackToPlaylistAsync(Playlist playlist, Track track);
         IQueryable<Playlist> GetAll();
 
+        Task<List<Track>> GetTracksOfPlaylist(int id);
 
     }
 }

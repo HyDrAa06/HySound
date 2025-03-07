@@ -1,0 +1,352 @@
+﻿@using HySound.ViewModels.Playlist
+@model PlaylistViewModel
+
+<div class="playlist-details">
+    <div class="playlist-header">
+        <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Unknown Playlist")" class="playlist-cover" />
+        <div class="playlist-info">
+            <h1 class="playlist-title">@(Model.Title ?? "Unknown Playlist")</h1>
+            <p class="playlist-creator">Created by <span>@(Model.UserName ?? "Unknown Creator")</span></p>
+            <button class="play-all-btn">▶ Play All</button>
+        </div>
+    </div>
+
+    <h2 class="tracklist-title">Tracks</h2>
+    <ul class="tracklist">
+        @if (Model.Tracks != null && Model.Tracks.Any())
+        {
+            foreach (var track in Model.Tracks)
+            {
+                <li class="track">
+                    <div class="track-info">
+                        <img src="@(track.CoverImage ?? "/images/default-cover.jpg")" alt="@(track.Title ?? "Unknown Track")" class="track-cover">
+                        <span class="track-name">@(track.Title ?? "Unknown Track")</span>
+                    </div>
+                    <button class="play-btn"
+                            data-src="@(track.AudioUrl ?? "")"
+                            data-title="@(track.Title ?? "Unknown Track")"
+                            data-artist="@(track.User?.Username ?? "Unknown Artist")"
+                            data-image="@(track.CoverImage ?? "/images/default-cover.jpg")">
+                        ▶
+                    </button>
+                </li>
+            }
+        }
+        else
+        {
+            <li>No tracks available for this playlist.</li>
+        }
+    </ul>
+</div>
+
+<style>
+    /* Playlist Details Styles */
+    .playlist-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .playlist-header {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #333;
+    }
+
+    .playlist-cover {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .playlist-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .playlist-title {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .playlist-creator {
+        font-size: 18px;
+        color: #b3b3b3;
+    }
+
+    .play-all-btn {
+        margin-top: 10px;
+        padding: 12px 20px;
+        background: #1DB954;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .play-all-btn:hover {
+            background: #17a347;
+        }
+
+    .tracklist-title {
+        margin-top: 30px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .tracklist {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+    }
+
+    .track {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+        .track:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+    .track-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .track-cover {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .track-name {
+        font-size: 18px;
+    }
+
+    .play-btn {
+        background: none;
+        border: none;
+        color: #1DB954;
+        font-size: 22px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .play-btn:hover {
+            color: #17a347;
+        }
+
+    .error-message {
+        text-align: center;
+        color: white;
+        padding: 40px;
+    }
+
+        .error-message a {
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+            .error-message a:hover {
+                color: #17a347;
+            }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Serialize playlist tracks
+        var playlistTracks = @Html.Raw(Json.Serialize(Model.Tracks.Select(t => new
+        {
+            src = t.AudioUrl,
+            title = t.Title,
+            artist = t.User?.Username ?? "Unknown Artist",
+            image = t.CoverImage ?? "/images/default-cover.jpg"
+        })));
+        var currentTrackIndex = -1;
+
+        // DOM elements
+        const audio = document.getElementById('global-audio');
+        const audioSource = document.getElementById('global-audio-source');
+        const playBtn = document.getElementById('play-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const timebar = document.getElementById('timebar');
+        const soundBar = document.getElementById('sound-bar');
+        const songImage = document.getElementById('song-image');
+        const songTitle = document.getElementById('song-title');
+        const artistName = document.getElementById('artist-name');
+        const playerContainer = document.querySelector('.player-container');
+
+        // Check for missing elements
+        if (!audio || !audioSource || !playBtn || !prevBtn || !nextBtn || !timebar || !soundBar || !songImage || !songTitle || !artistName || !playerContainer) {
+            console.error("One or more required DOM elements are missing:", {
+                audio: !!audio,
+                audioSource: !!audioSource,
+                playBtn: !!playBtn,
+                prevBtn: !!prevBtn,
+                nextBtn: !!nextBtn,
+                timebar: !!timebar,
+                soundBar: !!soundBar,
+                songImage: !!songImage,
+                songTitle: !!songTitle,
+                artistName: !!artistName,
+                playerContainer: !!playerContainer
+            });
+            return;
+        }
+
+        // Load a track by index
+        function loadTrack(index) {
+            if (index >= 0 && index < playlistTracks.length) {
+                const track = playlistTracks[index];
+                audioSource.src = track.src;
+                audio.load();
+                songImage.src = track.image;
+                songTitle.textContent = track.title;
+                artistName.textContent = track.artist;
+                timebar.value = 0;
+                updateProgressBar(timebar, 0);
+                audio.volume = soundBar.value / 100; // Sync volume on load
+                updateProgressBar(soundBar, soundBar.value); // Reflect current volume
+            }
+        }
+
+        // Update progress bar styling
+        function updateProgressBar(bar, value) {
+            bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
+        }
+
+        // Play All button
+        document.querySelector('.play-all-btn').addEventListener('click', function () {
+            if (playlistTracks.length > 0) {
+                currentTrackIndex = 0;
+                loadTrack(currentTrackIndex);
+                audio.play();
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                playerContainer.classList.add('visible');
+            }
+        });
+
+        // Individual track play buttons
+        document.querySelectorAll('.play-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const src = this.getAttribute('data-src');
+                currentTrackIndex = playlistTracks.findIndex(track => track.src === src);
+                if (currentTrackIndex !== -1) {
+                    loadTrack(currentTrackIndex);
+                    audio.play();
+                    playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                    playerContainer.classList.add('visible');
+                }
+            });
+        });
+
+        // Next button
+        nextBtn.addEventListener('click', function () {
+            if (currentTrackIndex < playlistTracks.length - 1) {
+                currentTrackIndex++;
+                loadTrack(currentTrackIndex);
+                audio.play();
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                playerContainer.classList.add('visible');
+            }
+        });
+
+        // Previous button
+        prevBtn.addEventListener('click', function () {
+            if (currentTrackIndex > 0) {
+                currentTrackIndex--;
+                loadTrack(currentTrackIndex);
+                audio.play();
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                playerContainer.classList.add('visible');
+            }
+        });
+
+        // Auto-play next track
+        audio.addEventListener('ended', function () {
+            if (currentTrackIndex < playlistTracks.length - 1) {
+                currentTrackIndex++;
+                loadTrack(currentTrackIndex);
+                audio.play();
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                playerContainer.classList.add('visible');
+            } else {
+                playBtn.querySelector('i').classList.replace('fa-pause', 'fa-play');
+                playerContainer.classList.remove('visible');
+            }
+        });
+
+        // Play/Pause button toggle
+        playBtn.addEventListener('click', function () {
+            if (audio.paused) {
+                if (currentTrackIndex === -1 && playlistTracks.length > 0) {
+                    currentTrackIndex = 0; // Start from first track if none selected
+                    loadTrack(currentTrackIndex);
+                }
+                audio.play();
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                playerContainer.classList.add('visible');
+            } else {
+                audio.pause();
+                playBtn.querySelector('i').classList.replace('fa-pause', 'fa-play');
+            }
+        });
+
+        // Sync play/pause state
+        audio.addEventListener('play', function () {
+            playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+            playerContainer.classList.add('visible');
+        });
+
+        audio.addEventListener('pause', function () {
+            playBtn.querySelector('i').classList.replace('fa-pause', 'fa-play');
+        });
+
+        // Update timebar
+        audio.addEventListener('timeupdate', function () {
+            if (!isNaN(audio.duration) && audio.duration > 0) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                timebar.value = progress;
+                updateProgressBar(timebar, progress);
+            }
+        });
+
+        // Seek with timebar
+        timebar.addEventListener('input', function () {
+            if (!isNaN(audio.duration) && audio.duration > 0) {
+                const time = (timebar.value / 100) * audio.duration;
+                audio.currentTime = time;
+                updateProgressBar(timebar, timebar.value);
+            }
+        });
+
+        // Volume control with sound bar
+        soundBar.addEventListener('input', function () {
+            audio.volume = soundBar.value / 100;
+            updateProgressBar(soundBar, soundBar.value);
+        });
+
+        // Initialize sound bar
+        audio.volume = soundBar.value / 100; // Set initial volume
+        updateProgressBar(soundBar, soundBar.value); // Reflect initial value visually
+    });
+</script>

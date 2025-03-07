@@ -48,8 +48,25 @@ namespace HySound.Controllers
         {
             return View();
         }
-        [HttpGet]
 
+        public async Task<IActionResult> AlbumDetails(int id)
+        {
+            var album = await albumService.GetAll().Where(x=>x.Id==id).Include(x=>x.User).Include(x=>x.Tracks)
+                .Select(x=> new AlbumViewModel
+                {
+                    CoverImage = x.CoverImage,
+                    Id = id,
+                    Title=x.Title,
+                    UserName=x.User.Username,
+                    Tracks = x.Tracks.ToList(),
+                    ReleaseDate= x.ReleaseDate
+                }).FirstOrDefaultAsync();
+
+
+            return View(album);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             var model = albumService.GetAll().Where(x => x.Id == id).Include(x => x.User)

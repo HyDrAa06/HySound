@@ -2,6 +2,7 @@
 using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
+using HySound.ViewModels.Album;
 using HySound.ViewModels.Playlist;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,14 @@ namespace HySound.Controllers
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
 
+        ITrackService trackService;
         IPlaylistService playlistService;
         IUserService userService;
 
 
-        public PlaylistController(IUserService _userService,UserManager<IdentityUser>_userManager,IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
+        public PlaylistController(ITrackService track,IUserService _userService,UserManager<IdentityUser>_userManager,IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
         {
+            trackService = track;
             playlistService = _playlistService;
             userManager = _userManager;
             userService = _userService;
@@ -64,6 +67,25 @@ namespace HySound.Controllers
             await playlistService.AddPlaylistAsync(playlist);
             return RedirectToAction("AllPlaylists");
         }
+
+
+        public async Task<IActionResult> PlaylistDetails(int id)
+        {
+            var tracks = await playlistService.GetTracksOfPlaylist(id);
+
+
+            var playlist = await playlistService.GetAll().Where(x => x.Id == id).Include(x => x.PlaylistTracks).ThenInclude(x => x.Track).Include(x => x.User)
+                .Select(x => new PlaylistViewModel
+                {
+                    CoverImage = x.CoverImage,
+                    Id = id,
+                    Title = x.Title,
+                    Tracks = tracks
+                }).FirstOrDefaultAsync();
+
+            return View(playlist);
+        }
+
         public async Task<IActionResult> AllPlaylists()
         {
             var playlists = playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()

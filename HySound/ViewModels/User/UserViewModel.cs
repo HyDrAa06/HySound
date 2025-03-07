@@ -16,5 +16,8 @@ namespace HySound.ViewModels.User
         public IFormFile? ImageFile {  get; set; }
         public ICollection<Followed>? Followers { get; set; }
         public ICollection<Followed>? Following { get; set; }
+
+        public ICollection<HySound.Models.Models.User>? FollowersAsUsers { get; set; }
+        public ICollection<HySound.Models.Models.User>? FollowingAsUsers { get; set; }
     }
 }

@@ -1,0 +1,435 @@
+﻿@using HySound.ViewModels.Album
+@model AlbumViewModel
+
+@if (Model == null)
+{
+    <div class="error-message">
+        <h2>Album Not Found</h2>
+        <p>The requested album could not be found. Please try again.</p>
+        <a asp-controller="Album" asp-action="AllAlbums">Back to Albums</a>
+    </div>
+}
+else
+{
+    <div class="album-details">
+        <div class="album-header">
+            <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Unknown Album")" class="album-cover" />
+            <div class="album-info">
+                <h1 class="album-title">@(Model.Title ?? "Unknown Album")</h1>
+                <p class="album-artist">By <span>@(Model.UserName ?? "Unknown Artist")</span></p>
+                <p class="album-release">Released: @(Model.ReleaseDate.ToString("MMMM dd, yyyy"))</p>
+                <button class="play-all-btn">▶ Play All</button>
+            </div>
+        </div>
+
+        <h2 class="tracklist-title">Tracks</h2>
+        <ul class="tracklist">
+            @if (Model.Tracks != null && Model.Tracks.Any())
+            {
+                foreach (var track in Model.Tracks)
+                {
+                    <li class="track">
+                        <div class="track-info">
+                            <img src="@(track.CoverImage ?? "/images/default-cover.jpg")" alt="@(track.Title ?? "Unknown Track")" class="track-cover">
+                            <span class="track-name">@(track.Title ?? "Unknown Track")</span>
+                        </div>
+                        <button class="play-btn"
+                                data-src="@(track.AudioUrl ?? "")"
+                                data-title="@(track.Title ?? "Unknown Track")"
+                                data-artist="@(Model.UserName ?? "Unknown Artist")"
+                                data-image="@(track.CoverImage ?? "/images/default-cover.jpg")">
+                            ▶
+                        </button>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>No tracks available for this album.</li>
+            }
+        </ul>
+    </div>
+}
+
+<style>
+    /* Album Details Styles */
+    .album-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .album-header {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #333;
+    }
+
+    .album-cover {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .album-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .album-title {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .album-artist, .album-release {
+        font-size: 18px;
+        color: #b3b3b3;
+    }
+
+    .play-all-btn {
+        margin-top: 10px;
+        padding: 12px 20px;
+        background: #1DB954;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .play-all-btn:hover {
+            background: #17a347;
+        }
+
+    .tracklist-title {
+        margin-top: 30px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .tracklist {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+    }
+
+    .track {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+        .track:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+    .track-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .track-cover {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .track-name {
+        font-size: 18px;
+    }
+
+    .play-btn {
+        background: none;
+        border: none;
+        color: #1DB954;
+        font-size: 22px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .play-btn:hover {
+            color: #17a347;
+        }
+
+    .error-message {
+        text-align: center;
+        color: white;
+        padding: 40px;
+    }
+
+        .error-message a {
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+            .error-message a:hover {
+                color: #17a347;
+            }
+
+    const soundBarStyles = `
+    #sound-bar {
+        -webkit-appearance: none;
+        width: 100px;
+        height: 4px;
+        background: #333;
+        outline: none;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    #sound-bar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #1DB954;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    #sound-bar::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: #1DB954;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* Adjust the timebar width to stretch across the player container */
+    #timebar {
+        -webkit-appearance: none;
+        width: 100%; /* Make it take the full width of its parent */
+        max-width: 500px; /* Increase max-width to make it longer; adjust as needed */
+        height: 4px;
+        background: #333;
+        outline: none;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+        #timebar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #timebar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const isAlbumDetailsPage = window.location.pathname.includes('AlbumDetails');
+        if (!isAlbumDetailsPage) return;
+
+        // Element references
+        const globalAudio = document.getElementById("global-audio");
+        const globalAudioSource = document.getElementById("global-audio-source");
+        const playButton = document.getElementById("play-btn");
+        const prevButton = document.getElementById("prev-btn");
+        const nextButton = document.getElementById("next-btn");
+        const songImage = document.getElementById("song-image");
+        const songTitle = document.getElementById("song-title");
+        const artistName = document.getElementById("artist-name");
+        const timebar = document.getElementById("timebar");
+        const soundBar = document.getElementById("sound-bar");
+        const playerContainer = document.querySelector('.player-container');
+        const playAllBtn = document.querySelector('.play-all-btn');
+        const playButtons = document.querySelectorAll('.play-btn');
+
+        let trackList = [];
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        const defaultImage = '/images/default-cover.jpg';
+
+        // Clone buttons to remove existing listeners
+        [playButton, prevButton, nextButton].forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+        });
+
+        const updatedPlayButton = document.getElementById("play-btn");
+        const updatedPrevButton = document.getElementById("prev-btn");
+        const updatedNextButton = document.getElementById("next-btn");
+
+        function populateTrackList() {
+            trackList = Array.from(playButtons)
+                .map(btn => ({
+                    file: btn.dataset.src || '',
+                    title: btn.dataset.title || 'Unknown Title',
+                    artist: btn.dataset.artist || 'Unknown Artist',
+                    image: btn.dataset.image || defaultImage
+                }))
+                .filter(track => track.file);
+        }
+
+        function loadTrack(index, shouldPlay = false) {
+            if (!trackList.length) return;
+            index = Math.max(0, Math.min(index, trackList.length - 1));
+
+            const track = trackList[index];
+            globalAudioSource.src = track.file;
+            songImage.src = track.image;
+            songTitle.textContent = track.title;
+            artistName.textContent = track.artist;
+            globalAudio.load();
+            globalAudio.currentTime = 0;
+            timebar.value = 0;
+            timebar.style.background = `linear-gradient(to right, #1DB954 0%, #333 0%)`;
+            globalAudio.volume = soundBar.value / 100;
+            currentTrackIndex = index;
+
+            updatePlayButton(shouldPlay);
+            if (shouldPlay) {
+                playTrack();
+            }
+            saveTrackState();
+        }
+
+        function playTrack() {
+            const playPromise = globalAudio.play();
+            if (playPromise) {
+                playPromise
+                    .then(() => {
+                        isPlaying = true;
+                        playerContainer.classList.add('visible');
+                    })
+                    .catch(error => console.error('Play error:', error));
+            }
+        }
+
+        function pauseTrack() {
+            globalAudio.pause();
+            isPlaying = false;
+            updatePlayButton(false);
+            saveTrackState();
+        }
+
+        function updatePlayButton(isPlayingState) {
+            const icon = updatedPlayButton.querySelector("i");
+            icon.classList.toggle("fa-play", !isPlayingState);
+            icon.classList.toggle("fa-pause", isPlayingState);
+        }
+
+        function saveTrackState() {
+            localStorage.setItem("currentTrack", JSON.stringify({
+                file: globalAudioSource.src,
+                title: songTitle.textContent,
+                artist: artistName.textContent,
+                image: songImage.src,
+                time: globalAudio.currentTime,
+                isCurrentlyPlayed: isPlaying,
+                volume: soundBar.value
+            }));
+        }
+
+        function loadStoredTrack() {
+            const storedTrack = JSON.parse(localStorage.getItem("currentTrack"));
+            if (storedTrack) {
+                globalAudioSource.src = storedTrack.file;
+                globalAudio.load();
+                globalAudio.currentTime = storedTrack.time || 0;
+                songImage.src = storedTrack.image;
+                songTitle.textContent = storedTrack.title;
+                artistName.textContent = storedTrack.artist;
+                soundBar.value = storedTrack.volume || 50;
+                globalAudio.volume = soundBar.value / 100;
+                const progress = (storedTrack.time / globalAudio.duration) * 100 || 0;
+                timebar.value = progress;
+                timebar.style.background = `linear-gradient(to right, #1DB954 ${progress}%, #333 ${progress}%)`;
+                updatePlayButton(storedTrack.isCurrentlyPlayed);
+                if (storedTrack.isCurrentlyPlayed) {
+                    playTrack();
+                }
+            } else if (trackList.length) {
+                loadTrack(0, false);
+            }
+        }
+
+        // Event Listeners
+        updatedPlayButton.addEventListener("click", function () {
+            if (isPlaying) {
+                pauseTrack();
+            } else {
+                playTrack();
+            }
+        });
+
+        updatedPrevButton.addEventListener("click", () => loadTrack(currentTrackIndex - 1, isPlaying));
+        updatedNextButton.addEventListener("click", () => loadTrack(currentTrackIndex + 1, isPlaying));
+
+        globalAudio.addEventListener("timeupdate", function () {
+            if (!isNaN(globalAudio.duration)) {
+                const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
+                timebar.value = progress;
+                timebar.style.background = `linear-gradient(to right, #1DB954 ${progress}%, #333 ${progress}%)`;
+            }
+        });
+
+        timebar.addEventListener("input", function () {
+            const progress = timebar.value;
+            globalAudio.currentTime = (progress / 100) * globalAudio.duration;
+            timebar.style.background = `linear-gradient(to right, #1DB954 ${progress}%, #333 ${progress}%)`;
+            saveTrackState();
+        });
+
+        soundBar.addEventListener("input", () => {
+            const volume = soundBar.value / 100;
+            globalAudio.volume = volume;
+            saveTrackState();
+            soundBar.style.background = `linear-gradient(to right, #1DB954 ${soundBar.value}%, #333 ${soundBar.value}%)`;
+        });
+
+        globalAudio.addEventListener("ended", () => {
+            loadTrack(currentTrackIndex + 1, true);
+        });
+
+        if (playAllBtn) {
+            playAllBtn.addEventListener('click', () => {
+                populateTrackList();
+                if (trackList.length) loadTrack(0, true);
+            });
+        }
+
+        playButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                populateTrackList();
+                if (currentTrackIndex === index && isPlaying) {
+                    pauseTrack();
+                } else {
+                    loadTrack(index, true);
+                }
+            });
+        });
+
+        // Initial setup
+        populateTrackList();
+        loadStoredTrack();
+
+        // Style the soundbar initially
+        soundBar.style.background = `linear-gradient(to right, #1DB954 ${soundBar.value}%, #333 ${soundBar.value}%)`;
+    });
+</script>

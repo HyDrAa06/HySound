@@ -1,33 +1,33 @@
 ﻿@using HySound.ViewModels.Main
 @model SearchViewModel
 
+
 <div class="search-container">
-    <!-- Title Section -->
     <div class="page-title">
         <h1>Търсене на съдържание</h1>
-        <p class="subtitle">Търсете песни, албуми, изпълнители или плейлисти.</p>
+        <p class="subtitle">Открийте песни, албуми, изпълнители и плейлисти с един клик.</p>
     </div>
 
     <form asp-action="Search" asp-controller="Home" class="search-form">
         <div class="search-box">
             <input type="text" asp-for="SearchFilter" class="search-input" placeholder="Търси песни, албуми, изпълнители...">
             <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-search"></i> Търси
             </button>
         </div>
 
         <div class="search-filters">
             <input type="radio" id="filter-songs" asp-for="filter" value="songs" checked>
-            <label for="filter-songs">Песни</label>
+            <label for="filter-songs"><i class="fas fa-music"></i> Песни</label>
 
             <input type="radio" id="filter-users" asp-for="filter" value="users">
-            <label for="filter-users">Изпълнители</label>
+            <label for="filter-users"><i class="fas fa-user"></i> Изпълнители</label>
 
             <input type="radio" id="filter-albums" asp-for="filter" value="albums">
-            <label for="filter-albums">Албуми</label>
+            <label for="filter-albums"><i class="fas fa-compact-disc"></i> Албуми</label>
 
             <input type="radio" id="filter-playlists" asp-for="filter" value="playlists">
-            <label for="filter-playlists">Плейлисти</label>
+            <label for="filter-playlists"><i class="fas fa-list"></i> Плейлисти</label>
         </div>
     </form>
 
@@ -42,13 +42,14 @@
                     {
                         <div class="artist-card">
                             <a asp-controller="User" asp-action="UserDetails" asp-route-id="@user.Id">
-                            <img src="@user.ProfilePicture" class="artist-img" alt="@user.Name">
-                            <h3>@user.Name</h3>
+                                <img src="@user.ProfilePicture" class="artist-img" alt="@user.Name">
+                                <h3>@user.Name</h3>
                             </a>
                         </div>
                     }
                 </div>
             }
+            
             @if (Model.Tracks?.Any() == true)
             {
                 <h2 class="section-title">Песни</h2>
@@ -57,16 +58,17 @@
                     {
                         <div class="result-card">
                             <a asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">
-                            <img src="@track.ImageLink" class="result-img" alt="@track.Title">
-                            <div class="result-info">
-                                <h3>@track.Title</h3>
-                                <p>@track.UserName • @track.GenreName</p>
-                            </div>
+                                <img src="@track.ImageLink" class="result-img" alt="@track.Title">
+                                <div class="result-info">
+                                    <h3>@track.Title</h3>
+                                    <p>@track.UserName • @track.GenreName</p>
+                                </div>
                             </a>
                         </div>
                     }
                 </div>
             }
+            
             @if (Model.Albums?.Any() == true)
             {
                 <h2 class="section-title">Албуми</h2>
@@ -74,15 +76,18 @@
                     @foreach (var album in Model.Albums)
                     {
                         <div class="result-card">
-                            <img src="@album.CoverImage" class="result-img" alt="@album.Title">
-                            <div class="result-info">
-                                <h3>@album.Title</h3>
-                                <p>@album.UserName</p>
-                            </div>
+                            <a asp-action="AlbumDetails" asp-controller="Album" asp-route-id="@album.Id">
+                                <img src="@album.CoverImage" class="result-img" alt="@album.Title">
+                                <div class="result-info">
+                                    <h3>@album.Title</h3>
+                                    <p>@album.UserName</p>
+                                </div>
+                            </a>
                         </div>
                     }
                 </div>
             }
+            
             @if (Model.Playlists?.Any() == true)
             {
                 <h2 class="section-title">Плейлисти</h2>
@@ -90,29 +95,77 @@
                     @foreach (var playlist in Model.Playlists)
                     {
                         <div class="result-card">
-                            <img src="@playlist.CoverImage" class="result-img" alt="@playlist.Title">
-                            <div class="result-info">
-                                <h3>@playlist.Title</h3>
-                                <p>@playlist.UserName</p>
-                            </div>
+                            <a asp-action="PlaylistDetails" asp-controller="Playlist" asp-route-id="@playlist.Id">
+                                <img src="@playlist.CoverImage" class="result-img" alt="@playlist.Title">
+                                <div class="result-info">
+                                    <h3>@playlist.Title</h3>
+                                    <p>@playlist.UserName</p>
+                                </div>
+                            </a>
                         </div>
                     }
+                </div>
+            }
+
+            @if (Model.User == null && Model.Tracks == null && Model.Albums == null && Model.Playlists == null && !string.IsNullOrEmpty(Model.SearchFilter))
+            {
+                <div class="no-results">
+                    <h3>Не са намерени резултати</h3>
+                    <p>Опитайте да търсите с различни ключови думи или изберете друга категория.</p>
                 </div>
             }
         </div>
     }
 </div>
 
+<!-- Don't forget to add Font Awesome for the icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <style>
+    /* Global Variables */
+:root {
+  --primary-color: #1DB954;
+  --secondary-color: #191414;
+  --text-color: #FFFFFF;
+  --background-color: #121212;
+  --card-background: #181818;
+  --hover-color: #1ED760;
+  --transition-speed: 0.3s;
+}
+
 /* 🔥 Search Container */
 .search-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 30px;
+    max-width: 1200px;
+    margin: 2rem auto 4rem;
+    padding: 2.5rem;
     background: rgba(24, 24, 24, 0.9);
-    border-radius: 15px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+}
+
+/* 🔍 Page Title Section */
+.page-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.page-title h1 {
+    font-size: 2.8rem;
+    color: white;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.page-title .subtitle {
+    font-size: 1.2rem;
+    color: #b3b3b3;
+    font-weight: normal;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 /* 🔍 Search Box */
@@ -123,12 +176,20 @@
     border-radius: 50px;
     padding: 5px;
     width: 100%;
+    border: 2px solid transparent;
+    transition: all var(--transition-speed);
+    margin-bottom: 1.5rem;
+}
+
+.search-box:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.1);
 }
 
 .search-input {
     flex: 1;
-    padding: 12px 15px;
-    font-size: 16px;
+    padding: 15px 20px;
+    font-size: 1.1rem;
     border: none;
     border-radius: 50px;
     background: transparent;
@@ -136,25 +197,41 @@
     outline: none;
 }
 
+.search-input::placeholder {
+    color: #808080;
+}
+
 .search-btn {
-    background: none;
+    background: var(--primary-color);
     border: none;
-    padding: 10px 15px;
+    padding: 12px 18px;
+    margin-right: 5px;
     cursor: pointer;
-    color: white;
-    font-size: 18px;
-    transition: 0.3s;
+    color: black;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 50px;
+    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .search-btn:hover {
-    color: #1db954;
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+}
+
+.search-btn i {
+    font-size: 1.1rem;
 }
 
 /* 🎚️ Filters */
 .search-filters {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    flex-wrap: wrap;
+    margin: 1.8rem 0;
     gap: 15px;
 }
 
@@ -163,63 +240,125 @@
 }
 
 .search-filters label {
-    padding: 12px 20px;
+    padding: 12px 24px;
     border-radius: 50px;
     background: #242424;
     color: #b3b3b3;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
-    font-size: 16px;
+    transition: all var(--transition-speed);
+    font-size: 0.95rem;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-filters label:hover {
+    background: #2a2a2a;
+    transform: translateY(-2px);
 }
 
 .search-filters input[type="radio"]:checked + label {
-    background: #1db954;
+    background: var(--primary-color);
     color: black;
     transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(29, 185, 84, 0.3);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.6rem;
+    margin: 2.5rem 0 1.2rem;
+    font-weight: 700;
+    position: relative;
+    padding-left: 1rem;
+    color: white;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
 }
 
 /* 🎵 Grid Layout */
 .grid, .artist-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    margin-top: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.2rem;
 }
 
-/* 🎵 Song, Album & Playlist Cards */
+.artist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+/* 🎵 Result Cards */
 .result-card {
     background: #181818;
-    padding: 12px;
-    border-radius: 10px;
-    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
     color: white;
-    transition: 0.3s ease-in-out;
+    transition: all var(--transition-speed);
     cursor: pointer;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 .result-card:hover {
     background: #242424;
-    transform: translateY(-3px);
-    box-shadow: 0px 10px 20px rgba(29, 185, 84, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.4);
+}
+
+.result-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 /* 🖼️ Images */
 .result-img {
     width: 100%;
-    border-radius: 10px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform var(--transition-speed);
+}
+
+.result-card:hover .result-img {
+    transform: scale(1.05);
 }
 
 /* 🎵 Card Info */
+.result-info {
+    padding-top: 12px;
+}
+
 .result-info h3 {
-    margin: 10px 0 5px;
-    font-size: 14px;
+    margin: 0 0 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .result-info p {
-    font-size: 12px;
+    font-size: 0.85rem;
     color: #b3b3b3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 🎤 Circular Artist Cards */
@@ -228,18 +367,27 @@
     flex-direction: column;
     align-items: center;
     background: #181818;
-    padding: 15px;
+    padding: 20px 15px;
     border-radius: 15px;
     text-align: center;
     color: white;
-    transition: 0.3s ease-in-out;
+    transition: all var(--transition-speed);
     cursor: pointer;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .artist-card:hover {
     background: #242424;
-    transform: translateY(-3px);
-    box-shadow: 0px 10px 20px rgba(29, 185, 84, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.4);
+}
+
+.artist-card a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .artist-img {
@@ -247,32 +395,102 @@
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    transition: border-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.artist-card:hover .artist-img {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .artist-card h3 {
-    font-size: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
 }
 
-    /* 🔥 Page Title Section */
-    .page-title {
-        text-align: center;
-        margin-bottom: 30px;
+/* 🎵 No Results Message */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #b3b3b3;
+}
+
+.no-results h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.no-results p {
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* 🎵 Responsive Design */
+@@media (max-width: 992px) {
+    .search-container {
+        max-width: 90%;
+        padding: 2rem;
     }
+    
+    .page-title h1 {
+        font-size: 2.4rem;
+    }
+}
 
-        .page-title h1 {
-            font-size: 32px;
-            color: white;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+@@media (max-width: 768px) {
+    .search-filters {
+        gap: 10px;
+    }
+    
+    .search-filters label {
+        padding: 10px 20px;
+        min-width: 100px;
+        font-size: 0.9rem;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .artist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .page-title .subtitle {
+        font-size: 1rem;
+    }
+}
 
-        .page-title .subtitle {
-            font-size: 18px;
-            color: #b3b3b3;
-            font-weight: normal;
-        }
-
-    /* Keep the rest of the styles unchanged, the card and form styles are already refined */
-
-                    </style>
+@@media (max-width: 480px) {
+    .search-container {
+        padding: 1.5rem;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 1rem;
+    }
+    
+    .artist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .search-input {
+        font-size: 1rem;
+        padding: 12px 15px;
+    }
+    
+    .artist-img {
+        width: 80px;
+        height: 80px;
+    }
+}
+</style>

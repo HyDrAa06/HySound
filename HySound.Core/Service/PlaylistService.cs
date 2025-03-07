@@ -1,4 +1,5 @@
 ﻿using HySound.Core.Service.IService;
+using HySound.DataAccess.Repository;
 using HySound.DataAccess.Repository.IRepository;
 using HySound.Models.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ namespace HySound.Core.Service
     {
         IRepository<Playlist> _playlistRepository;
         IRepository<PlaylistTrack> _playlistTrackRepository;
+        IRepository<Track> _trackRepository;
 
-        public PlaylistService(IRepository<PlaylistTrack> repo,IRepository<Playlist> repository)
+        public PlaylistService(IRepository<Track> trackRepository,IRepository<PlaylistTrack> repo,IRepository<Playlist> repository)
         {
             _playlistRepository = repository;
             _playlistTrackRepository = repo;
+            _trackRepository = trackRepository;
         }
         public async Task AddPlaylistAsync(Playlist entity)
         {
@@ -75,6 +78,23 @@ namespace HySound.Core.Service
 
             await _playlistTrackRepository.AddAsync(playlistTrack);
         }
+
+        public async Task<List<Track>> GetTracksOfPlaylist(int id)
+        {
+            List<PlaylistTrack> playlistTracks = _playlistTrackRepository.GetAll().Where(x=>x.PlaylistId==id).ToList();
+
+            List<Track> tracks = new List<Track>();
+
+            
+
+            foreach(var playlistTrack in playlistTracks)
+            {
+                tracks.Add(
+                    await _trackRepository.GetByIdAsync(playlistTrack.TrackId));
+            }
+
+            return tracks;
+        } 
         public async Task UpdatePlaylistAsync(Playlist entity)
         {
             await _playlistRepository.UpdateAsync(entity);

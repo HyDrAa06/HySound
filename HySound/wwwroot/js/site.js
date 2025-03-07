@@ -1,4 +1,10 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿// site.js
+document.addEventListener("DOMContentLoaded", function () {
+    // Check if we're on the AlbumDetails or PlaylistDetails page
+    const isAlbumDetailsPage = window.location.pathname.includes('AlbumDetails');
+    const isPlaylistDetailsPage = window.location.pathname.includes('PlaylistDetails');
+    if (isAlbumDetailsPage || isPlaylistDetailsPage) return;
+
     // Get the global audio element and other elements
     const globalAudio = document.getElementById("global-audio");
     const globalAudioSource = document.getElementById("global-audio-source");

@@ -88,6 +88,12 @@ namespace HySound.DataAccess.Repository
             return entity;
         }
 
+        public async Task<T> GetByIdAsync(int? id)
+        {
+            T entity = await _dbSet.FindAsync(id);
+            return entity;
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

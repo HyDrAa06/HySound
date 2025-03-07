@@ -4,7 +4,6 @@
 @model UserViewModel
 
 <div class="profile-container">
-    <!-- Profile Header -->
     <div class="profile-header">
         <img src="@Model.ProfilePicture" class="profile-pic">
         <div class="profile-info">
@@ -57,8 +56,15 @@
         <span class="close-btn" onclick="closeFollowersModal()">&times;</span>
         <h2>Followers</h2>
         <ul class="modal-list">
-            
+            @foreach (var follower in Model.FollowersAsUsers)
+            {
+                <li class="user-list-item">
+                    <img src="@follower.ProfilePicture" class="user-pfp">
+                    <span class="user-name">@follower.Username</span>
+                </li>
+            }
         </ul>
+
     </div>
 </div>
 
@@ -67,12 +73,42 @@
         <span class="close-btn" onclick="closeFollowingModal()">&times;</span>
         <h2>Following</h2>
         <ul class="modal-list">
-           
+            @foreach(var following in Model.FollowingAsUsers)
+            {
+                <li class="user-list-item">
+                    <img src="@following.ProfilePicture" class="user-pfp">
+                    <span class="user-name">@following.Username</span>
+                </li>
+            }
         </ul>
     </div>
 </div>
 
 <style>
+    .user-list-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-bottom: 1px solid #444;
+    }
+
+        .user-list-item:last-child {
+            border-bottom: none;
+        }
+
+    .user-pfp {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-name {
+        font-size: 16px;
+        color: white;
+    }
+
     /* Profile Container */
     .profile-container {
         max-width: 900px;

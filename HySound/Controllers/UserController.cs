@@ -95,15 +95,31 @@ namespace HySound.Controllers
                 following = followingUsers.ToList().Count();
             }
 
+            var followedByUsersAsUsers = new List<User>();
+            var followingUsersAsUsers = new List<User>();
+
+            foreach(var temp in followedByUsers)
+            {
+                var toAdd = await userService.GetUserByIdAsync(temp.FollowedById);
+                followedByUsersAsUsers.Add(toAdd);
+            }
+
+            foreach(var temp in followingUsers)
+            {
+                var toAdd = await userService.GetUserByIdAsync(temp.FollowedId);
+                followingUsersAsUsers.Add(toAdd);
+            }
+
             UserViewModel model = new UserViewModel
             {
                 Email = user.Email,
                 Bio = user.Bio,
-                Followers = followerService.GetAll().Where(x => x.FollowedId == user.Id).ToList(),
+                FollowingAsUsers = followingUsersAsUsers,
                 Name = user.Username,
                 ProfilePicture = user.ProfilePicture,
                 FollowersCount = followers,
-                FollowingCount = following
+                FollowingCount = following,
+                FollowersAsUsers = followedByUsersAsUsers
             };
             return View(model);
         }
