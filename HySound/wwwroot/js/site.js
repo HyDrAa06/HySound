@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const isPlaylistDetailsPage = window.location.pathname.includes('PlaylistDetails');
     if (isAlbumDetailsPage || isPlaylistDetailsPage) return;
 
-    // Get the global audio element and other elements
+   
+    // Get references to DOM elements
     const globalAudio = document.getElementById("global-audio");
     const globalAudioSource = document.getElementById("global-audio-source");
     const playButton = document.getElementById("play-btn");
@@ -20,18 +21,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const navLinks = document.getElementsByClassName("nav-link");
 
+    // State variables
     let trackList = [];
     let currentTrackIndex = 0;
     let isPlaying = false;
     let selectedAlbumId = null;
+    let currentTracks = [];
+    let selectedPlaylistId = null;
 
+    // Helper function to update progress bars
     function updateProgressBar(bar, value) {
         bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
     }
 
+    // Load stored track state from localStorage
     function loadStoredTrack() {
         const storedTrack = localStorage.getItem("currentTrack");
-
         if (storedTrack) {
             const { file, title, artist, image, time, isCurrentlyPlayed } = JSON.parse(storedTrack);
             globalAudioSource.src = file;
@@ -57,12 +62,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Save track state on navigation
     for (let navLink of navLinks) {
-        navLink.addEventListener("click", function () {
-            saveTrackState();
-        });
+        navLink.addEventListener("click", saveTrackState);
     }
 
+    // Play/Pause button functionality
     playButton.addEventListener("click", function () {
         if (globalAudio.paused) {
             globalAudio.play();
@@ -77,22 +82,33 @@ document.addEventListener("DOMContentLoaded", function () {
         saveTrackState();
     });
 
+    // Previous track button
     prevButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex - 1 + trackList.length) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
+    // Next track button
     nextButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex + 1) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
+    // Load a track into the player
     function loadTrack(index, shouldPlay = false) {
         const track = trackList[index];
+        console.log('Loading track:', track);
+
         globalAudioSource.src = track.file;
-        songImage.src = track.image;
-        songTitle.textContent = track.title;
-        artistName.textContent = track.artist;
+        songImage.src = track.image || 'path/to/default/image.jpg';
+        console.log('Image set to:', songImage.src);
+
+        songTitle.textContent = track.title || 'Unknown Title';
+        console.log('Title set to:', songTitle.textContent);
+
+        artistName.textContent = track.artist || 'Unknown Artist';
+        console.log('Artist set to:', artistName.textContent);
+
         globalAudio.load();
         globalAudio.currentTime = 0;
         timebar.value = 0;
@@ -100,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
         globalAudio.volume = 1.0;
         soundBar.value = 100;
         updateProgressBar(soundBar, 100);
+
         if (shouldPlay) {
             globalAudio.addEventListener('canplay', function playTrack() {
                 globalAudio.play();
@@ -116,6 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
         saveTrackState();
     }
 
+    // Save current track state to localStorage
     function saveTrackState() {
         localStorage.setItem("currentTrack", JSON.stringify({
             file: globalAudioSource.src,
@@ -127,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
     }
 
+    // Update timebar as audio plays
     globalAudio.addEventListener("timeupdate", function () {
         if (!isNaN(globalAudio.duration)) {
             const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
@@ -135,17 +154,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Seek audio when timebar is adjusted
     timebar.addEventListener("input", function () {
         globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
         updateProgressBar(timebar, timebar.value);
         saveTrackState();
     });
 
+    // Adjust volume with sound bar
     soundBar.addEventListener("input", function () {
         globalAudio.volume = soundBar.value / 100;
         updateProgressBar(soundBar, soundBar.value);
     });
 
+    // Default track list (for testing or initial load)
     trackList = [
         {
             file: 'path-to-song1.mp3',
@@ -169,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadStoredTrack();
 
+    // Library navigation event listeners
     document.getElementById('favourites-option').addEventListener('click', function () {
         toggleContent('favourites');
         updateTitle('Favourites');
@@ -187,43 +210,47 @@ document.addEventListener("DOMContentLoaded", function () {
         updateActiveState('albums');
     });
 
-    document.getElementById('tracklist-option').addEventListener('click', function () {
-        toggleContent('tracklist');
-        updateTitle('Tracklist');
-        updateActiveState('tracklist');
-    });
+    
 
+    // Toggle library content visibility
     function toggleContent(content) {
         document.getElementById('favourites-content').style.display = 'none';
         document.getElementById('playlists-content').style.display = 'none';
         document.getElementById('albums-content').style.display = 'none';
-        document.getElementById('tracklist-content').style.display = 'none';
         document.getElementById('selected-album-tracks').style.display = 'none';
+        document.getElementById('selected-playlist-tracks').style.display = 'none';
+
         if (content === 'favourites') {
             document.getElementById('favourites-content').style.display = 'grid';
         } else if (content === 'playlists') {
-            document.getElementById('playlists-content').style.display = 'grid';
+            if (selectedPlaylistId) {
+                showPlaylistTracks(selectedPlaylistId);
+            } else {
+                document.getElementById('playlists-content').style.display = 'grid';
+            }
         } else if (content === 'albums') {
             if (selectedAlbumId) {
                 showAlbumTracks(selectedAlbumId);
             } else {
                 document.getElementById('albums-content').style.display = 'grid';
             }
-        } else if (content === 'tracklist') {
-            document.getElementById('tracklist-content').style.display = 'grid';
+        
         }
     }
 
+    // Update library title
     function updateTitle(title) {
         document.getElementById('library-title').textContent = title;
     }
 
+    // Update active navigation item
     function updateActiveState(option) {
         const navItems = document.querySelectorAll('.library-nav li');
         navItems.forEach(item => item.classList.remove('active'));
         document.getElementById(option + '-option').classList.add('active');
     }
 
+    // Main click event listener for albums, playlists, and tracks
     document.addEventListener("click", function (e) {
         // Handle album card clicks
         const albumCard = e.target.closest('.album-card');
@@ -235,57 +262,107 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log('Playing album with ID:', albumId);
                     fetchAlbumTracks(albumId).then(tracks => {
                         trackList = tracks.map(track => ({
-                            file: track.audioUrl || '',
-                            title: track.name || 'Unnamed Track',
-                            artist: track.userName || 'Unknown Artist',
-                            image: track.imageLink || ''
+                            file: track.audioUrl || track.file || '',
+                            title: track.name || track.title || 'Unnamed Track',
+                            artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                            image: track.imageLink || track.image || track.coverImage || ''
                         })).filter(track => track.file && track.file.trim().length > 0);
+                        console.log('Mapped trackList for album:', trackList);
                         if (trackList.length > 0) {
+                            currentTrackIndex = 0;
                             loadTrack(0, true);
                         } else {
                             console.log('No valid tracks in this album');
                         }
                     }).catch(error => console.error('Fetch error:', error));
-                } else {
-                    console.error('No albumId found for this play button');
                 }
             } else {
                 const albumId = albumCard.dataset.albumid;
                 if (albumId) {
                     console.log('Showing grid for album with ID:', albumId);
                     showAlbumTracks(albumId);
-                } else {
-                    console.error('No albumId found for this album card');
                 }
             }
         }
 
-        // Handle tracklist play button clicks
-        const trackPlayButton = e.target.closest('.tracklist-play-btn');
-        if (trackPlayButton) {
-            console.log('Track button clicked in grid:', trackPlayButton);
-            const file = trackPlayButton.dataset.src;
-            const title = trackPlayButton.dataset.title;
-            const artist = trackPlayButton.dataset.artist;
-            const image = trackPlayButton.dataset.image;
-            if (file && file !== 'undefined') {
-                trackList = [{ file, title, artist, image }];
-                loadTrack(0, true);
+        // Handle playlist card clicks
+        const playlistCard = e.target.closest('.library-track-card[data-type="playlist"]');
+        if (playlistCard) {
+            const playButton = playlistCard.querySelector('.playlist-play-btn');
+            if (e.target === playButton || playButton.contains(e.target)) {
+                const playlistId = playButton.dataset.playlistid;
+                if (playlistId) {
+                    console.log('Playing playlist with ID:', playlistId);
+                    fetchPlaylistTracks(playlistId).then(tracks => {
+                        trackList = tracks.map(track => ({
+                            file: track.audioUrl || track.file || '',
+                            title: track.name || track.title || 'Unnamed Track',
+                            artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                            image: track.imageLink || track.image || track.coverImage || ''
+                        })).filter(track => track.file && track.file.trim().length > 0);
+                        console.log('Mapped trackList for playlist:', trackList);
+                        if (trackList.length > 0) {
+                            currentTrackIndex = 0;
+                            loadTrack(0, true);
+                        } else {
+                            console.log('No valid tracks in this playlist');
+                        }
+                    }).catch(error => console.error('Fetch error:', error));
+                }
             } else {
-                console.log('No valid audio URL for this track in grid:', file);
+                const playlistId = playlistCard.dataset.playlistid;
+                if (playlistId) {
+                    console.log('Showing grid for playlist with ID:', playlistId);
+                    showPlaylistTracks(playlistId);
+                }
             }
         }
 
-        // Handle single track play button clicks (no style change)
+        // Handle tracklist play button clicks (for both album and playlist grids)
+        const trackPlayButton = e.target.closest('.tracklist-play-btn');
+        if (trackPlayButton) {
+            const index = parseInt(trackPlayButton.dataset.index);
+            if (!isNaN(index) && currentTracks && currentTracks.length > index) {
+                trackList = currentTracks.slice(index).map(track => ({
+                    file: track.audioUrl || track.file || '',
+                    title: track.name || track.title || 'Unnamed Track',
+                    artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                    image: track.imageLink || track.image || track.coverImage || ''
+                })).filter(track => track.file && track.file.trim().length > 0);
+                console.log('Mapped trackList from grid:', trackList);
+                if (trackList.length > 0) {
+                    currentTrackIndex = 0;
+                    loadTrack(0, true);
+                } else {
+                    console.log('No valid tracks from this point');
+                }
+            } else {
+                // Fallback to single track playback
+                const file = trackPlayButton.dataset.src;
+                const title = trackPlayButton.dataset.title || 'Unnamed Track';
+                const artist = trackPlayButton.dataset.artist || 'Unknown Artist';
+                const image = trackPlayButton.dataset.image || '';
+                if (file && file !== 'undefined') {
+                    trackList = [{ file, title, artist, image }];
+                    currentTrackIndex = 0;
+                    loadTrack(0, true);
+                } else {
+                    console.log('No valid audio URL for this track in grid:', file);
+                }
+            }
+        }
+
+        // Handle single track play button clicks
         const singlePlayButton = e.target.closest('.play-track-btn');
         if (singlePlayButton) {
             console.log('Single track button clicked:', singlePlayButton);
             const file = singlePlayButton.dataset.src;
-            const title = singlePlayButton.dataset.title;
-            const artist = singlePlayButton.dataset.artist;
-            const image = singlePlayButton.dataset.image;
+            const title = singlePlayButton.dataset.title || 'Unnamed Track';
+            const artist = singlePlayButton.dataset.artist || 'Unknown Artist';
+            const image = singlePlayButton.dataset.image || '';
             if (file && file !== 'undefined') {
                 trackList = [{ file, title, artist, image }];
+                currentTrackIndex = 0;
                 loadTrack(0, true);
             } else {
                 console.log('No valid audio URL for this single track:', file);
@@ -293,13 +370,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Fetch album tracks from the server
     async function fetchAlbumTracks(albumId) {
         try {
             const response = await fetch('/Album/Tracks?albumId=' + albumId);
             if (!response.ok) {
                 throw new Error('Failed to fetch album tracks: Server returned ' + response.status);
             }
-            return await response.json();
+            const tracks = await response.json();
+            console.log('Raw album tracks data:', tracks); // Log raw data for debugging
+            return tracks;
         } catch (error) {
             console.error(error);
             alert('Error fetching album tracks. Please try again later.');
@@ -307,10 +387,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Display album tracks in a grid
     async function showAlbumTracks(albumId) {
         selectedAlbumId = albumId;
         hideAlbumTracksGrid();
         const tracks = await fetchAlbumTracks(albumId);
+        currentTracks = tracks;
         console.log('Tracks for grid display:', tracks);
         populateTracksGrid(tracks);
         document.getElementById('albums-content').style.display = 'none';
@@ -324,6 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Hide album tracks grid and return to albums view
     function hideAlbumTracksGrid() {
         selectedAlbumId = null;
         document.getElementById('albums-content').style.display = 'grid';
@@ -334,27 +417,76 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function populateTracksGrid(tracks) {
-        const grid = document.getElementById('selected-album-tracks');
+    // Fetch playlist tracks from the server
+    async function fetchPlaylistTracks(playlistId) {
+        try {
+            const response = await fetch('/Playlist/Tracks?playlistId=' + playlistId);
+            if (!response.ok) {
+                throw new Error('Failed to fetch playlist tracks: Server returned ' + response.status);
+            }
+            const tracks = await response.json();
+            console.log('Raw playlist tracks data:', tracks); // Log raw data for debugging
+            return tracks;
+        } catch (error) {
+            console.error(error);
+            alert('Error fetching playlist tracks. Please try again later.');
+            return [];
+        }
+    }
+
+    // Display playlist tracks in a grid
+    async function showPlaylistTracks(playlistId) {
+        selectedPlaylistId = playlistId;
+        hidePlaylistTracksGrid();
+        const tracks = await fetchPlaylistTracks(playlistId);
+        currentTracks = tracks;
+        console.log('Tracks for playlist grid display:', tracks);
+        populateTracksGrid(tracks, 'selected-playlist-tracks');
+        document.getElementById('playlists-content').style.display = 'none';
+        document.getElementById('selected-playlist-tracks').style.display = 'grid';
+
+        const backButton = document.getElementById('back-to-playlists');
+        if (!backButton) {
+            const backButtonHtml = `<button id="back-to-playlists" class="back-button">Back to Playlists</button>`;
+            document.getElementById('selected-playlist-tracks').insertAdjacentHTML('beforeend', backButtonHtml);
+            document.getElementById('back-to-playlists').addEventListener('click', hidePlaylistTracksGrid);
+        }
+    }
+
+    // Hide playlist tracks grid and return to playlists view
+    function hidePlaylistTracksGrid() {
+        selectedPlaylistId = null;
+        document.getElementById('playlists-content').style.display = 'grid';
+        document.getElementById('selected-playlist-tracks').style.display = 'none';
+        const backButton = document.getElementById('back-to-playlists');
+        if (backButton) {
+            backButton.remove();
+        }
+    }
+
+    // Populate the tracks grid with track data
+    function populateTracksGrid(tracks, containerId = 'selected-album-tracks') {
+        const grid = document.getElementById(containerId);
         grid.innerHTML = '';
-        grid.className = 'tracklist-grid'; // Ensure the grid uses the new class
+        grid.className = 'tracklist-grid';
         if (!tracks || tracks.length === 0) {
-            grid.innerHTML = '<p class="no-tracks">No tracks in this album.</p>';
+            grid.innerHTML = '<p class="no-tracks">No tracks in this playlist.</p>';
         } else {
-            tracks.forEach(track => {
+            tracks.forEach((track, index) => {
                 const rowHtml = `
                     <div class="tracklist-row">
                         <div class="tracklist-cell image">
-                            <img src="${track.imageLink || ''}" alt="Track Image" class="tracklist-image">
+                            <img src="${track.imageLink || track.image || track.coverImage || ''}" alt="Track Image" class="tracklist-image">
                         </div>
-                        <div class="tracklist-cell title">${track.name || 'Unnamed Track'}</div>
-                        <div class="tracklist-cell artist">${track.userName || 'Unknown Artist'}</div>
+                        <div class="tracklist-cell title">${track.name || track.title || 'Unnamed Track'}</div>
+                        <div class="tracklist-cell artist">${track.userName || track.artist || track.creator || 'Unknown Artist'}</div>
                         <div class="tracklist-cell actions">
                             <button class="tracklist-play-btn" 
-                                    data-src="${track.audioUrl || ''}" 
-                                    data-title="${track.name || ''}" 
-                                    data-artist="${track.userName || ''}" 
-                                    data-image="${track.imageLink || ''}">
+                                    data-index="${index}"
+                                    data-src="${track.audioUrl || track.file || ''}" 
+                                    data-title="${track.name || track.title || ''}" 
+                                    data-artist="${track.userName || track.artist || track.creator || ''}" 
+                                    data-image="${track.imageLink || track.image || track.coverImage || ''}">
                                 <i class="fas fa-play"></i>
                             </button>
                         </div>

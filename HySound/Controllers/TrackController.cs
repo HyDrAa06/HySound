@@ -27,7 +27,8 @@ namespace HySound.Controllers
         IUserService userService;
         IPlaylistService playlistService;
         ICommentService commentService;
-        public TrackController(ICommentService commentService,UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
+        ILikeService likesService;
+        public TrackController(ILikeService likes, ICommentService commentService,UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
         {
             userManager = _userManager;
             this.cloudService = cloud;
@@ -36,6 +37,7 @@ namespace HySound.Controllers
             this.genreService = genreService;
             this.playlistService = playlistService;
             this.commentService = commentService;
+            likesService = likes;
 
             _configuration = configuration;
             var account = new Account(
@@ -203,6 +205,10 @@ namespace HySound.Controllers
         }
         public async Task<IActionResult> TrackDetails(int id)
         {
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+
             Track track = await trackService.GetTrackByIdAsync(id);
 
             var comments = commentService.AllWithInclude().Include(x => x.User).Where(x=>x.TrackId==id);
@@ -219,6 +225,17 @@ namespace HySound.Controllers
                 {
                     trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value); // Assuming you have a GenreService
                 }
+
+                int likesCount = likesService.GetAll().Where(x => x.TrackId == id).Count();
+
+                bool isLiked = false;
+
+                var like = likesService.GetAll().Where(x => x.UserId == user.Id && x.TrackId==id);
+                if (like.Any())
+                {
+                    isLiked = true;
+                }
+
                 TrackDetailsViewModel model = new TrackDetailsViewModel
 
                 {
@@ -228,8 +245,10 @@ namespace HySound.Controllers
                     TrackImage = track.CoverImage,
                     Comments = comments.ToList(),
                     Username = track.User.Username,
-                    Genre = trackGenre.Name
-
+                    Genre = trackGenre.Name,
+                    LikesCount = likesCount,
+                    IsLiked = isLiked,
+                    AudioUrl = track.AudioUrl
                 };
                 return View(model);
             }

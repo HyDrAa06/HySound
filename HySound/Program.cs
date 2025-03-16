@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using CloudinaryDotNet;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using HySound.Models.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
 builder.Services.AddScoped<ILikeService, LikeService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IArtistRequestService, ArtistRequestService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddRazorPages();
 
@@ -52,11 +54,7 @@ builder.Services.AddSingleton(cloudinary);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<HySoundContext>();
-    await dbContext.Seed();
-}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -87,10 +85,13 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await CreateAdmin(services);
 }
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<HySoundContext>();
+    await dbContext.Seed();
+}
 
 app.MapControllerRoute(
     name: "default",
@@ -111,34 +112,5 @@ static async Task CreateRoles(IServiceProvider serviceProvider)
             await roleManager.CreateAsync(new IdentityRole(roleName));
 
         }
-    }
-}
- static async Task CreateAdmin(IServiceProvider serviceProvider)
-{
-    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var adminEmail = "admin@admin.com";
-
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-
-
-
-
-    if (adminUser == null)
-
-    {
-
-        var user = new IdentityUser { UserName = "admin@admin.com", Email = adminEmail };
-
-        var result = await userManager.CreateAsync(user, "AdminPassword123!");
-
-        if (result.Succeeded)
-
-        {
-
-            await userManager.AddToRoleAsync(user, "Admin"); // Добавя роля "Admin" 
-
-        }
-
     }
 }

@@ -16,6 +16,7 @@ namespace HySound.Models.Models
         [MaxLength(100)]    
         public string Title { get; set; }
         public string? AudioUrl { get; set; } = string.Empty;
+        [Required]
         public bool IsYoutube { get; set; }
         public string? CoverImage { get; set; }
         [Range(0, int.MaxValue)]
@@ -26,7 +27,6 @@ namespace HySound.Models.Models
 
         public int? GenreId { get; set; }
 
-        public TrackStatistic? TrackStatistic { get; set; }
         public Genre? Genre { get; set; }
         public User? User { get; set; }
         public Album? Album { get; set; }

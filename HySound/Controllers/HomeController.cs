@@ -39,7 +39,7 @@ namespace HySound.Controllers
         public async Task<IActionResult> Search(SearchViewModel? model)
         {
             
-            if(!User.IsInRole("User") && !User.IsInRole("Artist") && !User.IsInRole("Ädmin"))
+            if(!User.IsInRole("User") && !User.IsInRole("Artist") && !User.IsInRole("Admin"))
             {
                 return RedirectToAction("Login","Account");
             }
@@ -90,7 +90,6 @@ namespace HySound.Controllers
                 {
                     Title = x.Title,
                     CoverImage = x.CoverImage,
-                    ReleaseDate = x.ReleaseDate,
                     Id = x.Id,
                     UserName= x.User.Username
                 }).ToList();
@@ -179,6 +178,10 @@ namespace HySound.Controllers
             var likesList = await _likeService.GetAllLikesAsync();
             List<int?> trackIds = likesList.Where(x=>x.UserId == user.Id).Select(x=>x.TrackId).ToList();
 
+            List<int?> albumIds = likesList.Where(x=>x.UserId==user.Id).Select(x=>x.AlbumId).ToList();
+
+            List<int?> playlistIds = likesList.Where(x => x.UserId == user.Id).Select(x => x.PlaylistId).ToList();
+
             model = model.Where(x => trackIds.Contains(x.TrackId)).ToList();
 
             var albumModel = _albumService.AllWithInclude().Include(x=>x.Tracks).Include(x => x.User).Select(x => new AlbumViewModel()
@@ -186,7 +189,6 @@ namespace HySound.Controllers
                 Id = x.Id,
                 Title = x.Title,
                 CoverImage = x.CoverImage,
-                ReleaseDate = x.ReleaseDate,
                 UserName = x.User.Username,
                 Tracks = x.Tracks.Select(t=> new Track
                 {
@@ -201,6 +203,8 @@ namespace HySound.Controllers
                 }).ToList()
             }).ToList();
 
+            albumModel = albumModel.Where(x => albumIds.Contains(x.Id)).ToList();
+
             var playlistsModel = _playlistService.AllWithInclude().Include(x => x.User).Select(x => new PlaylistViewModel()
             {
                 Id=x.Id,    
@@ -208,6 +212,28 @@ namespace HySound.Controllers
                 Title = x.Title,
                 UserName = x.User.Username
             }).ToList();
+
+
+            playlistsModel = playlistsModel.Where(x => playlistIds.Contains(x.Id)).ToList();
+
+            var createdPlaylistIds = _playlistService.GetAll().Where(x => x.UserId == user.Id).Select(x=>x.Id);
+            var playlistsToAdd = _playlistService.GetAll().Include(x=>x.User).Where(x => createdPlaylistIds.Contains(x.Id));
+
+            foreach(var playlist in playlistsToAdd)
+            {
+                PlaylistViewModel tempViewModel = new PlaylistViewModel()
+                {
+                    Id = playlist.Id,
+                    CoverImage = playlist.CoverImage,
+                    Title = playlist.Title,
+                    UserName = playlist.User.Username
+                };
+                if (!playlistsModel.Contains(tempViewModel))
+                {
+                    playlistsModel.Add(tempViewModel);
+                }
+            }
+
 
             libraryModel.Tracks = model;
             libraryModel.Albums = albumModel;
@@ -227,7 +253,29 @@ namespace HySound.Controllers
                 Plays = x.Plays,
                 ImageLink = x.CoverImage
             }).ToList();
-            return View(model);
+
+            if(model.Count >= 8)
+            {
+                List<TrackViewModel> shownTracks = new List<TrackViewModel>();
+                Random k = new Random();
+
+                while(shownTracks.Count < 8)
+                {
+                    TrackViewModel track = model[k.Next(0, model.Count - 1)];
+                    if (!shownTracks.Contains(track))
+                    {
+                        shownTracks.Add(track);
+                    }
+                }
+                return View(shownTracks);
+
+            }
+            else
+            {
+                return View(model);
+            }
+
+
         }
 
         public IActionResult Privacy()

@@ -16,10 +16,11 @@ namespace HySound.Models.Models
         [MaxLength(100)]
         public string Title { get; set; }
         public string? CoverImage { get; set; }
-        public DateTime ReleaseDate { get; set; }
 
         public int? UserId { get; set; }
         public User? User {  get; set; }
+        public ICollection<Like>? Likes { get; set; } = new List<Like>();
+
         public ICollection<Track>? Tracks { get; set; } = new List<Track>();
     }
 }

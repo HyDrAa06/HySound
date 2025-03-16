@@ -8,7 +8,11 @@ namespace HySound.ViewModels.Track
         public string Username { get; set; }
         public string TrackImage { get; set; }
         public int Plays { get; set; }
+        public int LikesCount { get; set; }
         public string Genre { get; set; }
+
+        public string AudioUrl { get; set; }
+        public bool IsLiked { get; set; }
         public List<HySound.Models.Models.Comment> Comments { get; set; }
     }
 }

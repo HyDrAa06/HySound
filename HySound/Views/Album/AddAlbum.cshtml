@@ -2,186 +2,536 @@
 @model AddAlbumViewModel
 
 <div class="album-container">
-    <h1 class="album-title">Create New Album</h1>
+    <div class="album-header">
+        <h1 class="album-title">Create New Album</h1>
+    </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
-        <input type="text" placeholder="Album Title" asp-for="Title" class="album-input" required />
-        <input type="date" asp-for="ReleaseDate" class="album-input" required />
+        <div class="album-form-grid">
+            <div class="album-details">
+                <div class="cover-upload-container">
+                    <div class="cover-preview" id="coverPreview">
+                        <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="upload-text">Upload Cover</span>
+                    </div>
+                    <input type="file" id="Picture" asp-for="Picture" accept="image/*" class="cover-upload" />
+                </div>
 
-        <div class="add-track-input-group" id="fileUploadGroup">
-            <label for="imageFile" class="add-track-input-label">Cover image</label>
-            <input type="file" id="Picture" asp-for="Picture" class="add-track-input-field" accept="image/*" />
-        </div>
+                <div class="input-group">
+                    <label for="Title">Album Title</label>
+                    <input type="text" id="Title" placeholder="My New Album" asp-for="Title" class="album-input" required />
+                </div>
 
-        <div class="track-selection">
-            <h2>Select Tracks</h2>
-            <div class="track-list">
-                @foreach (var track in Model.Tracks)
-                {
-                    <label class="track-item" data-track-id="@track.Value">
-                        <div class="track-card">
-                            <img src="@Model.TrackPictures.FirstOrDefault(x=>x.Key.ToString() == track.Value).Value" alt="@track.Text" class="track-image" />
-                            <span class="track-name">@track.Text</span>
-                        </div>
-                        <input type="checkbox" name="SelectedTracksIds" value="@track.Value" class="track-checkbox" />
-                    </label>
-                }
+                <div class="input-group">
+                    <label for="ReleaseDate">Release Date</label>
+                    <input type="date" id="ReleaseDate" asp-for="ReleaseDate" class="album-input" required />
+                </div>
+            </div>
+            
+            <div class="track-selection">
+                <div class="selection-header">
+                    <h2>Select Tracks</h2>
+                    <span class="track-counter" id="trackCounter">0 selected</span>
+                </div>
+                
+                <div class="search-container">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <input type="text" id="trackSearch" placeholder="Search your tracks" class="search-input" />
+                </div>
+                
+                <div class="track-list" id="trackList">
+                    @foreach (var track in Model.Tracks)
+                    {
+                        <label class="track-item" data-track-id="@track.Value" data-track-name="@track.Text.ToLower()">
+                            <div class="track-card">
+                                <div class="track-image-container">
+                                    <img src="@Model.TrackPictures.FirstOrDefault(x=>x.Key.ToString() == track.Value).Value" alt="@track.Text" class="track-image" />
+                                    <div class="track-overlay">
+                                        <div class="check-icon">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="track-info">
+                                    <span class="track-name">@track.Text</span>
+                                </div>
+                                <input type="checkbox" name="SelectedTracksIds" value="@track.Value" class="track-checkbox" />
+                            </div>
+                        </label>
+                    }
+                </div>
             </div>
         </div>
 
-        <button type="submit" class="album-submit">Create Album</button>
+        <div class="form-actions">
+            <button type="button" class="album-cancel">Cancel</button>
+            <button type="submit" class="album-submit">Create Album</button>
+        </div>
     </form>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Cover image preview
+        const coverInput = document.getElementById('Picture');
+        const coverPreview = document.getElementById('coverPreview');
+        
+        coverInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Album Cover">`;
+                    coverPreview.classList.add('has-image');
+                }
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        
+        // Click to trigger file upload
+        coverPreview.addEventListener('click', function() {
+            coverInput.click();
+        });
+        
+        // Track selection and counter
         const checkboxes = document.querySelectorAll(".track-checkbox");
+        const trackCounter = document.getElementById("trackCounter");
+        
+        function updateCounter() {
+            const selectedCount = document.querySelectorAll(".track-checkbox:checked").length;
+            trackCounter.textContent = selectedCount + " selected";
+        }
+        
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", function () {
-                this.parentElement.classList.toggle("selected", this.checked);
+            checkbox.addEventListener("change", function() {
+                this.closest(".track-item").classList.toggle("selected", this.checked);
+                updateCounter();
+            });
+        });
+        
+        // Track search functionality
+        const searchInput = document.getElementById("trackSearch");
+        const trackItems = document.querySelectorAll(".track-item");
+        
+        searchInput.addEventListener("input", function() {
+            const query = this.value.toLowerCase().trim();
+            
+            trackItems.forEach(item => {
+                const trackName = item.dataset.trackName;
+                if (trackName.includes(query) || query === '') {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
             });
         });
     });
 </script>
 
 <style>
-    /* Overall Background Styling */
+    /* Base Styles */
+    :root {
+        --primary-color: #1DB954;
+        --primary-hover: #1ed760;
+        --background: #121212;
+        --secondary-bg: #181818;
+        --card-bg: #282828;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --border-radius: 8px;
+    }
+
     body {
-        background: #121212;
-        color: white;
-        font-family: 'Arial', sans-serif;
+        background: var(--background);
+        color: var(--text-primary);
+        font-family: 'Circular', 'Spotify Circular', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
         margin: 0;
         padding: 0;
-        height: 100vh;
+        min-height: 100vh;
     }
 
-    /* Container to hold content */
+    /* Container Layout */
     .album-container {
-        background: #121212;
-        padding: 40px;
-        width: 100%;
         max-width: 1200px;
-        margin: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
+        margin: 0 auto;
+        padding: 24px;
     }
 
-    /* Title Styling */
+    .album-header {
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .album-title {
-        font-size: 2rem;
-        text-align: center;
-        margin-bottom: 20px;
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
     }
 
-    /* Form Fields */
-    .album-input, .album-select {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        background: #333;
-        color: white;
-        border: none;
-    }
-
-    /* Track Section Title */
-    .track-selection h2 {
-        margin-top: 20px;
-        font-size: 1.5rem;
-    }
-
-    /* Track List Container (Bigger, Closer Cards) */
-    .track-list {
+    /* Form Grid Layout */
+    .album-form-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Bigger cards */
-        gap: 15px; /* Smaller gap between cards */
-        margin-top: 20px;
+        grid-template-columns: 300px 1fr;
+        gap: 32px;
     }
 
-    /* Styling for Individual Track Items */
-    .track-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        border-radius: 8px;
-        background: #1e1e1e;
-        cursor: pointer;
-        text-align: center;
-        width: 100%;
-        height: 180px; /* Card height adjusted */
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.3s ease;
-    }
-
-        /* Styling for the Track Item when selected */
-        .track-item.selected {
-            background: #1db954;
+    @@media (max-width: 768px) {
+        .album-form-grid {
+            grid-template-columns: 1fr;
         }
+    }
 
-    /* Track Card Details */
-    .track-card {
+    /* Album Details Section */
+    .album-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Cover Upload */
+    .cover-upload-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .cover-preview {
+        width: 260px;
+        height: 260px;
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-
-    /* Track Image Styling */
-    .track-image {
-        width: 100%;
-        height: 100%;
-        border-radius: 8px;
-        object-fit: cover; /* Ensures the image covers the entire card */
-    }
-
-    /* Track Name Styling */
-    .track-name {
-        position: absolute;
-        bottom: 10px;
-        color: white;
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-overflow: ellipsis;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         overflow: hidden;
-        white-space: nowrap;
-        width: 100%;
-        text-align: center;
     }
 
-    /* Checkbox Hidden but Visible When Selected */
+    .cover-preview:hover {
+        background: #333333;
+    }
+
+    .cover-preview.has-image {
+        background: none;
+    }
+
+    .cover-preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-placeholder {
+        opacity: 0.6;
+        margin-bottom: 12px;
+    }
+
+    .upload-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .cover-upload {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    /* Input Styling */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-group label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .album-input {
+        background: var(--card-bg);
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 12px 16px;
+        font-size: 16px;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+    }
+
+    .album-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .album-input::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    /* Track Selection Section */
+    .track-selection {
+        background: var(--secondary-bg);
+        border-radius: var(--border-radius);
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .selection-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .selection-header h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .track-counter {
+        background: var(--card-bg);
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    /* Search Box */
+    .search-container {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        background: var(--card-bg);
+        border: none;
+        border-radius: var(--border-radius);
+        color: var(--text-primary);
+        font-size: 16px;
+    }
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    /* Track List */
+    .track-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    /* Scrollbar Styling */
+    .track-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .track-list::-webkit-scrollbar-track {
+        background: var(--secondary-bg);
+    }
+
+    .track-list::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 3px;
+    }
+
+    .track-list::-webkit-scrollbar-thumb:hover {
+        background: #777;
+    }
+
+    /* Track Items */
+    .track-item {
+        cursor: pointer;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+
+    .track-item:hover {
+        transform: translateY(-4px);
+    }
+
+    .track-card {
+        background: var(--card-bg);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .track-image-container {
+        position: relative;
+        padding-top: 100%; /* 1:1 Aspect ratio */
+        overflow: hidden;
+    }
+
+    .track-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .track-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .track-item:hover .track-overlay {
+        opacity: 1;
+    }
+
+    .track-item.selected .track-overlay {
+        opacity: 1;
+        background: rgba(29, 185, 84, 0.7);
+    }
+
+    .check-icon {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s ease;
+    }
+
+    .track-item.selected .check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .track-info {
+        padding: 12px;
+    }
+
+    .track-name {
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block  display: block;
+    }
+
     .track-checkbox {
         position: absolute;
-        top: 5px;
-        right: 5px;
-        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
     }
 
-    .track-item.selected .track-checkbox {
-        visibility: visible;
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 32px;
     }
 
-    /* Submit Button Styling */
+    .album-cancel {
+        padding: 12px 24px;
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--text-secondary);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .album-cancel:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
     .album-submit {
-        padding: 8px 15px;
-        background: #1db954;
+        padding: 12px 24px;
+        background: var(--primary-color);
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: var(--border-radius);
         cursor: pointer;
-        transition: background 0.3s;
-        font-size: 1rem;
-        width: auto;
-        margin: 20px auto 0;
-        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
     }
 
-        .album-submit:hover {
-            background: #1ed760;
+    .album-submit:hover {
+        background: var(--primary-hover);
+        transform: scale(1.02);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .album-form-grid {
+            grid-template-columns: 1fr;
         }
+        
+        .cover-preview {
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+        
+        .track-list {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .album-container {
+            padding: 16px;
+        }
+        
+        .track-list {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .album-cancel, .album-submit {
+            width: 100%;
+        }
+    }
 </style>

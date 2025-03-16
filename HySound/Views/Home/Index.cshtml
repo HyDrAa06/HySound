@@ -7,508 +7,474 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HySound - Начало</title>
-    <link rel="stylesheet" href="site.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+   
 </head>
 <body>
-   
-
     <!-- Hero Section -->
     <section class="hero-home">
         <h1>Добре дошли в HySound</h1>
-        <p>Открийте нови песни и плейлисти всеки ден. Насладете се на вашата любима музика навсякъде.</p>
-        <a asp-controller="Home" asp-action="Search" class="hero-btn-home">Започнете сега</a>
+        <p>Открийте нови песни и се насладете на вашата любима музика навсякъде.</p>
+        <div>
+            <a asp-action="Search" asp-controller="Home" class="hero-btn-home">Започнете сега</a>
+        </div>
     </section>
 
-    <!-- Playlists Section -->
     <div class="container">
-        <section class="playlists-home">
-            <h2 class="section-title">Препоръчани Плейлисти</h2>
-            <div class="playlist-grid-home">
-                <div class="playlist-card-home">
-                    <img src="~/Images/lyfe.jpg" alt="Playlist 1" class="playlist-image-home">
-                    <div class="playlist-overlay">
-                        <h3>Летни Хитове</h3>
-                    </div>
-                </div>
-                <div class="playlist-card-home">
-                    <img src="~/Images/utopia.jpg" alt="Playlist 2" class="playlist-image-home">
-                    <div class="playlist-overlay">
-                        <h3>Релакс Музика</h3>
-                    </div>
-                </div>
-                <div class="playlist-card-home">
-                    <img src="~/Images/starboy.jpg" alt="Playlist 3" class="playlist-image-home">
-                    <div class="playlist-overlay">
-                        <h3>Популярни Сингли</h3>
-                    </div>
-                </div>
-                <div class="playlist-card-home">
-                    <img src="~/Images/wlr.jpg" alt="Playlist 4" class="playlist-image-home">
-                    <div class="playlist-overlay">
-                        <h3>Нови Албуми</h3>
-                    </div>
+        <!-- Featured Section -->
+        <section class="featured-section">
+            <div class="featured-banner">
+                <div class="featured-content">
+                    <h3>Открийте новата музика</h3>
+                    <p>Слушайте най-новите хитове и открийте нови изпълнители всеки ден. Персонализирайте своето музикално преживяване.</p>
                 </div>
             </div>
         </section>
 
         <!-- Tracks Section -->
         <section class="tracks-home">
-            <h2 class="section-title">Последни Тракове</h2>
+            <h2 class="section-title">Популярни песни</h2>
             <div class="track-list-home">
-                <div class="track-item-home">
-                    <img src="~/Images/wlr.jpg" alt="Track 1" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 1</h3>
-                        <p class="track-artist-home">Изпълнител 1</p>
-                        <button class="track-play-btn-home">Пусни</button>
+                @foreach(var track in Model)
+                {
+                    <div class="track-item-home">
+                        <img src="@track.ImageLink" alt="Track 1" class="track-img-home">
+                        <div class="track-info-home">
+                            <h3 class="track-title-home">@track.Title</h3>
+                            <p class="track-artist-home">@track.UserName</p>
+                            <button class="track-play-btn-home">Пусни</button>
+                        </div>
                     </div>
-                </div>
-                <div class="track-item-home">
-                    <img src="~/Images/magnolia.jpg" alt="Track 2" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 2</h3>
-                        <p class="track-artist-home">Изпълнител 2</p>
-                        <button class="track-play-btn-home">Пусни</button>
-                    </div>
-                </div>
-
-                <div class="track-item-home">
-                    <img src="~/Images/utopia.jpg" alt="Track 3" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 3</h3>
-                        <p class="track-artist-home">Изпълнител 3</p>
-                        <button class="track-play-btn-home">Пусни</button>
-                    </div>
-                </div>
-
-                <div class="track-item-home">
-                    <img src="~/Images/starboy.jpg" alt="Track 4" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 4</h3>
-                        <p class="track-artist-home">Изпълнител 4</p>
-                        <button class="track-play-btn-home">Пусни</button>
-                    </div>
-                </div>
-
-                <div class="track-item-home">
-                    <img src="~/Images/lyfe.jpg" alt="Track 5" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 5</h3>
-                        <p class="track-artist-home">Изпълнител 5</p>
-                        <button class="track-play-btn-home">Пусни</button>
-                    </div>
-                </div>
-
-                <div class="track-item-home">
-                    <img src="~/Images/wlr.jpg" alt="Track 6" class="track-img-home">
-                    <div class="track-info-home">
-                        <h3 class="track-title-home">Песен 6</h3>
-                        <p class="track-artist-home">Изпълнител 6</p>
-                        <button class="track-play-btn-home">Пусни</button>
-                    </div>
-                </div>
+                }
             </div>
         </section>
+        
+        @if(User.IsInRole("User"))
+        {
+            <section class="artist-banner">
+                <div class="artist-content">
+                    <h3>Станете изпълнител в HySound</h3>
+                    <p>Споделете вашата музика със света. Качете вашите песни и достигнете до нова аудитория. Започнете своята музикална кариера днес.</p>
+                    <a asp-controller="ArtistRequest" asp-action="Index" class="artist-btn">Станете изпълнител</a>
+                </div>
+            </section>
+        }
+        
     </div>
 
-    <!-- Footer -->
-    <footer class="footer-home">
-        <div class="footer-content">
-            <div class="footer-logo">HySound</div>
-            <div class="footer-links">
-                <a href="#">За нас</a>
-                <a href="#">Контакти</a>
-                <a href="#">Условия за ползване</a>
-                <a href="#">Поверителност</a>
-            </div>
-        </div>
-        <p class="footer-copyright">&copy; 2025 HySound. Всички права запазени.</p>
-    </footer>
 </body>
 </html>
 
-    <style>
-        /* Global Styles */
-:root {
-  --primary-color: #1DB954;
-  --secondary-color: #191414;
-  --text-color: #FFFFFF;
-  --background-color: #121212;
-  --card-background: #181818;
-  --hover-color: #1ED760;
-  --transition-speed: 0.3s;
-}
+<style>
+    /* Global Styles */
+    :root {
+        --primary-color: #1DB954;
+        --secondary-color: #191414;
+        --text-color: #FFFFFF;
+        --background-color: #121212;
+        --card-background: #181818;
+        --hover-color: #1ED760;
+        --transition-speed: 0.3s;
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Montserrat', 'Arial', sans-serif;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', 'Arial', sans-serif;
+    }
 
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  overflow-x: hidden;
-  line-height: 1.6;
-}
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
 
-/* Container */
-.container {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
+    /* Container */
+    .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-/* Navigation Bar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
+    /* Hero Section */
+    .hero-home {
+        height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('/Images/hero-background.jpg');
+        background-size: cover;
+        background-position: center;
+        padding: 0 2rem;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+    }
 
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-}
+        .hero-home::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--background-color), transparent);
+        }
 
-.navbar-menu {
-  display: flex;
-  gap: 2rem;
-}
+        .hero-home h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: -1px;
+        }
 
-.navbar-menu a {
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-speed);
-}
+        .hero-home p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            opacity: 0.9;
+        }
 
-.navbar-menu a:hover {
-  color: var(--primary-color);
-}
+    .hero-btn-home {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: all var(--transition-speed);
+        box-shadow: 0 4px 12px rgba(29, 185, 84, 0.5);
+        position: relative;
+        z-index: 10;
+        margin: 0.5rem;
+    }
 
-/* Hero Section */
-.hero-home {
-  height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('/Images/hero-background.jpg');
-  background-size: cover;
-  background-position: center;
-  padding: 0 2rem;
-  margin-bottom: 4rem;
-  position: relative;
-  overflow: hidden;
-}
+        .hero-btn-home:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(29, 185, 84, 0.6);
+        }
 
-.hero-home::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100px;
-  background: linear-gradient(to top, var(--background-color), transparent);
-}
+    /* Section Titles */
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
 
-.hero-home h1 {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-  letter-spacing: -1px;
-}
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 28px;
+            background-color: var(--primary-color);
+            margin-right: 1rem;
+            border-radius: 3px;
+        }
 
-.hero-home p {
-  font-size: 1.3rem;
-  margin-bottom: 2.5rem;
-  max-width: 700px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-  opacity: 0.9;
-}
+    /* Tracks Section */
+    .tracks-home {
+        padding: 2rem 0;
+        margin-bottom: 4rem;
+    }
 
-.hero-btn-home {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.1rem;
-  transition: all var(--transition-speed);
-  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.5);
-  position: relative;
-  z-index: 10;
-}
+    .track-list-home {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+    }
 
-.hero-btn-home:hover {
-  background-color: var(--hover-color);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(29, 185, 84, 0.6);
-}
+    .track-item-home {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--card-background);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all var(--transition-speed);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: relative;
+        height: 250px;
+    }
 
-/* Section Titles */
-.section-title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
+        .track-item-home:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
 
-.section-title::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 28px;
-  background-color: var(--primary-color);
-  margin-right: 1rem;
-  border-radius: 3px;
-}
+    .track-img-home {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
 
-/* Playlists Section */
-.playlists-home {
-  padding: 2rem 0;
-  margin-bottom: 4rem;
-}
+    .track-info-home {
+        padding: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
 
-.playlist-grid-home {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2rem;
-}
+    .track-title-home {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-.playlist-card-home {
-  background-color: var(--card-background);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all var(--transition-speed);
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
+    .track-artist-home {
+        font-size: 0.85rem;
+        opacity: 0.7;
+        margin-bottom: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-.playlist-card-home:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-}
+    .track-play-btn-home {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all var(--transition-speed);
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
 
-.playlist-card-home:hover .playlist-overlay {
-  opacity: 1;
-}
+        .track-play-btn-home:hover {
+            background-color: var(--hover-color);
+            transform: scale(1.05);
+        }
 
-.playlist-image-home {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  transition: transform var(--transition-speed);
-}
+        .track-play-btn-home::before {
+            content: '▶';
+            font-size: 0.8rem;
+        }
 
-.playlist-card-home:hover .playlist-image-home {
-  transform: scale(1.05);
-}
+    /* Featured Section */
+    .featured-section {
+        margin-bottom: 4rem;
+    }
 
-.playlist-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-  padding: 1.5rem;
-  opacity: 0.9;
-  transition: opacity var(--transition-speed);
-}
+    .featured-banner {
+        background: linear-gradient(90deg, var(--primary-color), #2c5283);
+        border-radius: 12px;
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
 
-.playlist-card-home h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
+        .featured-banner::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -50px;
+        }
 
-/* Tracks Section */
-.tracks-home {
-  padding: 2rem 0;
-  margin-bottom: 4rem;
-}
+    .featured-content {
+        max-width: 60%;
+    }
 
-.track-list-home {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
+        .featured-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
 
-.track-item-home {
-  display: flex;
-  background-color: var(--card-background);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all var(--transition-speed);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
-}
+        .featured-content p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
 
-.track-item-home:hover {
-  transform: translateY(-5px);
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
+    .featured-btn {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: var(--text-color);
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-speed);
+        display: inline-block;
+    }
 
-.track-img-home {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-}
+        .featured-btn:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
 
-.track-info-home {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex-grow: 1;
-}
+    /* Artist Banner */
+    .artist-banner {
+        background: linear-gradient(90deg, #2c5283, var(--primary-color));
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
 
-.track-title-home {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-}
+    .artist-content {
+        max-width: 70%;
+    }
 
-.track-artist-home {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-bottom: 0.8rem;
-}
+        .artist-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
 
-.track-play-btn-home {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all var(--transition-speed);
-  align-self: flex-start;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+        .artist-content p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
 
-.track-play-btn-home:hover {
-  background-color: var(--hover-color);
-  transform: scale(1.05);
-}
+    .artist-btn {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-speed);
+        display: inline-block;
+    }
 
-.track-play-btn-home::before {
-  content: '▶';
-  font-size: 0.8rem;
-}
+        .artist-btn:hover {
+            background-color: #333;
+            transform: translateY(-3px);
+        }
 
-/* Footer */
-.footer-home {
-  background-color: var(--secondary-color);
-  padding: 3rem 0;
-  text-align: center;
-  margin-top: 4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
+    /* Footer */
+    .footer-home {
+        background-color: var(--secondary-color);
+        padding: 3rem 0;
+        text-align: center;
+        margin-top: 4rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
 
-.footer-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-}
+    .footer-logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
 
-.footer-links {
-  display: flex;
-  gap: 2rem;
-}
+    .footer-links {
+        display: flex;
+        gap: 2rem;
+    }
 
-.footer-links a {
-  color: var(--text-color);
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity var(--transition-speed);
-}
+        .footer-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity var(--transition-speed);
+        }
 
-.footer-links a:hover {
-  opacity: 1;
-}
+            .footer-links a:hover {
+                opacity: 1;
+            }
 
-.footer-copyright {
-  margin-top: 2rem;
-  opacity: 0.7;
-  font-size: 0.9rem;
-}
+    .footer-copyright {
+        margin-top: 2rem;
+        opacity: 0.7;
+        font-size: 0.9rem;
+    }
 
-/* Responsive Design */
-@@media (max-width: 992px) {
-  .track-list-home {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-  
-  .hero-home h1 {
-    font-size: 3.5rem;
-  }
-}
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .track-list-home {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
 
-@@media (max-width: 768px) {
-  .hero-home h1 {
-    font-size: 3rem;
-  }
-  
-  .playlist-grid-home {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-  
-  .track-list-home {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }
-  
-  .footer-content {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-}
+    @@media (max-width: 992px) {
+        .track-list-home {
+            grid-template-columns: repeat(2, 1fr);
+        }
 
-@@media (max-width: 480px) {
-  .hero-home {
-    height: 60vh;
-  }
-  
-  .hero-home h1 {
-    font-size: 2.5rem;
-  }
-  
-  .playlist-grid-home {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-  
-  .track-play-btn-home {
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-    </style>
+        .hero-home h1 {
+            font-size: 3.5rem;
+        }
+
+        .featured-content, .artist-content {
+            max-width: 100%;
+        }
+
+        .featured-banner, .artist-banner {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-home h1 {
+            font-size: 3rem;
+        }
+
+        .track-list-home {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-content {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .track-list-home {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-home {
+            height: 60vh;
+        }
+
+            .hero-home h1 {
+                font-size: 2.5rem;
+            }
+
+        .track-play-btn-home {
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .featured-content h3, .artist-content h3 {
+            font-size: 1.5rem;
+        }
+    }
+</style>

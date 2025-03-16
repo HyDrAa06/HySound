@@ -8,7 +8,9 @@
         public string? CoverImage { get; set; }
         public IFormFile? Picture { get; set; }
         public List<HySound.Models.Models.Track> Tracks { get; set; } = new List<Models.Models.Track>();
+        public string? Description { get; set; }
 
+        public bool? IsLiked {  get; set; }
 
     }
 }

@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HySound", "HySound\HySound.csproj", "{0390536B-20BA-49BE-8547-9E5342AE29D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HySound", "HySound\HySound.csproj", "{0390536B-20BA-49BE-8547-9E5342AE29D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HySound.DataAccess", "HySound.DataAccess\HySound.DataAccess.csproj", "{173E41AB-397C-4EBA-8C1F-657B27414A5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HySound.DataAccess", "HySound.DataAccess\HySound.DataAccess.csproj", "{173E41AB-397C-4EBA-8C1F-657B27414A5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HySound.Models", "HySound.Models\HySound.Models.csproj", "{1438B1E4-F255-4D73-8D35-554DB2C4C008}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HySound.Models", "HySound.Models\HySound.Models.csproj", "{1438B1E4-F255-4D73-8D35-554DB2C4C008}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HySound.Core", "HySound.Core\HySound.Core.csproj", "{57AD2C64-7E86-4D1F-9B36-0BFC4ED13865}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HySound.Core", "HySound.Core\HySound.Core.csproj", "{57AD2C64-7E86-4D1F-9B36-0BFC4ED13865}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HySound.Test", "HySound.Test\HySound.Test.csproj", "{8FC77C00-A96A-4A0B-8CFC-F7023EC47F4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{57AD2C64-7E86-4D1F-9B36-0BFC4ED13865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57AD2C64-7E86-4D1F-9B36-0BFC4ED13865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57AD2C64-7E86-4D1F-9B36-0BFC4ED13865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FC77C00-A96A-4A0B-8CFC-F7023EC47F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FC77C00-A96A-4A0B-8CFC-F7023EC47F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FC77C00-A96A-4A0B-8CFC-F7023EC47F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FC77C00-A96A-4A0B-8CFC-F7023EC47F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

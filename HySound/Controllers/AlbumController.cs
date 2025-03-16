@@ -22,16 +22,17 @@ namespace HySound.Controllers
         IAlbumService albumService;
         IUserService userService;
         ITrackService trackService;
+        ILikeService likeService;
 
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
         CloudinaryService cloudService;
-        public AlbumController(UserManager<IdentityUser> _userManager, IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService, IAlbumService _albumService, IUserService userService)
+        public AlbumController(ILikeService _likeService,UserManager<IdentityUser> _userManager, IConfiguration configuration, CloudinaryService cloud, ITrackService _trackService, IAlbumService _albumService, IUserService userService)
         {
             albumService = _albumService;
             this.userService = userService;
             trackService = _trackService;
-
+            likeService = _likeService;
             userManager = _userManager;
 
             this.cloudService = cloud;
@@ -51,6 +52,17 @@ namespace HySound.Controllers
 
         public async Task<IActionResult> AlbumDetails(int id)
         {
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+            bool isLiked = false;
+
+            var like = likeService.GetAll().Where(x => x.UserId == user.Id && x.AlbumId == id);
+            if (like.Any())
+            {
+                isLiked = true;
+            }
+
             var album = await albumService.GetAll().Where(x=>x.Id==id).Include(x=>x.User).Include(x=>x.Tracks)
                 .Select(x=> new AlbumViewModel
                 {
@@ -59,7 +71,7 @@ namespace HySound.Controllers
                     Title=x.Title,
                     UserName=x.User.Username,
                     Tracks = x.Tracks.ToList(),
-                    ReleaseDate= x.ReleaseDate
+                    IsLiked=isLiked
                 }).FirstOrDefaultAsync();
 
 
@@ -73,7 +85,6 @@ namespace HySound.Controllers
                 .Select(x => new EditAlbumViewModel()
                 {
                     AlbumCover = x.CoverImage,
-                    ReleaseDate = x.ReleaseDate,
                     Title = x.Title,
                     UserId = x.UserId,
                     UserList = new SelectList(userService.GetAll(), "Id", "Username")
@@ -98,7 +109,6 @@ namespace HySound.Controllers
                 Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
                 album.Title = model.Title;
                 album.CoverImage = imageUploadResult;
-                album.ReleaseDate = model.ReleaseDate;
                 album.UserId = model.UserId;
 
                 await albumService.UpdateAlbumAsync(album);
@@ -109,7 +119,6 @@ namespace HySound.Controllers
                 Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
                 album.Title = model.Title;
                 album.CoverImage = model.AlbumCover;
-                album.ReleaseDate = model.ReleaseDate;
                 album.UserId = model.UserId;
 
                 await albumService.UpdateAlbumAsync(album);
@@ -175,7 +184,6 @@ namespace HySound.Controllers
                 Album album = new Album
                 {
                     Title = model.Title,
-                    ReleaseDate = model.ReleaseDate,
                     UserId = user.Id,
                     CoverImage = imageUploadResult
                 };
@@ -222,7 +230,6 @@ namespace HySound.Controllers
                     Id = x.Id,
                     Title = x.Title,
                     CoverImage = x.CoverImage,
-                    ReleaseDate = x.ReleaseDate,
                     UserName = x.User.Username
                 }).ToList();
 
@@ -238,6 +245,7 @@ namespace HySound.Controllers
             {
                 var tempUsers = await userService.GetAllUserNamesAsync();
                 var tempAlbums = await albumService.GetAllAlbumNamesAsync();
+
                 if (tempUsers.Contains(filter.Search))
                 {
                     query = query.Where(x => x.User.Username == filter.Search);
@@ -254,7 +262,6 @@ namespace HySound.Controllers
                 {
                     Title = x.Title,
                     CoverImage = x.CoverImage,
-                    ReleaseDate = x.ReleaseDate,
                     Id = x.Id,
                     UserName = x.User.Username
                 }).ToList(),
@@ -282,6 +289,12 @@ namespace HySound.Controllers
                     AudioUrl = t.AudioUrl // This must be a valid URL
                 })
                 .ToList();
+
+            if(tracks == null)
+            {
+                return NotFound();
+            }
+
             return Ok(tracks);
         }
     }

@@ -28,14 +28,15 @@ namespace HySound.Models.Models
 
         public IdentityUser UserIdentity { get; set; }
         public string UserIdentityId { get; set; }
-        public ICollection<Track>? Tracks { get; set; } = new List<Track>();
-        public ICollection<Playlist>? Playlists { get; set; } = new List<Playlist>();
-        public ICollection<Album>? Albums { get; set; } = new List<Album>();
-        public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
-        public ICollection<Like>? Likes { get; set; } = new List<Like>();
+        public ICollection<Track>? Tracks { get; set; }
+        public ICollection<Playlist>? Playlists { get; set; }
+        public ICollection<Album>? Albums { get; set; }
+        public ICollection<Comment>? Comments { get; set; }
+        public ICollection<Like>? Likes { get; set; } 
 
         public ICollection<Followed>? FollowedBy { get; set; }
         public ICollection<Followed>? Following { get; set; }
+        public ICollection<ArtistRequest>? ArtistRequests { get; set; }
 
     }
 }

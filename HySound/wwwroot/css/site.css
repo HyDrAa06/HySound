@@ -6,8 +6,40 @@ body {
     min-height: 100vh; /* Ensure full height */
     padding: 0;
     margin: 0;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #535353 transparent;
+}
+::-webkit-scrollbar {
+    width: 8px; /* Slim width like Spotify */
+    height: 8px; /* For horizontal scrollbars */
 }
 
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+    background: transparent; /* Transparent track like Spotify */
+}
+
+/* Scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background: #535353; /* Dark gray thumb like Spotify */
+    border-radius: 4px; /* Rounded edges */
+    visibility: hidden; /* Hidden by default */
+}
+
+/* Show thumb on hover over scrollable elements */
+*:hover::-webkit-scrollbar-thumb {
+    visibility: visible; /* Visible only on hover, mimicking Spotify */
+}
+
+/* Hover effect on thumb */
+::-webkit-scrollbar-thumb:hover {
+    background: #828282; /* Lighter gray when hovered, like Spotify */
+}
+
+/* Optional: Ensure the scrollbar doesn't interfere with layout */
+::-webkit-scrollbar-corner {
+    background: transparent; /* Transparent corner */
+}
 h1, h2 {
     font-weight: bold;
     color: white;
@@ -730,211 +762,8 @@ h2 {
     color: #F44336;
 }
 
-/* Register Page Styling */
-.register-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px; /* Padding around the entire container */
-    background-color: #121212; /* Dark but not pitch black background */
-    color: #fff;
-    box-sizing: border-box;
-}
-
-.register-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: #4CAF50; /* Green title for a fresh accent */
-}
-
-.register-form {
-    width: 100%;
-    max-width: 420px; /* Adjusted card width */
-    background-color: #1c1c1c; /* Dark card background */
-    padding: 40px;
-    border-radius: 20px; /* Rounded corners */
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Soft, deep shadow */
-    margin: 0 auto; /* Centers the card horizontally */
-}
-
-.register-input-group {
-    margin-bottom: 25px; /* Increased space between fields */
-}
-
-.register-input-label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.input-with-icon {
-    position: relative;
-}
-
-.register-input-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc; /* Lighter icon color */
-    font-size: 1.2rem;
-}
-
-.register-input-field {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 1rem;
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px;
-    background-color: #333; /* Dark background for input fields */
-    color: #fff;
-    outline: none;
-    padding-left: 40px; /* Space for the icon */
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-    .register-input-field:focus {
-        border-color: #4CAF50; /* Green border when focused */
-        background-color: #444; /* Slightly lighter background on focus */
-    }
-
-.register-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1rem;
-    color: #fff;
-    background-color: #4CAF50; /* Green button */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
-}
-
-    .register-btn:hover {
-        background-color: #45a049; /* Darker green on hover */
-        transform: translateY(-2px); /* Slight lift effect on hover */
-    }
-
-    .register-btn:active {
-        transform: translateY(1px); /* Subtle press effect */
-    }
 
 
-/* Login Page Styling */
-.login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px; /* Padding around the entire container */
-    background-color: #121212; /* Dark but not pitch black background */
-    color: #fff;
-    box-sizing: border-box;
-}
-
-.login-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: #4CAF50; /* Green title for a fresh accent */
-}
-
-.login-form {
-    width: 100%;
-    max-width: 420px; /* Adjusted card width */
-    background-color: #1c1c1c; /* Dark card background */
-    padding: 40px;
-    border-radius: 20px; /* Rounded corners */
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Soft, deep shadow */
-    margin: 0 auto; /* Centers the card horizontally */
-}
-
-.login-input-group {
-    margin-bottom: 25px; /* Increased space between fields */
-}
-
-.login-input-label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.input-with-icon {
-    position: relative;
-}
-
-.login-input-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc; /* Lighter icon color */
-    font-size: 1.2rem;
-}
-
-.login-input-field {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 1rem;
-    border: 1px solid #444; /* Darker border */
-    border-radius: 8px;
-    background-color: #333; /* Dark background for input fields */
-    color: #fff;
-    outline: none;
-    padding-left: 40px; /* Space for the icon */
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-    .login-input-field:focus {
-        border-color: #4CAF50; /* Green border when focused */
-        background-color: #444; /* Slightly lighter background on focus */
-    }
-
-.remember-me {
-    display: flex;
-    align-items: center;
-}
-
-.remember-me-label {
-    display: flex;
-    align-items: center;
-    font-size: 0.95rem;
-}
-
-.remember-me-checkbox {
-    margin-right: 8px;
-}
-
-.remember-me-text {
-    color: #ccc;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1rem;
-    color: #fff;
-    background-color: #4CAF50; /* Green button */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s ease-in-out;
-}
-
-    .login-btn:hover {
-        background-color: #45a049; /* Darker green on hover */
-        transform: translateY(-2px); /* Slight lift effect on hover */
-    }
-
-    .login-btn:active {
-        transform: translateY(1px); /* Subtle press effect */
-    }
 
 /* Add Track Page Layout */
 .add-track-container {

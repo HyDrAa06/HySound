@@ -23,24 +23,40 @@
                         <li class="nav-item">
                             <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (User.IsInRole("User"))
+                        @if (User.IsInRole("User") || User.IsInRole("Artist") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-controller="Home" asp-action="Search">Search</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("User") || User.IsInRole("Artist") || User.IsInRole("Admin") )
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-action="Library" asp-controller="Home">Library</a>
                             </li>
-                        } 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="uploadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Upload
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="uploadDropdown">
-                                <li><a class="dropdown-item text-light" asp-controller="Track" asp-action="AllTracks">Track</a></li>
-                                <li><a class="dropdown-item text-light" asp-controller="Album" asp-action="AllAlbums">Album</a></li>
-                                <li><a class="dropdown-item text-light" asp-controller="Playlist" asp-action="AllPlaylists">Playlist</a></li>
-                            </ul>
-                        </li>
-
-                        @if (User.IsInRole("User"))
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="ArtistRequests" asp-controller="Admin">Requests</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Artist") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" id="uploadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Upload
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="uploadDropdown">
+                                    <li><a class="dropdown-item text-light" asp-controller="Track" asp-action="AllTracks">Track</a></li>
+                                    <li><a class="dropdown-item text-light" asp-controller="Album" asp-action="AllAlbums">Album</a></li>
+                                    <li><a class="dropdown-item text-light" asp-controller="Playlist" asp-action="AllPlaylists">Playlist</a></li>
+                                </ul>
+                            </li>
+                        }
+                            
+                        
+                        @if (User.IsInRole("Artist") || User.IsInRole("User") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-action="Profile" asp-controller="User">Profile</a>

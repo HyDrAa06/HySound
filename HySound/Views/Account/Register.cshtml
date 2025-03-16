@@ -3,39 +3,242 @@
 
 <div class="register-container">
     <h2 class="register-title">Create Your Account</h2>
+    
     <form method="post" asp-controller="Account" class="register-form">
         <div class="register-input-group">
             <label for="Username" class="register-input-label">Username</label>
             <div class="input-with-icon">
                 <i class="fa fa-user register-input-icon"></i>
-                <input asp-for="Username" class="register-input-field" type="text" placeholder="Enter username" />
+                <input asp-for="Username" class="register-input-field" type="text" placeholder="Enter username" required />
+                <span asp-validation-for="Username" class="validation-error"></span>
             </div>
         </div>
-
+        
         <div class="register-input-group">
             <label for="Email" class="register-input-label">Email</label>
             <div class="input-with-icon">
                 <i class="fa fa-envelope register-input-icon"></i>
-                <input asp-for="Email" class="register-input-field" type="email" placeholder="Enter your email" />
+                <input asp-for="Email" class="register-input-field" type="email" placeholder="Enter your email" required />
+                <span asp-validation-for="Email" class="validation-error"></span>
             </div>
         </div>
-
+        
         <div class="register-input-group">
             <label for="Password" class="register-input-label">Password</label>
             <div class="input-with-icon">
                 <i class="fa fa-lock register-input-icon"></i>
-                <input asp-for="Password" class="register-input-field" type="password" placeholder="Enter password" />
+                <input asp-for="Password" class="register-input-field" type="password" placeholder="Enter password" required />
+                <span asp-validation-for="Password" class="validation-error"></span>
             </div>
         </div>
-
+        
         <div class="register-input-group">
             <label for="ConfirmPassword" class="register-input-label">Confirm Password</label>
             <div class="input-with-icon">
                 <i class="fa fa-lock register-input-icon"></i>
-                <input asp-for="ConfirmPassword" class="register-input-field" type="password" placeholder="Confirm password" />
+                <input asp-for="ConfirmPassword" class="register-input-field" type="password" placeholder="Confirm password" required />
+                <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
             </div>
         </div>
-
-        <button type="submit" class="register-btn register-btn-primary">Register</button>
+        
+        <button type="submit" class="register-btn register-btn-green">
+            <i class="fa fa-user-plus"></i>
+            Register
+        </button>
     </form>
+    
+    <div class="register-options">
+        <p>Already have an account? <a asp-controller="Account" asp-action="Login" class="login-link">Sign In</a></p>
+    </div>
 </div>
+
+<style>
+    /* Register Page Styles */
+    :root {
+        --primary-color: #1DB954; /* Spotify green */
+        --hover-color: #1ED760;
+        --card-background: #121212;
+        --text-color: #FFFFFF;
+        --transition-speed: 0.3s ease;
+        --error-color: #ff5252;
+    }
+
+    .register-container {
+        max-width: 450px;
+        margin: 4rem auto;
+        background-color: var(--card-background);
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        transition: transform var(--transition-speed);
+    }
+
+    .register-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-color), var(--hover-color));
+    }
+
+    .register-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .register-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: var(--text-color);
+        text-align: center;
+        position: relative;
+        padding-bottom: 0.8rem;
+    }
+
+    .register-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+    }
+
+    .register-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .register-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .register-input-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-color);
+        opacity: 0.9;
+    }
+
+    .input-with-icon {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .register-input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    .register-input-field {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 2.8rem;
+        background-color: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all var(--transition-speed);
+    }
+
+    .register-input-field:focus {
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.12);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.2);
+    }
+
+    .register-input-field::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .validation-error {
+        color: var(--error-color);
+        font-size: 0.8rem;
+        margin-top: 0.3rem;
+    }
+
+    .register-btn {
+        padding: 1rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .register-btn-green {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+    }
+
+    .register-btn-green:hover {
+        background-color: var(--hover-color);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(29, 185, 84, 0.5);
+    }
+
+    .register-options {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+
+    .register-options a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: opacity var(--transition-speed);
+        margin-left: 0.5rem;
+    }
+
+    .register-options a:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .register-container {
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 90%;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .register-container {
+            padding: 1.5rem;
+        }
+        
+        .register-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>

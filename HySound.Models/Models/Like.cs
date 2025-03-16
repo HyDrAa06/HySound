@@ -16,8 +16,15 @@ namespace HySound.Models.Models
         public int? UserId { get; set; }
 
         public int? TrackId { get; set; }
+        public int? AlbumId { get; set; }
+        public int? PlaylistId {  get; set; }
+
 
         public User? User { get; set; }
         public Track? Track { get; set; }
+        public Album? Album { get; set; }
+        public Playlist? Playlist { get; set; }
+
     }
+
 }

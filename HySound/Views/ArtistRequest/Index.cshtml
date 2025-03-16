@@ -1,0 +1,203 @@
+﻿@using HySound.ViewModels.User
+@{
+    ViewData["Title"] = "Become an Artist";
+}
+
+<div class="spotify-container">
+    <div class="content-wrapper">
+        <!-- Alert Message -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="spotify-alert">
+                <i class="bi bi-check-circle-fill"></i> @TempData["Message"]
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">×</button>
+            </div>
+        }
+        
+        <!-- Main Content -->
+        <div class="spotify-card">
+            <div class="card-content">
+                <h1>Become an Artist</h1>
+                <p class="subtitle">Share your music with the HySound community</p>
+                
+                <div class="artist-icon">
+                    <i class="bi bi-music-note-beamed"></i>
+                </div>
+                
+                <p class="description">
+                    Ready to reach new listeners? Join our platform and start building your fanbase today.
+                </p>
+                
+                <a asp-action="Request" asp-controller="ArtistRequest" class="spotify-button">
+                    Become an Artist
+                </a>
+            </div>
+        </div>
+        
+        <div class="info-footer">
+            <i class="bi bi-info-circle"></i>
+            Your request will be reviewed by our team. You'll be notified once approved.
+        </div>
+    </div>
+</div>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        /* Spotify-inspired styles */
+        :root {
+            --spotify-green: #1DB954;
+            --spotify-black: #191414;
+            --spotify-dark-gray: #212121;
+            --spotify-light-gray: #282828;
+            --spotify-text: #FFFFFF;
+        }
+        
+        body {
+            background-color: var(--spotify-black);
+            color: var(--spotify-text);
+            font-family: 'Circular', Helvetica, Arial, sans-serif;
+        }
+        
+        .spotify-container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #1e1e1e, var(--spotify-black));
+            padding: 40px 20px;
+        }
+        
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .spotify-card {
+            background-color: var(--spotify-light-gray);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .spotify-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-content h1 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -0.04em;
+        }
+        
+        .subtitle {
+            color: #b3b3b3;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .artist-icon {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            background-color: var(--spotify-green);
+            border-radius: 50%;
+            margin: 20px 0;
+        }
+        
+        .artist-icon i {
+            font-size: 40px;
+            color: var(--spotify-black);
+        }
+        
+        .description {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .spotify-button {
+            display: inline-block;
+            background-color: var(--spotify-green);
+            color: var(--spotify-black);
+            font-weight: 700;
+            padding: 14px 40px;
+            border-radius: 500px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .spotify-button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            color: var(--spotify-black);
+            text-decoration: none;
+        }
+        
+        .spotify-button i {
+            margin-right: 8px;
+        }
+        
+        .info-footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #b3b3b3;
+            font-size: 14px;
+            padding: 15px;
+        }
+        
+        .info-footer i {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .spotify-alert {
+            background-color: rgba(29, 185, 84, 0.2);
+            border-left: 4px solid var(--spotify-green);
+            color: var(--spotify-text);
+            padding: 16px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .spotify-alert i {
+            margin-right: 10px;
+            color: var(--spotify-green);
+        }
+        
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: transparent;
+            border: none;
+            color: #b3b3b3;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        @@media (max-width: 768px) {
+            .spotify-card {
+                padding: 30px 20px;
+            }
+            
+            .card-content h1 {
+                font-size: 32px;
+            }
+        }
+    </style>

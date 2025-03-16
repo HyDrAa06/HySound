@@ -20,6 +20,8 @@ namespace HySound.Models.Models
         public string? Description { get; set; }
         public int? UserId { get; set; }
         public User? User { get; set; }
+        public ICollection<Like>? Likes { get; set; } = new List<Like>();
+
         public ICollection<PlaylistTrack>? PlaylistTracks { get; set; } = new List<PlaylistTrack>();
     }
 }

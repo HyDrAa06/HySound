@@ -21,16 +21,18 @@ namespace HySound.Controllers
         private readonly IConfiguration _configuration;
 
         ITrackService trackService;
+        ILikeService likeService;
         IPlaylistService playlistService;
         IUserService userService;
 
 
-        public PlaylistController(ITrackService track,IUserService _userService,UserManager<IdentityUser>_userManager,IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
+        public PlaylistController(ILikeService like,ITrackService track,IUserService _userService,UserManager<IdentityUser>_userManager,IConfiguration configuration, CloudinaryService cloud ,IPlaylistService _playlistService)
         {
             trackService = track;
             playlistService = _playlistService;
             userManager = _userManager;
             userService = _userService;
+            likeService = like;
 
             this.cloudService = cloud;
 
@@ -43,8 +45,13 @@ namespace HySound.Controllers
             _cloudinary = new Cloudinary(account);
         }
 
+        public async Task<IActionResult> AddPlaylist()
+        {
+            AddPlaylistViewModel model = new AddPlaylistViewModel();
+            return View(model);
+        }
         [HttpPost]
-        public async Task<IActionResult> AddPlaylist(PlaylistViewModel model)
+        public async Task<IActionResult> AddPlaylist(AddPlaylistViewModel model)
         {
             if (model == null) return Content("Model is null");
             if (model.Picture == null) return Content("Picture is null");
@@ -62,17 +69,54 @@ namespace HySound.Controllers
                 Title = model.Title,
                 CoverImage = imageUploadResult,
                 UserId = user.Id,
-                
+
             };
             await playlistService.AddPlaylistAsync(playlist);
             return RedirectToAction("AllPlaylists");
         }
 
 
+     //   [HttpPost]
+     //   public async Task<IActionResult> AddPlaylist(PlaylistViewModel model)
+     //   {
+     //       if (model == null) return Content("Model is null");
+     //       if (model.Picture == null) return Content("Picture is null");
+     //       if (!ModelState.IsValid)
+     //       {
+     //           var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+     //           return Content("Validation failed: " + string.Join(", ", errors));
+     //       }
+     //       var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+     //       User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+     //
+     //       var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
+     //       Playlist playlist = new Playlist()
+     //       {
+     //           Title = model.Title,
+     //           CoverImage = imageUploadResult,
+     //           UserId = user.Id,
+     //           
+     //       };
+     //       await playlistService.AddPlaylistAsync(playlist);
+     //       return RedirectToAction("AllPlaylists");
+     //   }
+
+
         public async Task<IActionResult> PlaylistDetails(int id)
         {
             var tracks = await playlistService.GetTracksOfPlaylist(id);
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
+
+
+            bool isLiked = false;
+
+            var like = likeService.GetAll().Where(x => x.UserId == user.Id && x.PlaylistId == id);
+            if (like.Any())
+            {
+                isLiked = true;
+            }
 
             var playlist = await playlistService.GetAll().Where(x => x.Id == id).Include(x => x.PlaylistTracks).ThenInclude(x => x.Track).Include(x => x.User)
                 .Select(x => new PlaylistViewModel
@@ -80,10 +124,27 @@ namespace HySound.Controllers
                     CoverImage = x.CoverImage,
                     Id = id,
                     Title = x.Title,
-                    Tracks = tracks
+                    Tracks = tracks,
+                    Description = x.Description,
+                    IsLiked = isLiked
                 }).FirstOrDefaultAsync();
 
             return View(playlist);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Tracks(int playlistId)
+        {
+            try
+            {
+                var tracks = await playlistService.GetTracksOfPlaylist(playlistId);
+
+                return Json(tracks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error fetching playlist tracks" });
+            }
         }
 
         public async Task<IActionResult> AllPlaylists()
@@ -93,7 +154,8 @@ namespace HySound.Controllers
                 CoverImage =x.CoverImage,
                 Title = x.Title,
                 UserName = x.User.Username,
-                Id = x.Id
+                Id = x.Id,
+                Description = x.Description,
             });
 
             return View(playlists);

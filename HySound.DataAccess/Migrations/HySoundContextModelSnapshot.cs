@@ -33,9 +33,6 @@ namespace HySound.DataAccess.Migrations
                     b.Property<string>("CoverImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -49,6 +46,62 @@ namespace HySound.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Albums");
+                });
+
+            modelBuilder.Entity("HySound.Models.Models.ArtistRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ArtistUsername")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.HasIndex("IdentityUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ArtistRequests");
                 });
 
             modelBuilder.Entity("HySound.Models.Models.Comment", b =>
@@ -120,6 +173,12 @@ namespace HySound.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlaylistId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("TrackId")
                         .HasColumnType("int");
 
@@ -127,6 +186,10 @@ namespace HySound.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.HasIndex("PlaylistId");
 
                     b.HasIndex("TrackId");
 
@@ -226,37 +289,6 @@ namespace HySound.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Tracks");
-                });
-
-            modelBuilder.Entity("HySound.Models.Models.TrackStatistic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Comments")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Likes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Plays")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int?>("TrackId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TrackId")
-                        .IsUnique()
-                        .HasFilter("[TrackId] IS NOT NULL");
-
-                    b.ToTable("TrackStatistics");
                 });
 
             modelBuilder.Entity("HySound.Models.Models.User", b =>
@@ -508,6 +540,29 @@ namespace HySound.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HySound.Models.Models.ArtistRequest", b =>
+                {
+                    b.HasOne("HySound.Models.Models.User", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserIdentity")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+
+                    b.HasOne("HySound.Models.Models.User", "User")
+                        .WithMany("ArtistRequests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserIdentity");
+                });
+
             modelBuilder.Entity("HySound.Models.Models.Comment", b =>
                 {
                     b.HasOne("HySound.Models.Models.Track", "Track")
@@ -546,15 +601,29 @@ namespace HySound.DataAccess.Migrations
 
             modelBuilder.Entity("HySound.Models.Models.Like", b =>
                 {
+                    b.HasOne("HySound.Models.Models.Album", "Album")
+                        .WithMany("Likes")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("HySound.Models.Models.Playlist", "Playlist")
+                        .WithMany("Likes")
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("HySound.Models.Models.Track", "Track")
                         .WithMany("Likes")
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("HySound.Models.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Album");
+
+                    b.Navigation("Playlist");
 
                     b.Navigation("Track");
 
@@ -576,7 +645,7 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.Playlist", "Playlist")
                         .WithMany("PlaylistTracks")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("HySound.Models.Models.Track", "Track")
@@ -612,16 +681,6 @@ namespace HySound.DataAccess.Migrations
                     b.Navigation("Genre");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HySound.Models.Models.TrackStatistic", b =>
-                {
-                    b.HasOne("HySound.Models.Models.Track", "Track")
-                        .WithOne("TrackStatistic")
-                        .HasForeignKey("HySound.Models.Models.TrackStatistic", "TrackId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Track");
                 });
 
             modelBuilder.Entity("HySound.Models.Models.User", b =>
@@ -688,6 +747,8 @@ namespace HySound.DataAccess.Migrations
 
             modelBuilder.Entity("HySound.Models.Models.Album", b =>
                 {
+                    b.Navigation("Likes");
+
                     b.Navigation("Tracks");
                 });
 
@@ -698,6 +759,8 @@ namespace HySound.DataAccess.Migrations
 
             modelBuilder.Entity("HySound.Models.Models.Playlist", b =>
                 {
+                    b.Navigation("Likes");
+
                     b.Navigation("PlaylistTracks");
                 });
 
@@ -708,13 +771,13 @@ namespace HySound.DataAccess.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("PlaylistTracks");
-
-                    b.Navigation("TrackStatistic");
                 });
 
             modelBuilder.Entity("HySound.Models.Models.User", b =>
                 {
                     b.Navigation("Albums");
+
+                    b.Navigation("ArtistRequests");
 
                     b.Navigation("Comments");
 

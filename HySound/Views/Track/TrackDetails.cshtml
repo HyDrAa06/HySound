@@ -2,215 +2,577 @@
 @model TrackDetailsViewModel
 
 <div class="track-details-container">
-    <div class="track-image-container">
-        <img src="@Model.TrackImage" alt="@Model.Title" class="track-image" />
-    </div>
+    <div class="track-header">
+        <div class="track-image-container">
+            <img src="@Model.TrackImage" alt="@Model.Title" class="track-image" />
+            <div class="play-overlay">
+                <button class="play-button play-track-btn"
+                        data-src="@Model.AudioUrl"
+                        data-title="@Model.Title"
+                        data-artist="@Model.Username"
+                        data-image="@Model.TrackImage">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
 
-    <div class="track-info">
-        <h1 class="track-name">@Model.Title</h1>
-        <p class="track-artist">Изпълнител: <span>@Model.Username</span></p>
-        <p class="track-genre">Жанр: <span>@Model.Genre</span></p>
-        <div class="track-stats">
-            <p class="track-likes">💚 30 Likes</p>
-            <p class="track-plays">🎧 @Model.Plays Plays</p>
+        <div class="track-info">
+            <h1 class="track-name">@Model.Title</h1>
+            <p class="track-artist">Изпълнител: <a href="/artist/@Model.Username" class="artist-link">@Model.Username</a></p>
+            <p class="track-genre">Жанр: <span class="genre-tag">@Model.Genre</span></p>
+            @if (Model.IsLiked)
+            {
+                <a asp-controller="Like" asp-action="Dislike" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
+                    <i class="far fa-heart-broken"></i>
+                </a>
+            }
+            else{
+            <a asp-controller="Like" asp-action="Like" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
+                <i class="far fa-heart"></i>
+            </a>
+           }
         </div>
     </div>
 
+    <!-- Local audio element as fallback (optional, can be removed if global player works) -->
+    <audio id="localAudio" src="@Model.AudioUrl" preload="auto" style="display:none;"></audio>
+
     <div class="comments-section">
-        <h2>Коментари</h2>
+        <h2 class="section-title">Коментари <span class="comment-count">(@Model.Comments.Count)</span></h2>
+        <form id="commentForm" asp-controller="Comment" asp-action="AddComment" method="post" class="comment-form">
+            <input type="hidden" name="TrackId" value="@Model.Id" />
+            <div class="form-group">
+                <textarea name="Content" class="comment-input" placeholder="Добави коментар..." rows="3"></textarea>
+                <button type="submit" class="submit-comment-btn">
+                    <i class="fas fa-paper-plane"></i> Добави коментар
+                </button>
+            </div>
+        </form>
         <div class="comments-list">
-            @foreach (var comment in Model.Comments)
+            @if (Model.Comments.Any())
             {
-                <div class="comment-item">
-                    <p class="comment-user">@comment.User.Username:</p>
-                    <p class="comment-text">@comment.Content</p>
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <img src="@comment.User.ProfilePicture" alt="User Avatar" />
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <p class="comment-user">@comment.User.Username</p>
+                                <p class="comment-date">1 day ago</p>
+                            </div>
+                            <p class="comment-text">@comment.Content</p>
+                            <div class="comment-actions">
+                                <button class="comment-action-btn">
+                                    <i class="fas fa-heart"></i> Like
+                                </button>
+                                <button class="comment-action-btn">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-comments">
+                    <p>Бъди първият, който ще коментира тази песен!</p>
                 </div>
             }
         </div>
-
-        <form id="commentForm" asp-controller="Comment" asp-action="AddComment" method="post">
-            <input type="hidden" name="TrackId" value="@Model.Id" />
-            <textarea name="Content" class="comment-input" placeholder="Добави коментар..." rows="4"></textarea>
-            <button type="submit" class="submit-comment-btn">Добави коментар</button>
-        </form>
-
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const playButton = document.querySelector(".play-track-btn");
+            const localAudio = document.getElementById("localAudio");
+            const playerContainer = document.querySelector(".player-container");
+
+            if (playButton) {
+                console.log("Play button found with data:", {
+                    src: playButton.dataset.src,
+                    title: playButton.dataset.title,
+                    artist: playButton.dataset.artist,
+                    image: playButton.dataset.image
+                });
+
+                playButton.addEventListener("click", function () {
+                    console.log("Play button clicked!");
+                    const file = playButton.dataset.src;
+                    const title = playButton.dataset.title;
+                    const artist = playButton.dataset.artist;
+                    const image = playButton.dataset.image;
+
+                    if (file && file !== 'undefined') {
+                        // Rely on site.js to handle the global player
+                        if (typeof loadTrack === 'function') {
+                            trackList = [{ file, title, artist, image }];
+                            currentTrackIndex = 0;
+                            console.log('trackList set for global player:', trackList);
+                            loadTrack(0, true);
+                            // Ensure player is visible
+                            if (playerContainer) {
+                                playerContainer.classList.add('visible');
+                                playerContainer.style.display = 'flex';
+                                console.log('Player container forced visible');
+                            } else {
+                                console.error('Player container not found');
+                            }
+                        } else {
+                            // Fallback to local audio if global player fails
+                            console.log('Global player not available, using local audio');
+                            localAudio.play().then(() => {
+                                console.log('Local audio playing');
+                            }).catch(error => {
+                                console.error('Local audio play failed:', error);
+                            });
+                        }
+                    } else {
+                        console.error('No valid audio URL:', file);
+                    }
+                });
+            } else {
+                console.error("Play button not found!");
+            }
+        });
+    </script>
 </div>
 
+<!-- Existing styles unchanged -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
-    /* Main Container */
+    /* Existing styles remain unchanged */
     .track-details-container {
         display: flex;
         flex-direction: column;
-        align-items: center;
         color: white;
-        background: #121212;
+        background: linear-gradient(135deg, #121212 0%, #181818 100%);
         padding: 40px 30px;
         border-radius: 16px;
-        max-width: 950px;
+        max-width: 1000px;
         margin: 0 auto;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
-    /* Track Image */
+    .track-header {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 40px;
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
     .track-image-container {
-        width: 320px;
+        min-width: 320px;
         height: 320px;
         border-radius: 16px;
         overflow: hidden;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     }
 
     .track-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        transition: transform 0.5s ease, filter 0.3s ease;
     }
 
-    .track-image:hover {
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .play-button {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(29, 185, 84, 0.8);
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transform: scale(0.8);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+        .play-button i {
+            color: white;
+            font-size: 32px;
+            margin-left: 6px;
+        }
+
+    .track-image-container:hover .play-overlay {
+        opacity: 1;
+    }
+
+    .track-image-container:hover .track-image {
         transform: scale(1.05);
+        filter: blur(3px);
     }
 
-    /* Track Info */
+    .track-image-container:hover .play-button {
+        transform: scale(1);
+    }
+
+    .play-button:hover {
+        background: rgba(29, 185, 84, 1);
+        transform: scale(1.1);
+    }
+
     .track-info {
-        text-align: center;
-        margin-bottom: 35px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .track-name {
-        font-size: 32px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, #1DB954, #4CAF50);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     .track-artist,
     .track-genre {
         font-size: 18px;
         color: #b3b3b3;
+        margin-bottom: 8px;
     }
 
-    .track-artist span,
-    .track-genre span {
+    .artist-link {
         color: #fff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .artist-link:hover {
+            color: #1DB954;
+        }
+
+    .genre-tag {
+        display: inline-block;
+        background: rgba(29, 185, 84, 0.15);
+        border: 1px solid rgba(29, 185, 84, 0.3);
+        color: #1DB954;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 16px;
         font-weight: 500;
     }
 
     .track-stats {
-        margin-top: 20px;
-    }
-
-    .track-likes,
-    .track-plays {
-        font-size: 18px;
-        margin-top: 8px;
-        color: #1DB954;
-    }
-
-    /* Comments Section */
-    .comments-section {
-        width: 100%;
-        margin-top: 35px;
-    }
-
-    .comments-list {
+        display: flex;
+        gap: 25px;
+        margin-top: 25px;
         margin-bottom: 25px;
-        max-height: 350px;
-        overflow-y: auto;
     }
 
-    .comment-item {
-        background-color: #181818;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .comment-user {
-        font-weight: bold;
-        font-size: 16px;
-        color: #4CAF50;
+    .stat-icon {
+        font-size: 24px;
+        margin-bottom: 5px;
     }
 
-    .comment-text {
+    .stat-value {
+        font-size: 22px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .stat-label {
         font-size: 14px;
-        margin-top: 8px;
         color: #b3b3b3;
     }
 
-    /* Comment Form */
-    .comment-form {
+    .action-buttons {
         display: flex;
-        flex-direction: column;
         gap: 15px;
+        margin-top: 10px;
+    }
+
+    .action-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+        .action-btn i {
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+    .like-btn {
+        background-color: rgba(29, 185, 84, 0.2);
+    }
+
+        .like-btn:hover {
+            background-color: rgba(29, 185, 84, 0.4);
+        }
+
+    .comments-section {
         width: 100%;
+        margin-top: 20px;
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 25px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .comment-count {
+        font-size: 18px;
+        color: #b3b3b3;
+        margin-left: 10px;
+    }
+
+    .comment-form {
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        position: relative;
     }
 
     .comment-input {
         width: 100%;
-        padding: 14px;
-        border-radius: 10px;
-        background-color: #333;
+        padding: 16px;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.05);
         color: white;
-        border: 1px solid #444;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         outline: none;
         resize: none;
         font-size: 16px;
         transition: all 0.3s;
     }
 
-    .comment-input:focus {
-        background-color: #444;
-        border-color: #1DB954;
-    }
+        .comment-input:focus {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(29, 185, 84, 0.5);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+        }
 
     .submit-comment-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
         background-color: #1DB954;
         color: white;
-        padding: 12px 25px;
-        font-size: 18px;
+        padding: 8px 16px;
+        font-size: 16px;
         border: none;
-        border-radius: 10px;
+        border-radius: 20px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         transition: background-color 0.3s, transform 0.2s;
     }
 
-    .submit-comment-btn:hover {
-        background-color: #1aa34a;
-        transform: translateY(-2px);
+        .submit-comment-btn:hover {
+            background-color: #1aa34a;
+            transform: translateY(-2px);
+        }
+
+    .comments-list {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 10px;
     }
 
-    .submit-comment-btn:active {
-        transform: translateY(2px);
+        .comments-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .comments-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .comments-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+            .comments-list::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+    .comment-item {
+        display: flex;
+        gap: 15px;
+        background-color: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        border-left: 3px solid #1DB954;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    /* Responsive Styles */
-    @@media (max-width: 768px) {
-        .track-details-container {
-            padding: 30px 20px;
+        .comment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .comment-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .comment-user {
+        font-weight: bold;
+        font-size: 16px;
+        color: #ffffff;
+    }
+
+    .comment-date {
+        font-size: 14px;
+        color: #b3b3b3;
+    }
+
+    .comment-text {
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #e0e0e0;
+        line-height: 1.5;
+    }
+
+    .comment-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .comment-action-btn {
+        background: none;
+        border: none;
+        color: #b3b3b3;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0;
+        transition: color 0.3s;
+    }
+
+        .comment-action-btn:hover {
+            color: #1DB954;
+        }
+
+    .no-comments {
+        text-align: center;
+        padding: 30px;
+        color: #b3b3b3;
+        font-style: italic;
+    }
+
+    @@media (max-width: 900px) {
+        .track-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .track-info {
+            align-items: center;
+            text-align: center;
         }
 
         .track-image-container {
-            width: 280px;
+            min-width: 280px;
             height: 280px;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .track-details-container {
+            padding: 20px 15px;
         }
 
         .track-name {
-            font-size: 28px;
+            font-size: 32px;
         }
 
-        .track-artist,
-        .track-genre {
-            font-size: 16px;
+        .action-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .track-likes,
-        .track-plays {
-            font-size: 16px;
+        .comment-item {
+            flex-direction: column;
+        }
+
+        .comment-avatar {
+            margin: 0 auto 10px;
+        }
+
+        .comment-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
         }
     }
 </style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

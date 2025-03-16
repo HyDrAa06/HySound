@@ -61,14 +61,11 @@ namespace HySound.Controllers
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-
                 var result = await _userManager.CreateAsync(user, model.Password);
 
 
                 if (result.Succeeded)
-
                 {
-
                     await _userManager.AddToRoleAsync(user, "User"); // По подразбиране новите потребители са "User" 
 
                                    await _signInManager.SignInAsync(user, isPersistent: false);

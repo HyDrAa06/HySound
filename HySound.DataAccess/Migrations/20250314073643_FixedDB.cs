@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HySound.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class FixedDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -201,7 +201,6 @@ namespace HySound.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CoverImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -213,6 +212,43 @@ namespace HySound.DataAccess.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArtistRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArtistUsername = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AdminId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    IdentityUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtistRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArtistRequests_AspNetUsers_IdentityUserId",
+                        column: x => x.IdentityUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ArtistRequests_Users_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ArtistRequests_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -331,17 +367,28 @@ namespace HySound.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    TrackId = table.Column<int>(type: "int", nullable: true)
+                    TrackId = table.Column<int>(type: "int", nullable: true),
+                    AlbumId = table.Column<int>(type: "int", nullable: true),
+                    PlaylistId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Likes", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Likes_Albums_AlbumId",
+                        column: x => x.AlbumId,
+                        principalTable: "Albums",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Likes_Playlists_PlaylistId",
+                        column: x => x.PlaylistId,
+                        principalTable: "Playlists",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Likes_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Likes_Users_UserId",
                         column: x => x.UserId,
@@ -364,8 +411,7 @@ namespace HySound.DataAccess.Migrations
                         name: "FK_PlaylistTracks_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlaylistTracks_Tracks_TrackId",
                         column: x => x.TrackId,
@@ -373,31 +419,24 @@ namespace HySound.DataAccess.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TrackStatistics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TrackId = table.Column<int>(type: "int", nullable: true),
-                    Plays = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    Likes = table.Column<int>(type: "int", nullable: false),
-                    Comments = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TrackStatistics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TrackStatistics_Tracks_TrackId",
-                        column: x => x.TrackId,
-                        principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Albums_UserId",
                 table: "Albums",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArtistRequests_AdminId",
+                table: "ArtistRequests",
+                column: "AdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArtistRequests_IdentityUserId",
+                table: "ArtistRequests",
+                column: "IdentityUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArtistRequests_UserId",
+                table: "ArtistRequests",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -455,6 +494,16 @@ namespace HySound.DataAccess.Migrations
                 column: "FollowedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Likes_AlbumId",
+                table: "Likes",
+                column: "AlbumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Likes_PlaylistId",
+                table: "Likes",
+                column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Likes_TrackId",
                 table: "Likes",
                 column: "TrackId");
@@ -490,13 +539,6 @@ namespace HySound.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TrackStatistics_TrackId",
-                table: "TrackStatistics",
-                column: "TrackId",
-                unique: true,
-                filter: "[TrackId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_UserIdentityId",
                 table: "Users",
                 column: "UserIdentityId",
@@ -506,6 +548,9 @@ namespace HySound.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ArtistRequests");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -532,9 +577,6 @@ namespace HySound.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlaylistTracks");
-
-            migrationBuilder.DropTable(
-                name: "TrackStatistics");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

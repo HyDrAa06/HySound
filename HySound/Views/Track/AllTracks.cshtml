@@ -3,95 +3,472 @@
 @model TrackFilterViewModel
 @await Html.PartialAsync("_AddToPlaylistPartial", Model.Playlists ?? new List<Playlist>())
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="text-light">All Tracks</h1>
-        <a class="btn btn-main" asp-controller="Track" asp-action="AddTrack">Add Track</a>
-    </div>
-
-    <form asp-action="AllTracks" method="get" class="mb-5 search-form">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="GenreId" class="form-label text-muted">Genres</label>
-                <select asp-for="GenreId" asp-items="Model.Genres" class="form-select">
-                    <option value="">All Genres</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="Title" class="form-label text-muted">Title</label>
-                <input type="text" asp-for="Title" class="form-control" placeholder="Search by title">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-main mt-3">Show Results</button>
-    </form>
-
+<div class="container artist-dashboard py-4">
     <div class="row">
-        @foreach (var track in Model.Tracks)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="track-card">
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal">Add to Playlist</a></li>
-                            <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId">Update</a></li>
-                            <li><a class="dropdown-item" asp-controller=" Track" asp-action="Delete" asp-route-id="@track.TrackId">Delete</a></li>
-                        </ul>
+        <!-- Main Content -->
+        <div class="col-12 main-content">
+            <div class="d-flex justify-content-between align-items-center header-section mb-4">
+                <div>
+                    <h1 class="text-light mb-0">My Tracks</h1>
+                    <p class="text-muted">Manage your music catalog</p>
+                </div>
+                <a class="btn btn-primary upload-btn" asp-controller="Track" asp-action="AddTrack">
+                    <i class="fas fa-plus me-2"></i> Upload New Track
+                </a>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section mb-4">
+                <form asp-action="AllTracks" method="get" class="search-form">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-dark text-light">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" asp-for="Title" class="form-control bg-dark border-dark text-light" placeholder="Search by title">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select asp-for="GenreId" asp-items="Model.Genres" class="form-select bg-dark border-dark text-light">
+                                <option value="">All Genres</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select bg-dark border-dark text-light">
+                                <option value="">Sort by: Latest</option>
+                                <option value="plays">Sort by: Most Played</option>
+                                <option value="likes">Sort by: Most Liked</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Apply</button>
+                        </div>
                     </div>
+                </form>
+            </div>
 
-
-                    <div class="track-image">
-                        @if (track.IsYoutube)
+            <!-- Tracks Table -->
+            <div class="tracks-table-container">
+                <table class="table table-dark table-hover tracks-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>Track</th>
+                            <th>Genre</th>
+                            <th class="text-center">Plays</th>
+                            <th class="text-center">Likes</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var (track, index) in Model.Tracks.Select((t, i) => (t, i + 1)))
                         {
-                            <iframe class="track-iframe"
-                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
-                                    frameborder="0" allow="autoplay">
-                            </iframe>
+                            <tr class="track-row">
+                                <td class="align-middle">@index</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="track-thumbnail me-3">
+                                            @if (track.IsYoutube)
+                                            {
+                                                <div class="thumbnail-youtube">
+                                                    <i class="fab fa-youtube"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <img src="@track.ImageLink" alt="@track.Title" class="thumbnail-img" />
+                                            }
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 track-title">@track.Title</h6>
+                                            <small class="text-muted">@track.UserName</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">@track.GenreName</td>
+                                <td class="text-center align-middle">@track.Plays</td>
+                                <td class="text-center align-middle">0</td>
+                                <td class="text-center align-middle">
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-light" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal"><i class="fas fa-plus me-2"></i> Add to Playlist</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
                         }
-                        else
-                        {
-                            <img src="@track.ImageLink" alt="@track.Title" class="track-img" />
-                        }
-                    </div>
-                    <div class="track-info">
-                        <h5 class="track-title">@track.Title</h5>
-                        <p class="track-meta">Genre: @track.GenreName | User: @track.UserName</p>
-                        <p class="track-meta">Plays: @track.Plays</p>
-                    </div>
-                    <div class="track-actions">
-                        <a class="btn btn-action" asp-controller="Like" asp-action="Like" asp-route-id="@track.TrackId">
-                            <i class="fas fa-heart"></i>
-                        </a>
-                        <a class="btn btn-action" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    </tbody>
+                </table>
+            </div>
 
-                        </a>
-                        <a class="btn btn-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </div>
+            <!-- Grid View Alternative -->
+            <div class="d-flex justify-content-end mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark active" id="tableViewBtn">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button type="button" class="btn btn-dark" id="gridViewBtn">
+                        <i class="fas fa-th"></i>
+                    </button>
                 </div>
             </div>
-        }
+
+            <div class="tracks-grid-container" style="display: none;">
+                <div class="row">
+                    @foreach (var track in Model.Tracks)
+                    {
+                        <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                            <div class="track-card">
+                                <div class="dropdown position-absolute" style="top: 10px; right: 10px; z-index: 100;">
+                                    <button type="button" class="btn btn-dark btn-sm rounded-circle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal"><i class="fas fa-plus me-2"></i> Add to Playlist</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="track-image position-relative">
+                                    @if (track.IsYoutube)
+                                    {
+                                        <div class="youtube-container">
+                                            <iframe class="track-iframe"
+                                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
+                                                    frameborder="0" allow="autoplay">
+                                            </iframe>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <img src="@track.ImageLink" alt="@track.Title" class="track-img" />
+                                        <div class="play-overlay">
+                                            <i class="fas fa-play-circle"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="track-info">
+                                    <h5 class="track-title">@track.Title</h5>
+                                    <p class="track-meta">@track.GenreName</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fas fa-play me-1"></i> @track.Plays</span>
+                                        <span><i class="fas fa-heart me-1"></i> 0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .artist-dashboard {
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    /* Main Content Styling */
+    .main-content {
+        padding: 20px;
+        background-color: #121212;
+    }
+
+    .header-section {
+        padding-bottom: 15px;
+        border-bottom: 1px solid #333;
+    }
+
+    .upload-btn {
+        background-color: #1DB954;
+        border-color: #1DB954;
+        font-weight: 600;
+        padding: 8px 20px;
+        border-radius: 30px;
+    }
+
+        .upload-btn:hover {
+            background-color: #1ed760;
+            border-color: #1ed760;
+        }
+
+    /* Filter Section */
+    .filter-section {
+        background-color: #1e1e1e;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    /* Tracks Table Styling */
+    .tracks-table-container {
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .tracks-table {
+        margin-bottom: 0;
+    }
+
+        .tracks-table thead th {
+            background-color: #2a2a2a;
+            color: #b3b3b3;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding: 12px 16px;
+        }
+
+        .tracks-table tbody td {
+            border-bottom: 1px solid #333;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+        }
+
+    .track-thumbnail {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: #333;
+        position: relative;
+    }
+
+    .thumbnail-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .thumbnail-youtube {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #FF0000;
+        background-color: #000000;
+    }
+
+    .track-title {
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .track-row {
+        transition: background-color 0.2s ease;
+    }
+
+        .track-row:hover {
+            background-color: #2a2a2a;
+        }
+
+    /* Grid View Styling */
+    .track-card {
+        background-color: #181818;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        height: 100%;
+        position: relative;
+    }
+
+        .track-card:hover {
+            background-color: #282828;
+            transform: translateY(-5px);
+        }
+
+    .track-image {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .track-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .youtube-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000;
+    }
+
+    .track-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+        .play-overlay i {
+            font-size: 48px;
+            color: #1DB954;
+        }
+
+    .track-card:not(.youtube-track):hover .play-overlay {
+        opacity: 1;
+    }
+
+    .track-info {
+        padding: 16px;
+    }
+
+        .track-info h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .track-meta {
+        color: #b3b3b3;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background-color: #1DB954;
+        border-color: #1DB954;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #1ed760;
+            border-color: #1ed760;
+        }
+
+    .btn-dark {
+        background-color: #333;
+        border-color: #333;
+    }
+
+        .btn-dark:hover, .btn-dark:focus {
+            background-color: #444;
+            border-color: #444;
+        }
+
+    .btn-group .btn.active {
+        background-color: #1DB954;
+        border-color: #1DB954;
+    }
+
+    /* Dropdown Styling */
+    .dropdown-menu-dark {
+        background-color: #333;
+        border: 1px solid #444;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+        .dropdown-menu-dark .dropdown-item {
+            color: #e0e0e0;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+            .dropdown-menu-dark .dropdown-item:hover {
+                background-color: #444;
+            }
+
+            .dropdown-menu-dark .dropdown-item.text-danger:hover {
+                background-color: rgba(220, 53, 69, 0.2);
+            }
+</style>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // View switching functionality
+        const tableViewBtn = document.getElementById('tableViewBtn');
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const tableView = document.querySelector('.tracks-table-container');
+        const gridView = document.querySelector('.tracks-grid-container');
+
+        tableViewBtn.addEventListener('click', function () {
+            tableView.style.display = 'block';
+            gridView.style.display = 'none';
+            tableViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+            localStorage.setItem('preferredView', 'table');
+        });
+
+        gridViewBtn.addEventListener('click', function () {
+            tableView.style.display = 'none';
+            gridView.style.display = 'block';
+            gridViewBtn.classList.add('active');
+            tableViewBtn.classList.remove('active');
+            localStorage.setItem('preferredView', 'grid');
+        });
+
+        // Check user preference from localStorage
+        const preferredView = localStorage.getItem('preferredView');
+        if (preferredView === 'grid') {
+            gridViewBtn.click();
+        }
+
+        // Track card hover effects - but only for non-YouTube tracks
         const cards = document.querySelectorAll(".track-card");
         cards.forEach(card => {
+            if (card.querySelector('.youtube-container')) {
+                card.classList.add('youtube-track');
+            }
+
             card.addEventListener("mouseenter", () => {
-                card.style.boxShadow = "0 8px 35px rgba(0, 0, 0, 0.4)";
+                card.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.4)";
             });
             card.addEventListener("mouseleave", () => {
                 card.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
             });
         });
-    });
 
-    ocument.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".track-options").forEach(button => {
             button.addEventListener("click", function (event) {
                 event.stopPropagation();
@@ -114,199 +491,3 @@
         });
     });
 </script>
-
-
-  <style>
-
-    /* More Options (⋮) Button */
-    .track-options-container {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        display: inline-block;
-    }
-
-    .track-options-menu {
-        position: absolute;
-        top: 35px; /* Adjusted spacing */
-        right: 0;
-        background-color: #333;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        padding: 8px 0;
-        width: 180px;
-        display: none;
-        flex-direction: column;
-        z-index: 50; /* Ensures it's above other elements */
-    }
-
-        .track-options-menu .dropdown-item {
-            padding: 8px 15px;
-            color: white;
-            cursor: pointer;
-            text-align: left;
-            display: block;
-        }
-
-            .track-options-menu .dropdown-item:hover {
-                background-color: #444;
-                color: #FFC107;
-            }
-
-        .track-options-menu .delete {
-            color: red;
-        }
-
-    .track-card {
-        position: relative; /* Make the track card the reference for absolute positioning */
-        background-color: #2b2b2b;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        padding: 20px;
-    }
-
-        .track-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4);
-        }
-
-    .track-options {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: transparent;
-        border: none;
-        color: #e0e0e0;
-        font-size: 1.25rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-        .track-options:hover {
-            color: #1DB954;
-        }
-
-    .track-image {
-        width: 100%;
-        height: 180px;
-        overflow: hidden;
-        border-radius: 10px;
-        margin-bottom: 15px;
-    }
-
-    .track-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-        .track-img:hover {
-            transform: scale(1.1);
-        }
-
-    .track-info {
-        padding: 15px;
-        text-align: center;
-        flex-grow: 1;
-    }
-
-    .track-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: white;
-        margin-bottom: 10px;
-    }
-
-    .track-meta {
-        font-size: 0.9rem;
-        color: #b0b0b0;
-    }
-
-    .track-actions {
-        text-align: center;
-        display: flex;
-        justify-content: space-evenly;
-        margin-top: 15px;
-    }
-
-        .track-actions .btn {
-            font-weight: bold;
-            border-radius: 30px;
-            padding: 0.5rem 1.5rem;
-            margin: 0 5px;
-            text-transform: uppercase;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-
-
-    .btn-options {
-        background-color: transparent;
-        border: none;
-        color: white; /* Ensures the button text is visible */
-        font-size: 24px; /* Adjust the size of the button */
-        cursor: pointer;
-        padding: 8px 12px;
-        position: absolute;
-        top: 8px; /* Space from the top */
-        right: 8px; /* Space from the right */
-        z-index: 20; /* Make sure it's above other content */
-    }
-
-        .btn-options:hover {
-            color: #FFC107; /* Hover effect for the button */
-        }
-
-    .dropdown-menu {
-        min-width: 180px; /* Slightly wider for better spacing */
-        transform: translate(-50%, 10px) !important; /* Center below button */
-        left: 50% !important; /* Center horizontally */
-        top: 100% !important; /* Ensure it's positioned below */
-        z-index: 1050; /* Keep above other elements */
-        background-color: #333;
-        border: 1px solid #444;
-        border-radius: 8px;
-        padding: 10px;
-    }
-
-    .dropdown-item {
-        color: white; /* Text color */
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-
-        .dropdown-item:hover {
-            background-color: #444; /* Darker background on hover */
-            color: #FFC107; /* Highlight text color on hover */
-        }
-
-    .dropdown .btn-options {
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 20px;
-    }
-
-    .dropdown-menu-dark {
-        background-color: #333;
-        border: 1px solid #444;
-    }
-
-        .dropdown-menu-dark .dropdown-item {
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
-
-            .dropdown-menu-dark .dropdown-item:hover {
-                background-color: #555;
-            }
-
-</style>
