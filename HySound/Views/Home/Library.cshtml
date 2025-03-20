@@ -16,41 +16,80 @@
             {
                 @foreach (var track in Model.Tracks)
                 {
-                    <div class="library-track-card">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="#" onclick="openAddToPlaylistModal(@track.TrackId)">
-                                        Add to Playlist
-                                    </a>
-                                </li>
-                                <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">Details</a></li>
-                            </ul>
-                        </div>
-                        <img src="@track.ImageLink" alt="Track Image" class="library-track-img">
-                        <div class="library-track-info">
-                            <h3 class="library-track-title">@track.Title</h3>
-                            <p class="library-track-artist">@track.UserName</p>
-                            <div class="library-track-actions">
-                                <div class="play-dislike-container">
-                                    <button class="play-track-btn"
-                                            data-src="@track.AudioUrl"
-                                            data-title="@track.Title"
-                                            data-artist="@track.UserName"
-                                            data-image="@track.ImageLink    ">
-                                        <i class="fas fa-play"></i>
-                                    </button>
-
-                                    <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
-                                        <i class="fas fa-heart-broken"></i>
-                                    </a>
+                    @if (track.IsYoutube == true)
+                    {
+                        <div class="library-track-card">
+                            <iframe class="track-iframe"
+                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
+                                    frameborder="0" allow="autoplay">
+                            </iframe>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#" onclick="openAddToPlaylistModal(@track.TrackId)">
+                                            Add to Playlist
+                                        </a>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">Details</a></li>
+                                </ul>
+                            </div>
+                                                    
+                            <div class="library-track-info">
+                                <h3 class="library-track-title">@track.Title</h3>
+                                <p class="library-track-artist">@track.UserName</p>
+                                <div class="library-track-actions">
+                                    <div class="play-dislike-container">
+                                        
+                                        <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
+                                            <i class="fas fa-heart-broken"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="library-track-card">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-options" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#" onclick="openAddToPlaylistModal(@track.TrackId)">
+                                            Add to Playlist
+                                        </a>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId">Details</a></li>
+                                </ul>
+                            </div>
+                            <img src="@track.ImageLink" alt="Track Image" class="library-track-img">
+                            <div class="library-track-info">
+                                <h3 class="library-track-title">@track.Title</h3>
+                                <p class="library-track-artist">@track.UserName</p>
+                                <div class="library-track-actions">
+                                    <div class="play-dislike-container">
+                                        <button class="play-track-btn"
+                                                data-src="@track.AudioUrl"
+                                                data-title="@track.Title"
+                                                data-artist="@track.UserName"
+                                                data-image="@track.ImageLink    ">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+
+                                        <a asp-controller="Like" asp-action="Dislike" asp-route-id="@track.TrackId" class="track-btn unlike-btn" aria-label="Unlike track">
+                                            <i class="fas fa-heart-broken"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    
                 }
             }
         </div>

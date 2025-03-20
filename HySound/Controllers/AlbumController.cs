@@ -134,10 +134,7 @@ namespace HySound.Controllers
                 var tracks = await trackService.GetAllTracksAsync(x => x.AlbumId == id);
                 tracks.ToList().ForEach(x => x.AlbumId = null);
 
-                foreach (var track in tracks)
-                {
-                    await trackService.UpdateTrackAsync(track);
-                }
+                await likeService.DeleteAllLikesByAlbum(id);
                 await albumService.DeleteAlbumByIdAsync(id);
 
                 return RedirectToAction("AllAlbums");

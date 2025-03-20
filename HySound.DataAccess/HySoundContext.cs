@@ -57,7 +57,7 @@ namespace HySound.DataAccess
                 .HasOne(p => p.Playlist)
                 .WithMany(pt => pt.PlaylistTracks)
                 .HasForeignKey(p => p.PlaylistId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PlaylistTrack>()
                 .HasOne(t => t.Track)
@@ -72,20 +72,20 @@ namespace HySound.DataAccess
                 .HasOne(x => x.FollowedByUser)
                 .WithMany(x => x.Following)
                 .HasForeignKey(x => x.FollowedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<Followed>()
                 .HasOne(x => x.FollowedUser)
                 .WithMany(x => x.FollowedBy)
                 .HasForeignKey(x => x.FollowedId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Track>()
                 .HasOne(t => t.User)
                 .WithMany(a => a.Tracks)
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Track>()
                 .HasOne(t => t.Album)
@@ -96,7 +96,7 @@ namespace HySound.DataAccess
             modelBuilder.Entity<Track>()
                  .HasOne(g => g.Genre)
                  .WithMany(t => t.Tracks)
-                 .OnDelete(DeleteBehavior.Cascade);
+                 .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<Comment>()
@@ -115,7 +115,7 @@ namespace HySound.DataAccess
                 .HasOne(a => a.User)
                 .WithMany(a => a.Albums)
                 .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Like>()
                 .HasOne(x => x.Track)
@@ -135,17 +135,19 @@ namespace HySound.DataAccess
                 .HasForeignKey(x => x.PlaylistId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Like>()
-              .HasOne(x => x.User)
-              .WithMany(l => l.Likes)
-              .HasForeignKey(x => x.UserId)
-              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.Likes)
+                .WithOne(x => x.User)
+                .HasForeignKey(x=>x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<User>()
                 .HasOne(x => x.UserIdentity)
                 .WithOne()
                 .HasForeignKey<User>(x => x.UserIdentityId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public async Task Seed()
@@ -184,9 +186,9 @@ namespace HySound.DataAccess
             var adminEmail = "admin@admin.com";
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var user = new IdentityUser { UserName = "admin@admin.com", Email = adminEmail };
+                var userA = new IdentityUser { UserName = "admin@admin.com", Email = adminEmail };
 
-                var result = await userManager.CreateAsync(user, "Admin123!");
+                var resultA = await userManager.CreateAsync(userA, "Admin123!");
 
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 if (!await roleManager.RoleExistsAsync("Admin"))
@@ -194,17 +196,22 @@ namespace HySound.DataAccess
                     await roleManager.CreateAsync(new IdentityRole("Admin"));
                 }
 
-                if (result.Succeeded)
+                if (!await roleManager.RoleExistsAsync("User"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("User"));
+                }
+
+                if (resultA.Succeeded)
                 {
 
-                    await userManager.AddToRoleAsync(user, "Admin");
+                    await userManager.AddToRoleAsync(userA, "Admin");
                     User user1 = new User()
                     {
                         Username = "Admin",
                         Email = "admin@admin.com",
                         Password = "Admin123!",
-                        UserIdentityId = user.Id,
-                        UserIdentity = user
+                        UserIdentityId = userA.Id,
+                        UserIdentity = userA
                     };
 
                     Users.Add(user1);
@@ -212,6 +219,104 @@ namespace HySound.DataAccess
                 }
 
             }
+
+
+            var user = new IdentityUser { UserName = "carti@abv.bg", Email = "carti@abv.bg" };
+            var result = await userManager.CreateAsync(user, "Carti123!");
+
+
+            var user2 = new IdentityUser { UserName = "yeat@abv.bg", Email = "yeat@abv.bg" };
+            var result2 = await userManager.CreateAsync(user2, "Yeat123!");
+
+
+            var user3 = new IdentityUser { UserName = "thug@abv.bg", Email = "thug@abv.bg" };
+            var result3 = await userManager.CreateAsync(user3, "Thug123!");
+
+
+            if (Users.Count() <= 1)
+            {
+               
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                if (!await roleManager.RoleExistsAsync("User"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("User"));
+                }
+
+                if (result.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user, "User");
+                    User user1 = new User()
+                    {
+                        Username = "Playboi Carti",
+                        Email = "carti@abv.bg",
+                        Password = "Carti123!",
+                        UserIdentityId = user.Id,
+                        UserIdentity = user
+                    };
+
+                    Users.Add(user1);
+                    await SaveChangesAsync();
+                    Tracks.AddRange(
+                    new Track() { Title = "Sky", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
+                    new Track() { Title = "EvilJordan", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
+                    new Track() { Title = "Munyun", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                    );        
+                }
+
+
+                if (!await roleManager.RoleExistsAsync("User"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("User"));
+                }
+
+                if (result2.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user, "User");
+                    User user1 = new User()
+                    {
+                        Username = "Yeat",
+                        Email = "yeat@abv.bg",
+                        Password = "Yeat123!",
+                        UserIdentityId = user2.Id,
+                        UserIdentity = user2
+                    };
+                    Users.Add(user1);
+
+                    await SaveChangesAsync();
+
+                    Tracks.AddRange(
+                          new Track() { Title = "ILUV", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
+                          new Track() { Title = "Swerved It", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                        );
+                }
+               
+                if (result3.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user3, "User");
+                    User user1 = new User()
+                    {
+                        Username = "Young Thug",
+                        Email = "thug@abv.bg",
+                        Password = "Thug123!",
+                        UserIdentityId = user3.Id,
+                        UserIdentity = user3
+                    };
+
+                    Users.Add(user1);
+                    await SaveChangesAsync();
+
+                    Tracks.AddRange(
+                         new Track() { Title = "Ecstasy", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
+                         new Track() { Title = "Millions", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                    );
+                }
+                await SaveChangesAsync();
+            }
+
+           
 
         }
     }

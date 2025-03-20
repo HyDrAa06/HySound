@@ -7,7 +7,6 @@ namespace HySound.ViewModels.Track
         public string Title { get; set; }
         public string Username { get; set; }
         public string TrackImage { get; set; }
-        public int Plays { get; set; }
         public int LikesCount { get; set; }
         public string Genre { get; set; }
 

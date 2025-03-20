@@ -11,65 +11,64 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark">
+        <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="/">
+                    <span class="brand-text">HySound</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
                         @if (User.IsInRole("User") || User.IsInRole("Artist") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link active" asp-controller="Home" asp-action="Search">Search</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="Search">Search</a>
                             </li>
-                        }
-                        @if (User.IsInRole("User") || User.IsInRole("Artist") || User.IsInRole("Admin") )
-                        {
+
                             <li class="nav-item">
                                 <a class="nav-link" asp-action="Library" asp-controller="Home">Library</a>
                             </li>
                         }
+
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-action="ArtistRequests" asp-controller="Admin">Requests</a>
                             </li>
                         }
+
                         @if (User.IsInRole("Artist") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-light" href="#" id="uploadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="uploadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Upload
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="uploadDropdown">
-                                    <li><a class="dropdown-item text-light" asp-controller="Track" asp-action="AllTracks">Track</a></li>
-                                    <li><a class="dropdown-item text-light" asp-controller="Album" asp-action="AllAlbums">Album</a></li>
-                                    <li><a class="dropdown-item text-light" asp-controller="Playlist" asp-action="AllPlaylists">Playlist</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="uploadDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Track" asp-action="AllTracks">Track</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Album" asp-action="AllAlbums">Album</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Playlist" asp-action="AllPlaylists">Playlist</a></li>
                                 </ul>
                             </li>
                         }
-                            
-                        
+
                         @if (User.IsInRole("Artist") || User.IsInRole("User") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-action="Profile" asp-controller="User">Profile</a>
                             </li>
                         }
-                        
-                        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -130,3 +129,136 @@
 
 </body>
 </html>
+
+<style>
+    /* HySound Navbar Styles */
+    .navbar {
+        background-color: var(--spotify-black);
+        padding: 1rem 0;
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-right: 2rem;
+    }
+
+    .brand-text {
+        color: #1DB954; /* Explicit green color for HySound text */
+        letter-spacing: -0.5px;
+        transition: all 0.25s ease;
+    }
+
+    .navbar-brand:hover .brand-text {
+        text-shadow: 0 0 5px rgba(29, 185, 84, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .navbar-nav {
+        gap: 0.3rem;
+    }
+
+    .nav-link {
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        color: var(--spotify-light-gray);
+        transition: all 0.25s ease;
+        font-size: 0.95rem;
+        position: relative;
+        border-radius: 4px;
+    }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #1DB954;
+            transition: all 0.25s ease;
+            opacity: 0;
+        }
+
+        .nav-link:hover {
+            color: var(--spotify-white);
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+            .nav-link:hover::after {
+                width: 80%;
+                left: 10%;
+                opacity: 1;
+            }
+
+        .nav-link.active {
+            color: var(--spotify-white);
+        }
+
+            .nav-link.active::after {
+                width: 80%;
+                left: 10%;
+                opacity: 1;
+            }
+
+    .dropdown-menu {
+        background-color: var(--spotify-gray);
+        border: none;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-item {
+        color: var(--spotify-light-gray);
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #1DB954;
+        }
+
+    .navbar-toggler {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    /* Login buttons */
+    .btn-login, .btn-signup {
+        padding: 0.4rem 1.2rem;
+        border-radius: 500px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.25s ease;
+        margin-left: 0.5rem;
+    }
+
+    .btn-login {
+        background-color: transparent;
+        border: 1px solid var(--spotify-light-gray);
+        color: var(--spotify-white);
+    }
+
+        .btn-login:hover {
+            border-color: var(--spotify-white);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+    .btn-signup {
+        background-color: #1DB954;
+        border: none;
+        color: var(--spotify-black);
+    }
+
+        .btn-signup:hover {
+            filter: brightness(1.05);
+            transform: scale(1.02);
+        }
+</style>

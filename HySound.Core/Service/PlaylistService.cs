@@ -1,14 +1,8 @@
 ﻿using HySound.Core.Service.IService;
-using HySound.DataAccess.Repository;
 using HySound.DataAccess.Repository.IRepository;
 using HySound.Models.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HySound.Core.Service
 {
@@ -18,7 +12,8 @@ namespace HySound.Core.Service
         IRepository<PlaylistTrack> _playlistTrackRepository;
         IRepository<Track> _trackRepository;
 
-        public PlaylistService(IRepository<Track> trackRepository,IRepository<PlaylistTrack> repo,IRepository<Playlist> repository)
+
+        public PlaylistService(IRepository<Track> trackRepository, IRepository<PlaylistTrack> repo, IRepository<Playlist> repository)
         {
             _playlistRepository = repository;
             _playlistTrackRepository = repo;
@@ -29,6 +24,26 @@ namespace HySound.Core.Service
             await _playlistRepository.AddAsync(entity);
         }
 
+        public async Task DeleteTrackFromAllPlaylistsAsync(int trackId)
+        {
+            var playlistTracks = await _playlistTrackRepository.GetAllAsync(x => x.TrackId == trackId);            
+      
+
+            foreach(var pt in playlistTracks)
+            {
+                await _playlistTrackRepository.DeleteAsync(pt);
+            }
+
+        }
+
+        public async Task DeleteAllPlaylistsOfUser(int id)
+        {
+            var playlists = await _playlistRepository.GetAllAsync(x => x.UserId == id);
+            foreach(var playlist in playlists)
+            {
+                await _playlistRepository.DeleteAsync(playlist);
+            }
+        }
         public IQueryable<Playlist> AllWithInclude(params Expression<Func<Playlist, object>>[] includes)
         {
             IQueryable<Playlist> query = _playlistRepository.GetAllQuery();
@@ -81,20 +96,20 @@ namespace HySound.Core.Service
 
         public async Task<List<Track>> GetTracksOfPlaylist(int id)
         {
-            List<PlaylistTrack> playlistTracks = _playlistTrackRepository.GetAll().Where(x=>x.PlaylistId==id).ToList();
+            List<PlaylistTrack> playlistTracks = _playlistTrackRepository.GetAll().Where(x => x.PlaylistId == id).ToList();
 
             List<Track> tracks = new List<Track>();
 
-            
 
-            foreach(var playlistTrack in playlistTracks)
+
+            foreach (var playlistTrack in playlistTracks)
             {
                 tracks.Add(
                     await _trackRepository.GetByIdAsync(playlistTrack.TrackId));
             }
 
             return tracks;
-        } 
+        }
         public async Task UpdatePlaylistAsync(Playlist entity)
         {
             await _playlistRepository.UpdateAsync(entity);

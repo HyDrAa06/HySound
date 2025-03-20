@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using Azure;
+using CloudinaryDotNet;
 using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
@@ -11,7 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HySound.Controllers
@@ -51,6 +54,9 @@ namespace HySound.Controllers
         {
             if(id != null)
             {
+                await likesService.DeleteAllLikesByTracks(id);
+                await playlistService.DeleteTrackFromAllPlaylistsAsync(id);
+
                 await trackService.DeleteTrackByIdAsync(id);
             }
             return RedirectToAction("AllTracks");
@@ -67,14 +73,25 @@ namespace HySound.Controllers
                 return View(model);
             }
             var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+
 
             Track track = trackService.GetAll().Where(x => x.Id == id).FirstOrDefault();
             track.Title = model.Title;
             track.AudioUrl = model.AudioUrl;
-            track.Plays=model.Plays;
             track.GenreId = model.GenreId;
             track.UserId = model.UserId;
             track.CoverImage = imageUploadResult;
+            track.IsYoutube = model.IsYoutube;
+            track.UserId = user.Id;
+            if(track.IsYoutube == false)
+            {
+                var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
+
+                track.AudioUrl =audioUploadResult;
+            }
             await trackService.UpdateTrackAsync(track);
             return RedirectToAction("AllTracks");
         }
@@ -82,22 +99,55 @@ namespace HySound.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var model = trackService.GetAll().Where(x => x.Id == id).Include(x => x.Genre).Include(x => x.User)
-            .Select(x => new EditTrackViewModel()
-            {
-                Title=x.Title,
-                Plays=x.Plays,
-                AudioUrl=x.AudioUrl,
-                ImageUrl = x.CoverImage,
-                GenreId=x.GenreId,
-                GenresList= new SelectList(genreService.GetAll(), "Id", "Name"),
-                UserId=x.UserId,
-                UserList = new SelectList(userService.GetAll(), "Id", "Username")
+            var model = trackService.GetAll()
+                .Where(x => x.Id == id)
+                .Include(x => x.Genre)
+                .Include(x => x.User)
+                .Select(x => new EditTrackViewModel()
+                {
+                    Title = x.Title,
+                    AudioUrl = x.AudioUrl,
+                    ImageUrl = x.CoverImage,
+                    GenreId = x.GenreId,
+                    GenresList = new SelectList(genreService.GetAll(), "Id", "Name"),
+                    UserId = x.UserId,
+                    UserList = new SelectList(userService.GetAll(), "Id", "Username"),
+                    IsYoutube = x.IsYoutube
+                })
+                .FirstOrDefault();
 
-            }).FirstOrDefault();
+            if (model == null)
+            {
+                return NotFound(); // Handle missing track
+            }
+
+            if (!model.IsYoutube)
+            {
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(model.AudioUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await response.Content.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0; // Reset stream position
+
+                        model.audioFile = new FormFile(memoryStream, 0, memoryStream.Length, "file", "audio.mp3")
+                        {
+                            Headers = new HeaderDictionary(),
+                            ContentType = "audio/mpeg"
+                        };
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Failed to fetch the audio file.");
+                    }
+                }
+            }
 
             return View(model);
         }
+
         public async Task<IActionResult> AddTrack()
         {
             var model = new AddTrackViewModel();
@@ -123,7 +173,6 @@ namespace HySound.Controllers
                         IsYoutube=true,
                         AudioUrl = model.AudioUrl,
                         UserId = user.Id,
-                        Plays = model.Plays,
                         GenreId = model.GenreId,
                         CoverImage = imageUploadResult
                     };
@@ -139,7 +188,6 @@ namespace HySound.Controllers
                         IsYoutube = false,
                         AudioUrl = audioUploadResult,
                         UserId = user.Id,
-                        Plays = model.Plays,
                         GenreId = model.GenreId,
                         CoverImage = imageUploadResult
                     };
@@ -241,7 +289,6 @@ namespace HySound.Controllers
                 {
                     Id = id,
                     Title = track.Title,
-                    Plays = track.Plays,
                     TrackImage = track.CoverImage,
                     Comments = comments.ToList(),
                     Username = track.User.Username,
@@ -273,7 +320,6 @@ namespace HySound.Controllers
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
-                    Plays = x.Plays,
                     IsYoutube = x.IsYoutube,
                     ImageLink=x.CoverImage
                 }).ToList();
@@ -310,7 +356,6 @@ namespace HySound.Controllers
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
-                    Plays = x.Plays,
                     ImageLink=x.CoverImage
                 }).ToList(),
                     Genres = new SelectList(genreService.GetAll(), "Id", "Name"),

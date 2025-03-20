@@ -21,5 +21,11 @@ namespace HySound.Core.Service.IService
         Task<Like> GetLikeAsync(Expression<Func<Like, bool>> filter);
         Task<IEnumerable<Like>> GetAllLikesAsync(Expression<Func<Like, bool>> filter);
         Task<IEnumerable<Like>> GetAllLikesAsync();
+        Task DeleteAllLikesByTracks(int trackId);
+        Task DeleteAllLikesByPlaylist(int playlistId);
+        Task DeleteAllLikesByAlbum(int albumId);
+
+        Task DeleteAllLikesByUsers(int userId);
+
     }
 }

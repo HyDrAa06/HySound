@@ -9,7 +9,6 @@ namespace HySound.ViewModels
         public string? AudioUrl { get; set; }
         public IFormFile? audioFile { get; set; }
         public IFormFile? imageFile { get; set; }
-        public int Plays { get; set; }
         public string? ImageLink { get; set; }
 
         public SelectList? GenresList { get; set; }

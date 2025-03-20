@@ -57,6 +57,8 @@
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="Name" value="@Model.Name" required>
+                <div class="char-counter"><span id="userCharCount">0</span>/50</div>
+
             </div>
 
             <div class="input-group">
@@ -737,9 +739,21 @@
         // Character counter for bio
         const bioTextarea = document.getElementById('bio');
         const charCount = document.getElementById('bioCharCount');
+        const usernameInput = document.getElementById('username');
+        const userCharCount = document.getElementById('userCharCount');
+
         
-        if (bioTextarea && charCount) {
+        if (bioTextarea && charCount && userCharCount && usernameInput) {
             charCount.textContent = bioTextarea.value.length;
+            userCharCount.textContext = usernameInput.value.length;
+
+            usernameInput.addEventListener('input', function () {
+                userCharCount.textContent = this.value.length;
+                if (this.value.length > 50) {
+                    this.value = this.value.substring(0, 50);
+                    userCharCount.textContent = 50;
+                }
+            });
             
             bioTextarea.addEventListener('input', function() {
                 charCount.textContent = this.value.length;

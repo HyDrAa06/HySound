@@ -23,7 +23,7 @@ namespace HySound.Models.Models
         [MaxLength(50)]
         public string Password { get; set; }
         public string? ProfilePicture { get; set; }
-        [MaxLength(500)]
+        [MaxLength(150)]
         public string? Bio {  get; set; }
 
         public IdentityUser UserIdentity { get; set; }

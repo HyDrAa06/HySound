@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HySound.DataAccess.Migrations
 {
     [DbContext(typeof(HySoundContext))]
-    [Migration("20250314073643_FixedDB")]
-    partial class FixedDB
+    [Migration("20250320084918_FixedCascade")]
+    partial class FixedCascade
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,9 +272,6 @@ namespace HySound.DataAccess.Migrations
                     b.Property<bool>("IsYoutube")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Plays")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -303,8 +300,8 @@ namespace HySound.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -538,7 +535,7 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.User", "User")
                         .WithMany("Albums")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("User");
                 });
@@ -588,13 +585,13 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.User", "FollowedByUser")
                         .WithMany("Following")
                         .HasForeignKey("FollowedById")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("HySound.Models.Models.User", "FollowedUser")
                         .WithMany("FollowedBy")
                         .HasForeignKey("FollowedId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("FollowedByUser");
@@ -622,7 +619,7 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Album");
 
@@ -648,7 +645,7 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.Playlist", "Playlist")
                         .WithMany("PlaylistTracks")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HySound.Models.Models.Track", "Track")
@@ -672,12 +669,12 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("HySound.Models.Models.Genre", "Genre")
                         .WithMany("Tracks")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("HySound.Models.Models.User", "User")
                         .WithMany("Tracks")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Album");
 
@@ -691,7 +688,7 @@ namespace HySound.DataAccess.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserIdentity")
                         .WithOne()
                         .HasForeignKey("HySound.Models.Models.User", "UserIdentityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("UserIdentity");

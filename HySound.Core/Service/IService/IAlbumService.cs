@@ -11,7 +11,8 @@ namespace HySound.Core.Service.IService
     public interface IAlbumService
     {
         public IQueryable<Album> GetAll();
-        
+        Task DeleteAllAlbumsOfUser(int id);
+
         Task AddAlbumAsync(Album entity);
         Task UpdateAlbumAsync(Album entity);
         Task DeleteAlbumAsync(Album entity);

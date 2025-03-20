@@ -21,5 +21,7 @@ namespace HySound.Core.Service.IService
         Task<Followed> GetFollowerAsync(Expression<Func<Followed, bool>> filter);
         Task<IEnumerable<Followed>> GetAllFollowersAsync(Expression<Func<Followed, bool>> filter);
         Task<IEnumerable<Followed>> GetAllFollowersAsync();
+        Task DeleteAllFollowersAndFollowing(int userId);
+
     }
 }

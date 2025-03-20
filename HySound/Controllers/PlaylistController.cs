@@ -165,7 +165,9 @@ namespace HySound.Controllers
        
         public async Task<IActionResult> Delete(int id)
         {
+            await likeService.DeleteAllLikesByPlaylist(id);
             await playlistService.DeletePlaylistByIdAsync(id);
+
             return RedirectToAction("AllPlaylists");
         }
         [HttpPost]

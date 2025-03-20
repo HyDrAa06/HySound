@@ -64,7 +64,6 @@ namespace HySound.Controllers
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
-                    Plays = x.Plays,
                     ImageLink = x.CoverImage
                 }).ToList();
                     
@@ -168,8 +167,8 @@ namespace HySound.Controllers
                 AudioUrl = x.AudioUrl,
                 GenreName = x.Genre.Name,
                 UserName = x.User.Username,
-                Plays = x.Plays,
-                ImageLink = x.CoverImage
+                ImageLink = x.CoverImage,
+                IsYoutube = x.IsYoutube
             }).ToList();
 
             var tempUser = await _userManager.FindByEmailAsync(User.Identity.Name);
@@ -199,7 +198,6 @@ namespace HySound.Controllers
                     CoverImage=t.CoverImage,
                     UserId=t.UserId,
                     IsYoutube=t.IsYoutube,
-                    Plays = t.Plays
                 }).ToList()
             }).ToList();
 
@@ -250,7 +248,6 @@ namespace HySound.Controllers
                 AudioUrl = x.AudioUrl,
                 GenreName = x.Genre.Name,
                 UserName = x.User.Username,
-                Plays = x.Plays,
                 ImageLink = x.CoverImage
             }).ToList();
 

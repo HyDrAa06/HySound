@@ -21,6 +21,14 @@ namespace HySound.Core.Service
             _albumService = albumRepository;
         }
         
+        public async Task DeleteAllAlbumsOfUser(int id)
+        {
+            var albums = await _albumService.GetAllAsync(x => x.UserId == id);
+            foreach(var album in albums)
+            {
+                await _albumService.DeleteAsync(album);
+            }
+        }
         public async Task AddAlbumAsync(Album entity)
         {
             await _albumService.AddAsync(entity);

@@ -6,7 +6,9 @@
     <div class="error-message">
         <h2>Album Not Found</h2>
         <p>The requested album could not be found. Please try again.</p>
-        <a asp-controller="Album" asp-action="AllAlbums">Back to Albums</a>
+        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Back">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
     </div>
 }
 else
@@ -14,6 +16,11 @@ else
     <div class="album-details">
         <div class="album-header" id="albumHeader">
             <div class="album-cover-container">
+                <div class="back-button-container">
+                    <a asp-action="Search" asp-controller="Home" class="back-btn" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
                 <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Unknown Album")" class="album-cover" id="albumCover" />
             </div>
             <div class="album-info">
@@ -35,7 +42,6 @@ else
                             <span>@Model.Tracks.Count() songs</span>
                             <span class="dot-separator">•</span>
                         }
-                        <span>Released: @(Model.ReleaseDate.ToString("MMMM dd, yyyy"))</span>
                     </p>
                 </div>
             </div>
@@ -48,17 +54,17 @@ else
                 </button>
                 @if (Model.IsLiked == true)
                 {
-                    <a asp-controller="Like" asp-action="DislikeAlbum" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
-                        <i class="far fa-heart-broken"></i>
+                    <a asp-controller="Like" asp-action="DislikeAlbum" asp-route-id="@Model.Id" class="dislike-btn" title="Remove from Your Library">
+                        <i class="fas fa-heart"></i>
                     </a>
                 }
                 else
                 {
-                   <a asp-controller="Like" asp-action="LikeAlbum" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
-                    <i class="far fa-heart"></i>
-                </a> 
+                    <a asp-controller="Like" asp-action="LikeAlbum" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
+                        <i class="far fa-heart"></i>
+                    </a>
                 }
-                
+
                 <button class="options-btn" title="More options">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
@@ -72,14 +78,14 @@ else
                         <i class="far fa-clock"></i>
                     </div>
                 </div>
-                
+
                 <ul class="tracklist">
                     @if (Model.Tracks != null && Model.Tracks.Any())
                     {
                         int trackNumber = 1;
                         foreach (var track in Model.Tracks)
                         {
-                            <li class="track" data-index="@(trackNumber-1)">
+                            <li class="track" data-index="@(trackNumber - 1)">
                                 <div class="track-number-cell">
                                     <span class="track-number">@trackNumber</span>
                                     <button class="play-btn"
@@ -148,6 +154,36 @@ else
         margin: 0 auto;
     }
 
+    /* Back Button */
+    .back-button-container {
+        padding: 24px 32px 0;
+        margin-bottom: 0;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: transparent;
+        border: 1px solid #b3b3b3;
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: border-color 0.3s, color 0.3s;
+    }
+
+        .back-btn i {
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            border-color: #1DB954;
+            color: #1DB954;
+        }
+
     .album-header {
         display: flex;
         align-items: flex-end;
@@ -158,16 +194,16 @@ else
         position: relative;
     }
 
-    .album-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.8) 100%);
-        z-index: 1;
-    }
+        .album-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.8) 100%);
+            z-index: 1;
+        }
 
     .album-cover-container {
         flex-shrink: 0;
@@ -226,11 +262,11 @@ else
         overflow: hidden;
     }
 
-    .creator-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+        .creator-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
     .creator-name {
         color: white;
@@ -238,9 +274,9 @@ else
         font-size: 14px;
     }
 
-    .creator-name:hover {
-        text-decoration: underline;
-    }
+        .creator-name:hover {
+            text-decoration: underline;
+        }
 
     .album-stats {
         font-size: 14px;
@@ -280,10 +316,10 @@ else
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .play-all-btn:hover {
-        background: var(--spotify-green-hover);
-        transform: scale(1.05);
-    }
+        .play-all-btn:hover {
+            background: var(--spotify-green-hover);
+            transform: scale(1.05);
+        }
 
     .like-btn, .options-btn {
         background: none;
@@ -295,9 +331,9 @@ else
         padding: 0;
     }
 
-    .like-btn:hover, .options-btn:hover {
-        color: white;
-    }
+        .like-btn:hover, .options-btn:hover {
+            color: white;
+        }
 
     .tracklist-container {
         margin-top: 8px;
@@ -331,9 +367,9 @@ else
         align-items: center;
     }
 
-    .track:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
+        .track:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
     .track-number-cell {
         display: flex;
@@ -403,11 +439,11 @@ else
         text-overflow: ellipsis;
     }
 
-    .track-artist:hover {
-        color: white;
-        text-decoration: underline;
-        cursor: pointer;
-    }
+        .track-artist:hover {
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+        }
 
     .track-duration {
         display: flex;
@@ -447,11 +483,11 @@ else
         text-align: center;
     }
 
-    .empty-tracklist p {
-        color: var(--spotify-grey);
-        font-size: 16px;
-        margin-bottom: 16px;
-    }
+        .empty-tracklist p {
+            color: var(--spotify-grey);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
 
     .error-message {
         text-align: center;
@@ -459,14 +495,14 @@ else
         padding: 40px;
     }
 
-    .error-message a {
-        color: var(--spotify-green);
-        text-decoration: none;
-    }
+        .error-message a {
+            color: var(--spotify-green);
+            text-decoration: none;
+        }
 
-    .error-message a:hover {
-        color: var(--spotify-green-hover);
-    }
+            .error-message a:hover {
+                color: var(--spotify-green-hover);
+            }
 
     /* Player-related styles from original file */
     #sound-bar {
@@ -479,22 +515,22 @@ else
         cursor: pointer;
     }
 
-    #sound-bar::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
-        background: #1DB954;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+        #sound-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-    #sound-bar::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        background: #1DB954;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+        #sound-bar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
     #timebar {
         -webkit-appearance: none;
@@ -507,22 +543,146 @@ else
         cursor: pointer;
     }
 
-    #timebar::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
-        background: #1DB954;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+        #timebar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-    #timebar::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        background: #1DB954;
-        border-radius: 50%;
-        cursor: pointer;
+        #timebar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #1DB954;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dislike-btn {
+    background: none;
+    border: none;
+    color: #ff0000; /* Base red color */
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dislike-btn i {
+    transition: all 0.3s ease;
+}
+
+.dislike-btn:hover {
+    color: #ff3333; /* Lighter red on hover */
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+                 0 0 20px rgba(255, 0, 0, 0.6),
+                 0 0 30px rgba(255, 0, 0, 0.4);
+}
+
+.dislike-btn:active {
+    transform: scale(0.95);
+}
+
+/* Glowing animation */
+@@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
     }
+    50% {
+        text-shadow: 0 0 15px rgba(255, 0, 0, 0.8),
+                    0 0 25px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+}
+/* Update existing album-header styles */
+.album-header {
+    display: flex;
+    align-items: flex-start; /* Changed from flex-end to flex-start */
+    gap: 30px;
+    width: 100%;
+    padding: 32px; /* Adjusted padding to be consistent all around */
+    background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%);
+    position: relative;
+    min-height: 300px; /* Ensure enough space for content */
+}
+
+/* Update back button container */
+.back-button-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 3; /* Ensure it stays above other content */
+    padding: 0; /* Remove previous padding */
+}
+
+/* Update back button styles */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(18, 18, 18, 0.7); /* Match grid dark background */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Match grid border color */
+    color: var(--spotify-grey); /* Match grid text color */
+    font-size: 14px;
+    border-radius: 50%; /* Make it circular */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.back-btn i {
+    font-size: 14px;
+    margin: 0; /* Remove any default margins */
+}
+
+.back-btn:hover {
+    background: rgba(51, 51, 51, 0.7); /* Match grid hover state */
+    border-color: var(--spotify-grey);
+    color: white;
+}
+
+/* Ensure album cover stays in position */
+.album-cover-container {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* Adjust album info positioning */
+.album-info {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    position: relative;
+    z-index: 2;
+    margin-top: 48px; /* Add space from top to avoid overlap with button */
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .album-header {
+        padding: 16px;
+    }
+    
+    .back-button-container {
+        top: 8px;
+        left: 8px;
+    }
+    
+    .album-info {
+        margin-top: 36px;
+    }
+}
+.dislike-btn.liked {
+    animation: glow 1.5s infinite;
+}
 
     /* Responsive styles */
     @@media (max-width: 768px) {
@@ -585,53 +745,53 @@ else
         function setHeaderBackground() {
             const coverImage = document.getElementById('albumCover');
             const header = document.getElementById('albumHeader');
-            
+
             // Only proceed if both elements exist
             if (!coverImage || !header) return;
-            
+
             try {
                 // Create invisible canvas to analyze image
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 const img = new Image();
-                
+
                 img.crossOrigin = 'Anonymous';
-                img.onload = function() {
+                img.onload = function () {
                     // Set canvas dimensions
                     canvas.width = img.width;
                     canvas.height = img.height;
-                    
+
                     // Draw image to canvas
                     context.drawImage(img, 0, 0);
-                    
+
                     // Get pixel data from top portion of image
-                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height/4);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height / 4);
                     const data = imageData.data;
-                    
+
                     // Calculate average color
                     let r = 0, g = 0, b = 0;
                     const pixelCount = data.length / 4;
-                    
+
                     for (let i = 0; i < data.length; i += 4) {
                         r += data[i];
-                        g += data[i+1];
-                        b += data[i+2];
+                        g += data[i + 1];
+                        b += data[i + 2];
                     }
-                    
+
                     r = Math.floor(r / pixelCount);
                     g = Math.floor(g / pixelCount);
                     b = Math.floor(b / pixelCount);
-                    
+
                     // Apply as header background gradient
                     header.style.backgroundImage = `linear-gradient(rgba(${r}, ${g}, ${b}, 0.7) 0%, rgba(18, 18, 18, 1) 100%)`;
                 };
-                
+
                 img.src = coverImage.src;
             } catch (error) {
                 console.error("Error setting dynamic header color:", error);
             }
         }
-        
+
         // Call function to set header background
         setHeaderBackground();
 
@@ -705,7 +865,7 @@ else
 
         function playTrack() {
             if (!globalAudio) return;
-            
+
             const playPromise = globalAudio.play();
             if (playPromise) {
                 playPromise
@@ -719,7 +879,7 @@ else
 
         function pauseTrack() {
             if (!globalAudio) return;
-            
+
             globalAudio.pause();
             isPlaying = false;
             updatePlayButton(false);
@@ -728,7 +888,7 @@ else
 
         function updatePlayButton(isPlayingState) {
             if (!updatedPlayButton) return;
-            
+
             const icon = updatedPlayButton.querySelector("i");
             if (icon) {
                 icon.classList.toggle("fa-play", !isPlayingState);
@@ -738,7 +898,7 @@ else
 
         function saveTrackState() {
             if (!globalAudio || !globalAudioSource) return;
-            
+
             localStorage.setItem("currentTrack", JSON.stringify({
                 file: globalAudioSource.src,
                 title: songTitle ? songTitle.textContent : '',
@@ -752,7 +912,7 @@ else
 
         function loadStoredTrack() {
             if (!globalAudio || !globalAudioSource) return;
-            
+
             const storedTrack = JSON.parse(localStorage.getItem("currentTrack"));
             if (storedTrack) {
                 globalAudioSource.src = storedTrack.file;
@@ -796,7 +956,7 @@ else
         if (updatedPrevButton) {
             updatedPrevButton.addEventListener("click", () => loadTrack(currentTrackIndex - 1, isPlaying));
         }
-        
+
         if (updatedNextButton) {
             updatedNextButton.addEventListener("click", () => loadTrack(currentTrackIndex + 1, isPlaying));
         }
@@ -853,7 +1013,7 @@ else
 
         // Add double-click events to track rows
         document.querySelectorAll('.track').forEach(track => {
-            track.addEventListener('dblclick', function() {
+            track.addEventListener('dblclick', function () {
                 const index = this.getAttribute('data-index');
                 if (index !== null) {
                     populateTrackList();
@@ -864,7 +1024,7 @@ else
 
         // Initial setup
         populateTrackList();
-        
+
         // Only attempt to load stored track if player elements exist
         if (globalAudio && globalAudioSource) {
             loadStoredTrack();
@@ -874,5 +1034,58 @@ else
         if (soundBar) {
             soundBar.style.background = `linear-gradient(to right, #1DB954 ${soundBar.value}%, #333 ${soundBar.value}%)`;
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const dislikeButtons = document.querySelectorAll('.dislike-btn');
+
+        dislikeButtons.forEach(button => {
+            // Check initial state
+            if (button.closest('.album-actions').querySelector('a[asp-action="DislikeAlbum"]')) {
+                button.classList.add('liked');
+            }
+
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Toggle liked state
+                const isLiked = this.classList.contains('liked');
+                this.classList.toggle('liked');
+
+                // Get the URL from the asp attributes
+                const url = this.getAttribute('href');
+
+                // Make AJAX request
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Update UI based on response if needed
+                            if (!isLiked) {
+                                this.querySelector('i').classList.remove('far');
+                                this.querySelector('i').classList.add('fas');
+                            } else {
+                                // If you want to switch back to like button after dislike
+                                this.outerHTML = `<a asp-controller="Like" asp-action="LikeAlbum" asp-route-id="${this.getAttribute('asp-route-id')}" class="like-btn" title="Save to Your Library"><i class="far fa-heart"></i></a>`;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Revert the UI change on error
+                        this.classList.toggle('liked');
+                    });
+            });
+        });
     });
 </script>

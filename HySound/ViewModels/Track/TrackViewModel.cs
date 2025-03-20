@@ -10,7 +10,6 @@ namespace HySound.ViewModels
         public string? AudioUrl { get; set; }
         public bool IsYoutube { get; set; }
         public string? ImageLink { get; set; }
-        public int Plays { get; set; }
         public string GenreName { get; set; }
         public string UserName { get; set; } 
         

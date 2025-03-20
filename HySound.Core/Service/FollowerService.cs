@@ -50,6 +50,22 @@ namespace HySound.Core.Service
             return _followerRepository.GetAll();
         }
 
+        public async Task DeleteAllFollowersAndFollowing(int userId)
+        {
+            var following = await _followerRepository.GetAllAsync(x => x.FollowedId == userId);
+            var followed = await _followerRepository.GetAllAsync(x=>x.FollowedById == userId);
+       
+            foreach(var  follow in following)
+            {
+                await _followerRepository.DeleteAsync(follow);
+            }
+            foreach(var follow in followed)
+            {
+                await _followerRepository.DeleteAsync(follow);
+
+            }
+
+        }
         public async Task<IEnumerable<Followed>> GetAllFollowersAsync(Expression<Func<Followed, bool>> filter)
         {
             return await _followerRepository.GetAllAsync(filter);

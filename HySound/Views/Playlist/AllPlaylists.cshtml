@@ -1,53 +1,181 @@
 ﻿@using HySound.ViewModels.Playlist
 @model IEnumerable<PlaylistViewModel>
 
-<div class="playlist-container">
-    <div class="playlist-header">
-        <h2>Моите плейлисти</h2>
-        <a class="add-btn" asp-action="AddPlaylist" asp-controller="Playlist">Добави плейлист</a>
-    </div>
+<div class="container artist-dashboard py-4">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-12 main-content">
+            <div class="d-flex justify-content-between align-items-center header-section mb-4">
+                <div>
+                    <h1 class="text-light mb-0">Моите плейлисти</h1>
+                    <p class="text-muted">Manage your playlist collection</p>
+                </div>
+                <a class="btn btn-primary upload-btn" asp-action="AddPlaylist" asp-controller="Playlist">
+                    <i class="fas fa-plus me-2"></i> Добави плейлист
+                </a>
+            </div>
 
-    <div class="playlist-grid">
-        @foreach (var playlist in Model)
-        {
-            <div class="playlist-card">
-                <div class="playlist-image-container">
-                    <img src="@playlist.CoverImage" alt="Cover" class="playlist-cover">
-                    <div class="play-button">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-                <div class="playlist-info">
-                    <div class="playlist-title">@playlist.Title</div>
-                    <div class="playlist-user">@playlist.UserName</div>
-                </div>
-                <div class="playlist-buttons">
-                    <button class="edit-btn" onclick="openModal('editPlaylistModal', '@playlist.Id', '@playlist.Title')">
-                        <i class="fas fa-pencil-alt"></i>
+            <!-- View Toggle -->
+            <div class="d-flex justify-content-end mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark" id="tableViewBtn">
+                        <i class="fas fa-list"></i>
                     </button>
-                        <a asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id" class="delete-btn">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                    <button type="button" class="btn btn-dark active" id="gridViewBtn">
+                        <i class="fas fa-th"></i>
+                    </button>
                 </div>
             </div>
-        }
+
+            <!-- Grid View -->
+            <div class="playlist-grid-container">
+                <div class="row">
+                    @foreach (var playlist in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                            <div class="track-card playlist-card">
+                                <div class="dropdown position-absolute" style="top: 10px; right: 10px; z-index: 100;">
+                                    <button type="button" class="btn btn-dark btn-sm rounded-circle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                        <li><a class="dropdown-item" onclick="openModal('editPlaylistModal', '@playlist.Id', '@playlist.Title')"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="track-image position-relative">
+                                    <img src="@playlist.CoverImage" alt="@playlist.Title" class="track-img" />
+                                    <div class="play-overlay">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="track-info">
+                                    <h5 class="track-title">@playlist.Title</h5>
+                                    <p class="track-meta">@playlist.UserName</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Table View (Initially Hidden) -->
+            <div class="tracks-table-container" style="display: none;">
+                <table class="table table-dark table-hover tracks-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>Плейлист</th>
+                            <th>Потребител</th>
+                            <th class="text-center">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var (playlist, index) in Model.Select((p, i) => (p, i + 1)))
+                        {
+                            <tr class="track-row">
+                                <td class="align-middle">@index</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="track-thumbnail me-3">
+                                            <img src="@playlist.CoverImage" alt="@playlist.Title" class="thumbnail-img" />
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 track-title">@playlist.Title</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">@playlist.UserName</td>
+                                <td class="text-center align-middle">
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-light" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                            <li><a class="dropdown-item" onclick="openModal('editPlaylistModal', '@playlist.Id', '@playlist.Title')"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- Overlay for Modals -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
 
-
+<!-- Edit Playlist Modal -->
 <div class="modal" id="editPlaylistModal">
-    <h3>Редактирай плейлист</h3>
-    <input type="hidden" id="editPlaylistId" name="id">
-    <input type="text" id="editPlaylistTitle" name="title" placeholder="Заглавие">
-    <input type="file" id="editPlaylistCover" name="picture">
-    <div class="modal-btns">
-        <button class="save-btn" onclick="updatePlaylist(event)">Запази</button>
-        <button class="cancel-btn" onclick="closeModal()">Отказ</button>
+    <div class="modal-content">
+        <h3>Редактирай плейлист</h3>
+        <form id="editPlaylistForm">
+            <input type="hidden" id="editPlaylistId" name="id">
+            <div class="form-group">
+                <label for="editPlaylistTitle">Заглавие</label>
+                <input type="text" id="editPlaylistTitle" name="title" class="form-control bg-dark border-dark text-light" placeholder="Заглавие на плейлиста">
+            </div>
+            <div class="form-group">
+                <label for="editPlaylistCover">Обложка</label>
+                <input type="file" id="editPlaylistCover" name="picture" class="form-control bg-dark border-dark text-light">
+            </div>
+            <div class="modal-btns">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Отказ</button>
+                <button type="button" class="btn btn-primary" onclick="updatePlaylist(event)">Запази</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // View switching functionality
+        const tableViewBtn = document.getElementById('tableViewBtn');
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const tableView = document.querySelector('.tracks-table-container');
+        const gridView = document.querySelector('.playlist-grid-container');
+
+        tableViewBtn.addEventListener('click', function () {
+            tableView.style.display = 'block';
+            gridView.style.display = 'none';
+            tableViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+            localStorage.setItem('preferredPlaylistView', 'table');
+        });
+
+        gridViewBtn.addEventListener('click', function () {
+            tableView.style.display = 'none';
+            gridView.style.display = 'block';
+            gridViewBtn.classList.add('active');
+            tableViewBtn.classList.remove('active');
+            localStorage.setItem('preferredPlaylistView', 'grid');
+        });
+
+        // Check user preference from localStorage
+        const preferredView = localStorage.getItem('preferredPlaylistView');
+        if (preferredView === 'table') {
+            tableViewBtn.click();
+        }
+
+        // Playlist card hover effects
+        const cards = document.querySelectorAll(".playlist-card");
+        cards.forEach(card => {
+            card.addEventListener("mouseenter", () => {
+                card.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.4)";
+            });
+            card.addEventListener("mouseleave", () => {
+                card.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
+            });
+        });
+    });
+
     function openModal(modalId, id = null, title = null) {
         document.getElementById('overlay').style.display = 'block';
         let modal = document.getElementById(modalId);
@@ -75,11 +203,6 @@
         const fileInput = document.getElementById('editPlaylistCover');
         const formData = new FormData();
 
-        // Debugging: Log values to console
-        console.log('ID:', id);
-        console.log('Title:', title);
-        console.log('File selected:', fileInput.files.length > 0 ? fileInput.files[0].name : 'No file');
-
         formData.append('id', id);
         formData.append('title', title);
         if (fileInput.files.length > 0) {
@@ -94,7 +217,6 @@
             }
         })
             .then(response => {
-                console.log('Response status:', response.status);
                 if (!response.ok) {
                     return response.text().then(text => {
                         throw new Error(`HTTP ${response.status}: ${text || 'Update failed'}`);
@@ -103,7 +225,6 @@
                 return response.text();
             })
             .then(data => {
-                console.log('Success:', data);
                 location.reload();
             })
             .catch(error => {
@@ -113,124 +234,137 @@
             .finally(() => closeModal());
     }
 </script>
+
 <style>
-    .playlist-container {
-        max-width: 1200px;
-        margin: auto;
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .artist-dashboard {
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    /* Main Content Styling */
+    .main-content {
         padding: 20px;
+        background-color: #121212;
     }
 
-    .playlist-image-container {
-        position: relative;
-        width: 100%;
-        height: 180px;
+    .header-section {
+        padding-bottom: 15px;
+        border-bottom: 1px solid #333;
     }
 
-    .playlist-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+    .upload-btn {
+        background-color: #1DB954;
+        border-color: #1DB954;
+        font-weight: 600;
+        padding: 8px 20px;
+        border-radius: 30px;
     }
 
-    .playlist-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 20px;
-    }
+        .upload-btn:hover {
+            background-color: #1ed760;
+            border-color: #1ed760;
+        }
 
-    .playlist-card {
-        position: relative;
-        background: #181818;
-        padding: 15px;
-        border-radius: 12px;
+    /* Tracks Table Styling */
+    .tracks-table-container {
+        background-color: #1e1e1e;
+        border-radius: 8px;
         overflow: hidden;
-        height: 280px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: transform 0.2s ease, background 0.3s ease-in-out;
+        margin-bottom: 30px;
     }
 
-        .playlist-card:hover {
-            background: #282828;
-            transform: scale(1.03);
+    .tracks-table {
+        margin-bottom: 0;
+    }
+
+        .tracks-table thead th {
+            background-color: #2a2a2a;
+            color: #b3b3b3;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding: 12px 16px;
         }
 
-    .playlist-cover {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 10px;
-        position: relative;
-    }
-
-    .playlist-info {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .playlist-title {
-        font-weight: bold;
-    }
-
-    .playlist-buttons {
-        position: absolute;
-        bottom: 10px;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 12px;
-    }
-
-        .playlist-buttons button {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            transition: transform 0.2s ease, color 0.2s ease;
+        .tracks-table tbody td {
+            border-bottom: 1px solid #333;
+            padding: 12px 16px;
+            font-size: 0.95rem;
         }
 
-        .playlist-buttons .edit-btn {
-            color: #1db954;
-        }
-
-            .playlist-buttons .edit-btn:hover {
-                transform: scale(1.2);
-                color: #17a44a;
-            }
-
-    .delete-form {
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-    }
-
-    .delete-btn {
-        background: none;
-        border: none;
-        color: #f44336;
-        font-size: 18px;
-        cursor: pointer;
-        transition: transform 0.2s ease, color 0.2s ease;
-        padding: 0;
-    }
-
-        .delete-btn:hover {
-            transform: scale(1.2);
-            color: #d32f2f;
-        }
-
-    .play-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #1db954;
-        border-radius: 50%;
+    .track-thumbnail {
         width: 50px;
         height: 50px;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: #333;
+        position: relative;
+    }
+
+    .thumbnail-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .track-title {
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .track-row {
+        transition: background-color 0.2s ease;
+    }
+
+        .track-row:hover {
+            background-color: #2a2a2a;
+        }
+
+    /* Grid View Styling */
+    .track-card {
+        background-color: #181818;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        height: 100%;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+        .track-card:hover {
+            background-color: #282828;
+            transform: translateY(-5px);
+        }
+
+    .track-image {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .track-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -238,77 +372,84 @@
         transition: opacity 0.3s ease;
     }
 
-    .playlist-card:hover .play-button {
+        .play-overlay i {
+            font-size: 48px;
+            color: #1DB954;
+        }
+
+    .track-card:hover .play-overlay {
         opacity: 1;
     }
 
-    .play-button i {
-        font-size: 20px;
-        color: white;
+    .track-info {
+        padding: 16px;
     }
 
-    .add-btn {
-        background: #1db954;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-        .add-btn:hover {
-            background: #17a44a;
+        .track-info h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-    .modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #121212;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
-        z-index: 1000;
-        width: 350px;
-        height: 300px;
-        text-align: center;
+    .track-meta {
+        color: #b3b3b3;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
     }
 
-        .modal input {
-            width: 100%;
-            padding: 10px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 8px;
-            background: #282828;
-            color: white;
+    /* Button Styling */
+    .btn-primary {
+        background-color: #1DB954;
+        border-color: #1DB954;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #1ed760;
+            border-color: #1ed760;
         }
 
-    .modal-btns {
-        display: flex;
-        justify-content: space-between;
+    .btn-dark {
+        background-color: #333;
+        border-color: #333;
     }
 
-        .modal-btns button {
-            padding: 10px 14px;
-            border: none;
+        .btn-dark:hover, .btn-dark:focus {
+            background-color: #444;
+            border-color: #444;
+        }
+
+    .btn-group .btn.active {
+        background-color: #1DB954;
+        border-color: #1DB954;
+    }
+
+    /* Dropdown Styling */
+    .dropdown-menu-dark {
+        background-color: #333;
+        border: 1px solid #444;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+        .dropdown-menu-dark .dropdown-item {
+            color: #e0e0e0;
+            padding: 8px 16px;
+            font-size: 0.9rem;
             cursor: pointer;
-            border-radius: 8px;
         }
 
-    .save-btn {
-        background: #1db954;
-        color: white;
-    }
+            .dropdown-menu-dark .dropdown-item:hover {
+                background-color: #444;
+            }
 
-    .cancel-btn {
-        background: #f44336;
-        color: white;
-    }
+            .dropdown-menu-dark .dropdown-item.text-danger:hover {
+                background-color: rgba(220, 53, 69, 0.2);
+            }
 
+    /* Modal Styling */
     .overlay {
         display: none;
         position: fixed;
@@ -316,7 +457,62 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         z-index: 999;
     }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #282828;
+        border-radius: 8px;
+        z-index: 1000;
+        width: 400px;
+        max-width: 90%;
+        overflow: hidden;
+    }
+
+    .modal-content {
+        padding: 24px;
+    }
+
+    .modal h3 {
+        color: #fff;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b3b3b3;
+        }
+
+    .modal-btns {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+    }
+
+        .modal-btns button {
+            padding: 8px 16px;
+        }
+
+    .btn-secondary {
+        background-color: #333;
+        border-color: #333;
+        color: #fff;
+    }
+
+        .btn-secondary:hover {
+            background-color: #444;
+            border-color: #444;
+        }
 </style>

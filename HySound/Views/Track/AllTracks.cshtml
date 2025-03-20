@@ -56,7 +56,6 @@
                             <th style="width: 50px">#</th>
                             <th>Track</th>
                             <th>Genre</th>
-                            <th class="text-center">Plays</th>
                             <th class="text-center">Likes</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -87,7 +86,6 @@
                                     </div>
                                 </td>
                                 <td class="align-middle">@track.GenreName</td>
-                                <td class="text-center align-middle">@track.Plays</td>
                                 <td class="text-center align-middle">0</td>
                                 <td class="text-center align-middle">
                                     <div class="dropdown">
@@ -95,7 +93,6 @@
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal"><i class="fas fa-plus me-2"></i> Add to Playlist</a></li>
                                             <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
                                             <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Edit</a></li>
                                             <li><hr class="dropdown-divider"></li>
@@ -162,8 +159,7 @@
                                     <h5 class="track-title">@track.Title</h5>
                                     <p class="track-meta">@track.GenreName</p>
                                     <div class="d-flex justify-content-between">
-                                        <span><i class="fas fa-play me-1"></i> @track.Plays</span>
-                                        <span><i class="fas fa-heart me-1"></i> 0</span>
+                                        <span><i class="fas fa-heart me-1"></i>0</span>
                                     </div>
                                 </div>
                             </div>

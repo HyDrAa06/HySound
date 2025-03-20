@@ -13,6 +13,7 @@ namespace HySound.Core.Service.IService
         Task<List<ArtistRequest>> GetPendingRequestsAsync();
         Task<ArtistRequest> GetByIdAsync(int id);
         Task UpdateAsync(ArtistRequest request);
+        Task DeleteAsync(int userId);
 
         Task<ArtistRequest> SubmitArtistRequestAsync(int userId, string identityId,string pfp, string name, string email, string bio, string password);
         Task ApproveRequestAsync(int requestId, int adminId);

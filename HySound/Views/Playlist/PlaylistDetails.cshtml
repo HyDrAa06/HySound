@@ -6,7 +6,9 @@
     <div class="error-message">
         <h2>Playlist Not Found</h2>
         <p>The requested playlist could not be found. Please try again.</p>
-        <a asp-controller="Playlist" asp-action="AllPlaylists">Back to Playlists</a>
+        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Back">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
     </div>
 }
 else
@@ -14,6 +16,11 @@ else
     <div class="playlist-details">
         <div class="playlist-header" id="playlistHeader">
             <div class="playlist-cover-container">
+                <div class="back-button-container">
+                    <a asp-action="Search" asp-controller="Home" class="back-btn" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
                 <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Unknown Playlist")" class="playlist-cover" id="playlistCover" />
             </div>
             <div class="playlist-info">
@@ -56,7 +63,7 @@ else
                         <i class="far fa-heart"></i>
                     </a>
                 }
-                
+
                 <button class="options-btn" title="More options">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
@@ -70,14 +77,14 @@ else
                         <i class="far fa-clock"></i>
                     </div>
                 </div>
-                
+
                 <ul class="tracklist">
                     @if (Model.Tracks != null && Model.Tracks.Any())
                     {
                         int trackNumber = 1;
                         foreach (var track in Model.Tracks)
                         {
-                            <li class="track" data-index="@(trackNumber-1)">
+                            <li class="track" data-index="@(trackNumber - 1)">
                                 <div class="track-number-cell">
                                     <span class="track-number">@trackNumber</span>
                                     <button class="play-btn"
@@ -146,6 +153,36 @@ else
         margin: 0 auto;
     }
 
+    /* Back Button */
+    .back-button-container {
+        padding: 24px 32px 0;
+        margin-bottom: 0;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: transparent;
+        border: 1px solid #b3b3b3;
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: border-color 0.3s, color 0.3s;
+    }
+
+        .back-btn i {
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            border-color: #1DB954;
+            color: #1DB954;
+        }
+
     .playlist-header {
         display: flex;
         align-items: flex-end;
@@ -156,16 +193,16 @@ else
         position: relative;
     }
 
-    .playlist-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.8) 100%);
-        z-index: 1;
-    }
+        .playlist-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.8) 100%);
+            z-index: 1;
+        }
 
     .playlist-cover-container {
         flex-shrink: 0;
@@ -224,11 +261,11 @@ else
         overflow: hidden;
     }
 
-    .creator-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+        .creator-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
     .creator-name {
         color: white;
@@ -236,9 +273,9 @@ else
         font-size: 14px;
     }
 
-    .creator-name:hover {
-        text-decoration: underline;
-    }
+        .creator-name:hover {
+            text-decoration: underline;
+        }
 
     .playlist-stats {
         font-size: 14px;
@@ -278,10 +315,10 @@ else
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .play-all-btn:hover {
-        background: var(--spotify-green-hover);
-        transform: scale(1.05);
-    }
+        .play-all-btn:hover {
+            background: var(--spotify-green-hover);
+            transform: scale(1.05);
+        }
 
     .like-btn, .options-btn {
         background: none;
@@ -293,9 +330,9 @@ else
         padding: 0;
     }
 
-    .like-btn:hover, .options-btn:hover {
-        color: white;
-    }
+        .like-btn:hover, .options-btn:hover {
+            color: white;
+        }
 
     .tracklist-container {
         margin-top: 8px;
@@ -329,9 +366,9 @@ else
         align-items: center;
     }
 
-    .track:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
+        .track:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
     .track-number-cell {
         display: flex;
@@ -401,11 +438,11 @@ else
         text-overflow: ellipsis;
     }
 
-    .track-artist:hover {
-        color: white;
-        text-decoration: underline;
-        cursor: pointer;
-    }
+        .track-artist:hover {
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+        }
 
     .track-duration {
         display: flex;
@@ -445,11 +482,11 @@ else
         text-align: center;
     }
 
-    .empty-tracklist p {
-        color: var(--spotify-grey);
-        font-size: 16px;
-        margin-bottom: 16px;
-    }
+        .empty-tracklist p {
+            color: var(--spotify-grey);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
 
     .error-message {
         text-align: center;
@@ -457,14 +494,14 @@ else
         padding: 40px;
     }
 
-    .error-message a {
-        color: var(--spotify-green);
-        text-decoration: none;
-    }
+        .error-message a {
+            color: var(--spotify-green);
+            text-decoration: none;
+        }
 
-    .error-message a:hover {
-        color: var(--spotify-green-hover);
-    }
+            .error-message a:hover {
+                color: var(--spotify-green-hover);
+            }
 
     /* Responsive styles */
     @@media (max-width: 768px) {
@@ -490,6 +527,88 @@ else
             align-items: center;
         }
     }
+
+    /* Update existing album-header styles */
+.album-header {
+    display: flex;
+    align-items: flex-start; /* Changed from flex-end to flex-start */
+    gap: 30px;
+    width: 100%;
+    padding: 32px; /* Adjusted padding to be consistent all around */
+    background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%);
+    position: relative;
+    min-height: 300px; /* Ensure enough space for content */
+}
+
+/* Update back button container */
+.back-button-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 3; /* Ensure it stays above other content */
+    padding: 0; /* Remove previous padding */
+}
+
+/* Update back button styles */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(18, 18, 18, 0.7); /* Match grid dark background */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Match grid border color */
+    color: var(--spotify-grey); /* Match grid text color */
+    font-size: 14px;
+    border-radius: 50%; /* Make it circular */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.back-btn i {
+    font-size: 14px;
+    margin: 0; /* Remove any default margins */
+}
+
+.back-btn:hover {
+    background: rgba(51, 51, 51, 0.7); /* Match grid hover state */
+    border-color: var(--spotify-grey);
+    color: white;
+}
+
+/* Ensure album cover stays in position */
+.album-cover-container {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* Adjust album info positioning */
+.album-info {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    position: relative;
+    z-index: 2;
+    margin-top: 48px; /* Add space from top to avoid overlap with button */
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .album-header {
+        padding: 16px;
+    }
+    
+    .back-button-container {
+        top: 8px;
+        left: 8px;
+    }
+    
+    .album-info {
+        margin-top: 36px;
+    }
+}
 
     @@media (max-width: 480px) {
         .tracklist-header .track-duration {
@@ -524,53 +643,53 @@ else
         function setHeaderBackground() {
             const coverImage = document.getElementById('playlistCover');
             const header = document.getElementById('playlistHeader');
-            
+
             // Only proceed if both elements exist
             if (!coverImage || !header) return;
-            
+
             try {
                 // Create invisible canvas to analyze image
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 const img = new Image();
-                
+
                 img.crossOrigin = 'Anonymous';
-                img.onload = function() {
+                img.onload = function () {
                     // Set canvas dimensions
                     canvas.width = img.width;
                     canvas.height = img.height;
-                    
+
                     // Draw image to canvas
                     context.drawImage(img, 0, 0);
-                    
+
                     // Get pixel data from top portion of image
-                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height/4);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height / 4);
                     const data = imageData.data;
-                    
+
                     // Calculate average color
                     let r = 0, g = 0, b = 0;
                     const pixelCount = data.length / 4;
-                    
+
                     for (let i = 0; i < data.length; i += 4) {
                         r += data[i];
-                        g += data[i+1];
-                        b += data[i+2];
+                        g += data[i + 1];
+                        b += data[i + 2];
                     }
-                    
+
                     r = Math.floor(r / pixelCount);
                     g = Math.floor(g / pixelCount);
                     b = Math.floor(b / pixelCount);
-                    
+
                     // Apply as header background gradient
                     header.style.backgroundImage = `linear-gradient(rgba(${r}, ${g}, ${b}, 0.7) 0%, rgba(18, 18, 18, 1) 100%)`;
                 };
-                
+
                 img.src = coverImage.src;
             } catch (error) {
                 console.error("Error setting dynamic header color:", error);
             }
         }
-        
+
         // Call function to set header background
         setHeaderBackground();
 
@@ -582,7 +701,7 @@ else
             artist = t.User?.Username ?? "Unknown Artist",
             image = t.CoverImage ?? "/images/default-cover.jpg"
         })));
-        
+
         // Element references for player
         const globalAudio = document.getElementById("global-audio");
         const globalAudioSource = document.getElementById("global-audio-source");
@@ -653,7 +772,7 @@ else
 
         function playTrack() {
             if (!globalAudio) return;
-            
+
             const playPromise = globalAudio.play();
             if (playPromise) {
                 playPromise
@@ -667,7 +786,7 @@ else
 
         function pauseTrack() {
             if (!globalAudio) return;
-            
+
             globalAudio.pause();
             isPlaying = false;
             updatePlayButton(false);
@@ -676,7 +795,7 @@ else
 
         function updatePlayButton(isPlayingState) {
             if (!updatedPlayButton) return;
-            
+
             const icon = updatedPlayButton.querySelector("i");
             if (icon) {
                 icon.classList.toggle("fa-play", !isPlayingState);
@@ -686,7 +805,7 @@ else
 
         function saveTrackState() {
             if (!globalAudio || !globalAudioSource) return;
-            
+
             localStorage.setItem("currentTrack", JSON.stringify({
                 file: globalAudioSource.src,
                 title: songTitle ? songTitle.textContent : '',
@@ -700,7 +819,7 @@ else
 
         function loadStoredTrack() {
             if (!globalAudio || !globalAudioSource) return;
-            
+
             const storedTrack = JSON.parse(localStorage.getItem("currentTrack"));
             if (storedTrack) {
                 globalAudioSource.src = storedTrack.file;
@@ -744,7 +863,7 @@ else
         if (updatedPrevButton) {
             updatedPrevButton.addEventListener("click", () => loadTrack(currentTrackIndex - 1, isPlaying));
         }
-        
+
         if (updatedNextButton) {
             updatedNextButton.addEventListener("click", () => loadTrack(currentTrackIndex + 1, isPlaying));
         }
@@ -801,7 +920,7 @@ else
 
         // Add double-click events to track rows
         document.querySelectorAll('.track').forEach(track => {
-            track.addEventListener('dblclick', function() {
+            track.addEventListener('dblclick', function () {
                 const index = this.getAttribute('data-index');
                 if (index !== null) {
                     populateTrackList();
@@ -812,7 +931,7 @@ else
 
         // Initial setup
         populateTrackList();
-        
+
         // Only attempt to load stored track if player elements exist
         if (globalAudio && globalAudioSource) {
             loadStoredTrack();

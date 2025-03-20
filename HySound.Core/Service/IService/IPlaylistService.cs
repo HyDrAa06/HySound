@@ -21,6 +21,9 @@ namespace HySound.Core.Service.IService
         Task<IEnumerable<Playlist>> GetAllPlaylistsAsync();
         Task AddTrackToPlaylistAsync(Playlist playlist, Track track);
         IQueryable<Playlist> GetAll();
+        Task DeleteAllPlaylistsOfUser(int id);
+
+        Task DeleteTrackFromAllPlaylistsAsync(int trackId);
 
         Task<List<Track>> GetTracksOfPlaylist(int id);
 

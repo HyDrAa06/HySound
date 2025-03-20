@@ -107,7 +107,15 @@ namespace HySound.Core.Service
             await _requestRepository.AddAsync(request);
             return request;
         }
-
+        public async Task DeleteAsync(int userId)
+        {
+            var requests = await _requestRepository.GetAllAsync(x => x.UserId == userId);
+            foreach (var request in requests)
+            {
+                await _requestRepository.DeleteAsync(request);
+            }
+        }
+            
         public async Task UpdateAsync(ArtistRequest request)
         {
             await _requestRepository.UpdateAsync(request);

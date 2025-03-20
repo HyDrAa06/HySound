@@ -16,18 +16,24 @@ namespace HySound.Controllers
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly UserManager<IdentityUser> userManager;
         IFollowerService followerService;
-
+        ILikeService likeService;
+        IAlbumService albumService;
+        IPlaylistService playlistService;
+        IArtistRequestService artistRequestService;
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
         CloudinaryService cloudService;
 
-        public UserController(IConfiguration configuration, CloudinaryService cloud, IFollowerService _followerService, UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IUserService _userService)
+        public UserController(IPlaylistService _playlistService, IAlbumService _albumService,ILikeService _likeService,IArtistRequestService _artistRequestService,IConfiguration configuration, CloudinaryService cloud, IFollowerService _followerService, UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IUserService _userService)
         {
+            albumService = _albumService;
+            playlistService = _playlistService;
+            likeService = _likeService;
             userManager = _userManager;
             userService = _userService;
             signInManager = _signInManager;
             followerService = _followerService;
-
+            artistRequestService = _artistRequestService;
             this.cloudService = cloud;
 
             _configuration = configuration;
@@ -47,6 +53,11 @@ namespace HySound.Controllers
         {
             if(id != null)
             {
+                await artistRequestService.DeleteAsync(id);
+                await followerService.DeleteAllFollowersAndFollowing(id);
+                await likeService.DeleteAllLikesByUsers(id);
+                await playlistService.DeleteAllPlaylistsOfUser(id);
+                await albumService.DeleteAllAlbumsOfUser(id);
                 await userService.DeleteUserByIdAsync(id);
                 return RedirectToAction("AllUsers");
             }

@@ -68,7 +68,38 @@ namespace HySound.Core.Service
         {
             return await _likeService.GetByIdAsync(id);
         }
-
+        public async Task DeleteAllLikesByTracks(int trackId)
+        {
+            var likes = await _likeService.GetAllAsync(x => x.TrackId == trackId);
+            foreach (var like in likes)
+            {
+                await _likeService.DeleteAsync(like);
+            }
+        }
+        public async Task DeleteAllLikesByPlaylist(int playlistId)
+        {
+            var likes = await _likeService.GetAllAsync(x => x.PlaylistId == playlistId);
+            foreach (var like in likes)
+            {
+                await _likeService.DeleteAsync(like);
+            }
+        }
+        public async Task DeleteAllLikesByAlbum(int albumId)
+        {
+            var likes = await _likeService.GetAllAsync(x => x.AlbumId == albumId);
+            foreach (var like in likes)
+            {
+                await _likeService.DeleteAsync(like);
+            }
+        }
+        public async Task DeleteAllLikesByUsers(int userId)
+        {
+            var likes = await _likeService.GetAllAsync(x=>x.UserId == userId);
+            foreach (var like in likes)
+            {
+                await _likeService.DeleteAsync(like);
+            }
+        }
         public async Task UpdateLikeAsync(Like entity)
         {
             await _likeService.UpdateAsync(entity);
