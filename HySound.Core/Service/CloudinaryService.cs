@@ -1,13 +1,7 @@
-﻿using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.Extensions.Configuration;
 
 namespace HySound.Core.Service
 {
@@ -16,11 +10,11 @@ namespace HySound.Core.Service
         private readonly Cloudinary _cloudinary;
 
         public CloudinaryService(IConfiguration config)
-        { 
+        {
             var account = new Account(
-            config["Cloudinary:CloudName"],
-            config["Cloudinary:ApiKey"],
-            config["Cloudinary:ApiSecret"]);
+                config["Cloudinary:CloudName"],
+                config["Cloudinary:ApiKey"],
+                config["Cloudinary:ApiSecret"]);
             _cloudinary = new Cloudinary(account);
         }
 
@@ -28,24 +22,24 @@ namespace HySound.Core.Service
         {
             if (file == null || file.Length == 0)
                 return null;
-            
+
             using var stream = file.OpenReadStream();
             var uploadParams = new RawUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = "HySound/Tracks" 
+                Folder = "HySound/Tracks"
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
             return uploadResult.SecureUrl.AbsoluteUri;
         }
+
         public async Task<string> UploadImageAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
-            return null;
+                return null;
 
             using var stream = file.OpenReadStream();
-
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
@@ -53,17 +47,9 @@ namespace HySound.Core.Service
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-            if (uploadResult == null || uploadResult.SecureUrl == null)
-            {
-                return null;
-            }
-
-            return uploadResult.SecureUrl.ToString();
-
+            return uploadResult?.SecureUrl?.ToString();
         }
 
+        
     }
-
-} 
-    
+}

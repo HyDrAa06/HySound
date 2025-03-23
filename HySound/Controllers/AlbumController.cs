@@ -87,18 +87,16 @@ namespace HySound.Controllers
                     AlbumCover = x.CoverImage,
                     Title = x.Title,
                     UserId = x.UserId,
-                    UserList = new SelectList(userService.GetAll(), "Id", "Username")
+                    Id = x.Id
                 }).FirstOrDefault();
 
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, EditAlbumViewModel model)
+        public async Task<IActionResult> Update(EditAlbumViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
-
                 return View(model);
             }
 
@@ -106,7 +104,7 @@ namespace HySound.Controllers
             {
                 var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
 
-                Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
+                Album album = albumService.GetAll().Where(x => x.Id == model.Id).FirstOrDefault();
                 album.Title = model.Title;
                 album.CoverImage = imageUploadResult;
                 album.UserId = model.UserId;
@@ -116,7 +114,7 @@ namespace HySound.Controllers
             }
             else
             {
-                Album album = albumService.GetAll().Where(x => x.Id == id).FirstOrDefault();
+                Album album = albumService.GetAll().Where(x => x.Id == model.Id).FirstOrDefault();
                 album.Title = model.Title;
                 album.CoverImage = model.AlbumCover;
                 album.UserId = model.UserId;
@@ -144,15 +142,22 @@ namespace HySound.Controllers
         }
         public async Task<IActionResult> AddAlbum()
         {
-            var model = new AddAlbumViewModel();
-            Dictionary<int, string> pics = new Dictionary<int, string>();
-
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
             User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
             var singles = await trackService.GetAllTracksAsync();
-            singles = singles.Where(x => x.AlbumId is null && x.UserId==user.Id).ToList();
+            singles = singles.Where(x => x.AlbumId is null && x.UserId == user.Id).ToList();
 
+            if(singles.Count() <= 0)
+            {
+                TempData["Message"] = "No records found.";
+                return RedirectToAction("AllAlbums");
+            }
+
+            var model = new AddAlbumViewModel();
+            Dictionary<int, string> pics = new Dictionary<int, string>();
+
+           
             foreach (var item in singles)
             {
                 pics.Add(item.Id, item.CoverImage);
@@ -200,11 +205,11 @@ namespace HySound.Controllers
                     }
 
                 }
-                else
+                else 
                 {
-                    ModelState.AddModelError("", "Please select at least one track.");
-                    return View(model);
+                    ModelState.AddModelError("SelectedTracksIds", "Please select at least one track.");
                 }
+                
 
                 return RedirectToAction("AllAlbums");
             }

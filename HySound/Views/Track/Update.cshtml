@@ -7,6 +7,9 @@
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ImageUrl" />
+        <input type="hidden" asp-for="AudioUrl" /> <!-- Keep original AudioUrl -->
         <div class="album-form-grid">
             <div class="album-details">
                 <div class="cover-upload-container">
@@ -37,7 +40,6 @@
                         <option value="">Select Genre</option>
                     </select>
                 </div>
-
             </div>
 
             <div class="track-selection">
@@ -50,14 +52,25 @@
                 </div>
 
                 <div class="audio-upload-section">
+                    <!-- Show existing AudioUrl -->
+                    @if (!string.IsNullOrEmpty(Model.AudioUrl))
+                    {
+                        <div class="input-group">
+                            <label>Current Audio</label>
+                            <input type="text" value="@Model.AudioUrl" class="album-input" readonly />
+                        </div>
+                    }
+
+                    <!-- File upload for non-YouTube tracks -->
                     <div class="input-group" id="fileUploadGroup">
-                        <label for="audioFile">Upload Audio File</label>
+                        <label for="audioFile">Replace Audio File</label>
                         <div class="file-upload-wrapper">
                             <input type="file" id="audioFile" asp-for="audioFile" class="album-input file-input" accept=".mp3,.wav,.ogg" />
                             <div class="file-upload-info">Accepted formats: MP3, WAV, OGG</div>
                         </div>
                     </div>
 
+                    <!-- YouTube URL input -->
                     <div class="input-group" id="audioUrlGroup">
                         <label for="AudioUrl">YouTube Audio URL</label>
                         <input type="text" id="AudioUrl" placeholder="Enter the YouTube URL" asp-for="AudioUrl" class="album-input" />
@@ -79,7 +92,6 @@
         const coverInput = document.getElementById('ImageFile');
         const coverPreview = document.getElementById('coverPreview');
 
-        // If there's already an image, add the 'has-image' class
         if (coverPreview.querySelector('.cover-preview-image')) {
             coverPreview.classList.add('has-image');
         }
@@ -87,22 +99,19 @@
         coverInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
-
                 reader.onload = function (e) {
                     coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Track Cover">`;
                     coverPreview.classList.add('has-image');
                 }
-
                 reader.readAsDataURL(this.files[0]);
             }
         });
 
-        // Click to trigger file upload
         coverPreview.addEventListener('click', function () {
             coverInput.click();
         });
 
-        // Check initial state of YouTube checkbox
+        // Initialize based on IsYoutube state
         toggleInput();
     });
 
@@ -122,10 +131,11 @@
             audioUrlGroup.classList.add("hidden");
             audioUrlInput.removeAttribute("required");
             fileUploadGroup.classList.remove("hidden");
-            fileInput.setAttribute("required", "required");
+            fileInput.removeAttribute("required"); // Not required since AudioUrl can persist
         }
     }
 </script>
+
 
 <style>
     /* Base Styles */

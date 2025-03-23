@@ -81,6 +81,41 @@ namespace HySound.Test
             Assert.AreEqual(follow, result);
         }
 
+
+        public async Task DeleteAllFollowersAndFollowing()
+        {
+            // Arrange
+            int userId = 1;
+            var following = new List<Followed>
+        {
+            new Followed { FollowedId = userId, FollowedById = 2 },
+            new Followed { FollowedId = userId, FollowedById = 3 }
+        };
+            var followed = new List<Followed>
+        {
+            new Followed { FollowedId = 4, FollowedById = userId },
+            new Followed { FollowedId = 5, FollowedById = userId }
+        };
+
+            _mockFollowerRepository.Setup(repo => repo.GetAllAsync(It.IsAny<System.Linq.Expressions.Expression<System.Func<Followed, bool>>>()))
+                .ReturnsAsync((System.Linq.Expressions.Expression<System.Func<Followed, bool>> predicate) =>
+                    following.Where(predicate.Compile()).Concat(followed.Where(predicate.Compile())).ToList());
+
+            var deletedFollowers = new List<Followed>();
+            _mockFollowerRepository.Setup(repo => repo.DeleteAsync(It.IsAny<Followed>()))
+                .Returns(Task.CompletedTask)
+                .Callback<Followed>(f => deletedFollowers.Add(f));
+
+            // Act
+            await _followerService.DeleteAllFollowersAndFollowing(userId);
+
+            // Assert
+            Assert.AreEqual(following.Count + followed.Count, deletedFollowers.Count);
+            foreach (var follow in following.Concat(followed))
+            {
+                Assert.Contains(follow, deletedFollowers);
+            }
+        }
         [Test]
         public void GetAll()
         {

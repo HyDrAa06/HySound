@@ -16,13 +16,21 @@ namespace HySound.Test
     [TestFixture]
     public class LikeServiceTest
     {
+        private Mock<IRepository<Playlist>> _mockPlaylistRepository;
+        private Mock<IRepository<PlaylistTrack>> _mockPlaylistTrackRepository;
+        private Mock<IRepository<Track>> _mockTrackRepository;
         private Mock<IRepository<Like>> _mockLikeRepository;
+        private IPlaylistService _playlistService;
         private ILikeService _likeService;
 
         [SetUp]
         public void Setup()
         {
+            _mockPlaylistRepository = new Mock<IRepository<Playlist>>();
+            _mockPlaylistTrackRepository = new Mock<IRepository<PlaylistTrack>>();
+            _mockTrackRepository = new Mock<IRepository<Track>>();
             _mockLikeRepository = new Mock<IRepository<Like>>();
+            _playlistService = new PlaylistService(_mockTrackRepository.Object, _mockPlaylistTrackRepository.Object, _mockPlaylistRepository.Object);
             _likeService = new LikeService(_mockLikeRepository.Object);
         }
 
@@ -53,9 +61,14 @@ namespace HySound.Test
         [Test]
         public async Task DeleteLikeByIdAsync()
         {
-            _mockLikeRepository.Setup(r => r.DeleteByIdAsync(1)).Returns(Task.CompletedTask);
+            var likes = new List<Like> { new Like { Id = 1, UserId = 1, TrackId = 101 } };
+            _mockLikeRepository.Setup(r => r.DeleteByIdAsync(1)).Callback(() => likes.RemoveAt(0));
+            _mockLikeRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Like)null);
 
-            Assert.DoesNotThrowAsync(async () => await _likeService.DeleteLikeByIdAsync(1));
+            await _likeService.DeleteLikeByIdAsync(1);
+            var result = await _likeService.GetLikeByIdAsync(1);
+
+            Assert.IsNull(result);
         }
 
         [Test]
@@ -137,8 +150,97 @@ namespace HySound.Test
         {
             var like = new Like { Id = 1, UserId = 1, TrackId = 101 };
             _mockLikeRepository.Setup(r => r.UpdateAsync(like)).Returns(Task.CompletedTask);
+            _mockLikeRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(like);
 
-            Assert.DoesNotThrowAsync(async () => await _likeService.UpdateLikeAsync(like));
+            await _likeService.UpdateLikeAsync(like);
+            var updatedLike = await _likeService.GetLikeByIdAsync(1);
+
+            Assert.AreEqual(like, updatedLike);
+        }
+
+
+        [Test]
+        public async Task DeleteAllLikesByTracks()
+        {
+            int trackId = 101;
+            var likes = new List<Like>
+            {
+                new Like { Id = 1, UserId = 1, TrackId = trackId },
+                new Like { Id = 2, UserId = 2, TrackId = trackId }
+            };
+
+            _mockLikeRepository.Setup(r => r.GetAllAsync(x => x.TrackId == trackId)).ReturnsAsync(likes);
+            _mockLikeRepository.Setup(r => r.DeleteAsync(It.IsAny<Like>())).Returns(Task.CompletedTask);
+            _mockLikeRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<Like, bool>>>()))
+                .ReturnsAsync((Expression<Func<Like, bool>> filter) => new List<Like>()); // After deletion, no likes remain
+
+            await _likeService.DeleteAllLikesByTracks(trackId);
+            var remainingLikes = await _likeService.GetAllLikesAsync(l => l.TrackId == trackId);
+
+            Assert.AreEqual(0, remainingLikes.Count());
+        }
+
+        [Test]
+        public async Task DeleteAllLikesByPlaylist()
+        {
+            int playlistId = 201;
+            var likes = new List<Like>
+            {
+                new Like { Id = 1, UserId = 1, PlaylistId = playlistId },
+                new Like { Id = 2, UserId = 2, PlaylistId = playlistId }
+            };
+
+            _mockLikeRepository.Setup(r => r.GetAllAsync(x => x.PlaylistId == playlistId)).ReturnsAsync(likes);
+            _mockLikeRepository.Setup(r => r.DeleteAsync(It.IsAny<Like>())).Returns(Task.CompletedTask);
+            _mockLikeRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<Like, bool>>>()))
+                .ReturnsAsync((Expression<Func<Like, bool>> filter) => new List<Like>()); // After deletion, no likes remain
+
+            await _likeService.DeleteAllLikesByPlaylist(playlistId);
+            var remainingLikes = await _likeService.GetAllLikesAsync(l => l.PlaylistId == playlistId);
+
+            Assert.AreEqual(0, remainingLikes.Count());
+        }
+
+        [Test]
+        public async Task DeleteAllLikesByAlbum()
+        {
+            int albumId = 301;
+            var likes = new List<Like>
+            {
+                new Like { Id = 1, UserId = 1, AlbumId = albumId },
+                new Like { Id = 2, UserId = 2, AlbumId = albumId }
+            };
+
+            _mockLikeRepository.Setup(r => r.GetAllAsync(x => x.AlbumId == albumId)).ReturnsAsync(likes);
+            _mockLikeRepository.Setup(r => r.DeleteAsync(It.IsAny<Like>())).Returns(Task.CompletedTask);
+            _mockLikeRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<Like, bool>>>()))
+                .ReturnsAsync((Expression<Func<Like, bool>> filter) => new List<Like>()); // After deletion, no likes remain
+
+            await _likeService.DeleteAllLikesByAlbum(albumId);
+            var remainingLikes = await _likeService.GetAllLikesAsync(l => l.AlbumId == albumId);
+
+            Assert.AreEqual(0, remainingLikes.Count());
+        }
+
+        [Test]
+        public async Task DeleteAllLikesByUsers()
+        {
+            int userId = 1;
+            var likes = new List<Like>
+            {
+                new Like { Id = 1, UserId = userId, TrackId = 101 },
+                new Like { Id = 2, UserId = userId, PlaylistId = 201 }
+            };
+
+            _mockLikeRepository.Setup(r => r.GetAllAsync(x => x.UserId == userId)).ReturnsAsync(likes);
+            _mockLikeRepository.Setup(r => r.DeleteAsync(It.IsAny<Like>())).Returns(Task.CompletedTask);
+            _mockLikeRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<Like, bool>>>()))
+                .ReturnsAsync((Expression<Func<Like, bool>> filter) => new List<Like>()); // After deletion, no likes remain
+
+            await _likeService.DeleteAllLikesByUsers(userId);
+            var remainingLikes = await _likeService.GetAllLikesAsync(l => l.UserId == userId);
+
+            Assert.AreEqual(0, remainingLikes.Count());
         }
     }
 }

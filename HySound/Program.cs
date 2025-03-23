@@ -12,6 +12,10 @@ using HySound.Models.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+MemoryStream stream = new MemoryStream();
+IFormFile formFile = new FormFile(stream, 0, 100, "file", "test.mp3");
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HySoundContext>
     (options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),

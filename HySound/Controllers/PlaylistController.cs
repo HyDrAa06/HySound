@@ -54,7 +54,6 @@ namespace HySound.Controllers
         public async Task<IActionResult> AddPlaylist(AddPlaylistViewModel model)
         {
             if (model == null) return Content("Model is null");
-            if (model.Picture == null) return Content("Picture is null");
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
@@ -170,47 +169,68 @@ namespace HySound.Controllers
 
             return RedirectToAction("AllPlaylists");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            Playlist playlist = await playlistService.GetPlaylistByIdAsync(id);
+
+            EditPlaylistViewModel viewModel = new EditPlaylistViewModel()
+            {
+                Id = id,
+                PictureUrl = playlist.CoverImage,
+                Title= playlist.Title
+            };
+            return View(viewModel);
+        }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, string title, IFormFile picture)
+        public async Task<IActionResult> Update(EditPlaylistViewModel model)
         {
             try
             {
-                Console.WriteLine($"Update called with ID: {id}, Title: {title}, Picture: {(picture != null ? picture.FileName : "null")}");
-                var imageUploadResult = await cloudService.UploadImageAsync(picture);
-
-                if (id <= 0)
+                Console.WriteLine($"model.Id: {model.Id}");
+                Console.WriteLine($"model.Title: {model.Title}");
+                Console.WriteLine($"model.Picture is null: {model.Picture == null}");
+                if (model.Picture != null)
                 {
-                    return BadRequest("Invalid playlist ID");
+                    Console.WriteLine($"File Name: {model.Picture.FileName}");
+                    Console.WriteLine($"File Size: {model.Picture.Length}");
                 }
+                Console.WriteLine($"model.PictureUrl: {model.PictureUrl}");
 
-                if (string.IsNullOrWhiteSpace(title))
-                {
-                    return BadRequest("Title cannot be empty");
-                }
-
-                var playlist = await playlistService.GetPlaylistByIdAsync(id);
+                var playlist = await playlistService.GetPlaylistByIdAsync(model.Id);
                 if (playlist == null)
                 {
                     return NotFound("Playlist not found");
                 }
 
-                playlist.Title = title;
-                if (picture != null && picture.Length > 0)
+                if (model.Picture != null && model.Picture.Length > 0)
                 {
-                    using var memoryStream = new MemoryStream();
-                    await picture.CopyToAsync(memoryStream);
+                    var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
+                    Console.WriteLine($"Upload Result: {imageUploadResult}");
+                    if (string.IsNullOrEmpty(imageUploadResult))
+                    {
+                        throw new Exception("Image upload failed");
+                    }
                     playlist.CoverImage = imageUploadResult;
                 }
+                else
+                {
+                    Console.WriteLine("No new image, using existing PictureUrl");
+                    playlist.CoverImage = model.PictureUrl ?? playlist.CoverImage; // Fallback to DB value if null
+                }
+
+                playlist.Title = model.Title;
 
                 await playlistService.UpdatePlaylistAsync(playlist);
-                return Ok("Playlist updated successfully");
+                Console.WriteLine($"Saved - Title: {playlist.Title}, CoverImage: {playlist.CoverImage}");
+                return RedirectToAction("AllPlaylists");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Update error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
                 return StatusCode(500, $"Error updating playlist: {ex.Message}");
             }
         }
-       
     }
 }

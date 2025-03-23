@@ -15,6 +15,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HySound.Controllers
@@ -63,48 +64,72 @@ namespace HySound.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(int id, EditTrackViewModel model)
+public async Task<IActionResult> Update(EditTrackViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
+        model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
+        return View(model);
+    }
+
+    var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+    User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+    Track track = trackService.GetAll().FirstOrDefault(x => x.Id == model.Id);
+    if (track == null)
+        return NotFound();
+
+    // Update image
+    if (model.ImageFile != null)
+    {
+        var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
+        track.CoverImage = imageUploadResult;
+    }
+    else
+    {
+        track.CoverImage = model.ImageUrl; // Preserve existing image
+    }
+
+    // Update basic fields
+    track.Title = model.Title;
+    track.GenreId = model.GenreId;
+    track.UserId = user.Id;
+    track.IsYoutube = model.IsYoutube;
+
+    // Update audio
+    if (model.IsYoutube)
+    {
+        track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
+    }
+    else if (model.audioFile != null) // Only update AudioUrl if a new file is uploaded
+    {
+        var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
+        if (string.IsNullOrEmpty(audioUploadResult))
         {
-            if (!ModelState.IsValid)
-            {
-                model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
-
-                return View(model);
-            }
-            var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
-            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
-
-
-
-            Track track = trackService.GetAll().Where(x => x.Id == id).FirstOrDefault();
-            track.Title = model.Title;
-            track.AudioUrl = model.AudioUrl;
-            track.GenreId = model.GenreId;
-            track.UserId = model.UserId;
-            track.CoverImage = imageUploadResult;
-            track.IsYoutube = model.IsYoutube;
-            track.UserId = user.Id;
-            if(track.IsYoutube == false)
-            {
-                var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
-
-                track.AudioUrl =audioUploadResult;
-            }
-            await trackService.UpdateTrackAsync(track);
-            return RedirectToAction("AllTracks");
+            ModelState.AddModelError("", "Failed to upload audio file to Cloudinary.");
+            model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
+            model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
+            return View(model);
         }
+        track.AudioUrl = audioUploadResult;
+    }
+    // If no new audioFile and not YouTube, track.AudioUrl remains unchanged
 
+    await trackService.UpdateTrackAsync(track);
+    return RedirectToAction("AllTracks");
+}
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
+
             var model = trackService.GetAll()
                 .Where(x => x.Id == id)
                 .Include(x => x.Genre)
                 .Include(x => x.User)
                 .Select(x => new EditTrackViewModel()
                 {
+                    Id= x.Id,
                     Title = x.Title,
                     AudioUrl = x.AudioUrl,
                     ImageUrl = x.CoverImage,
@@ -123,26 +148,6 @@ namespace HySound.Controllers
 
             if (!model.IsYoutube)
             {
-                using (var client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(model.AudioUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        await response.Content.CopyToAsync(memoryStream);
-                        memoryStream.Position = 0; // Reset stream position
-
-                        model.audioFile = new FormFile(memoryStream, 0, memoryStream.Length, "file", "audio.mp3")
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "audio/mpeg"
-                        };
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Failed to fetch the audio file.");
-                    }
-                }
             }
 
             return View(model);
@@ -260,7 +265,7 @@ namespace HySound.Controllers
             Track track = await trackService.GetTrackByIdAsync(id);
 
             var comments = commentService.AllWithInclude().Include(x => x.User).Where(x=>x.TrackId==id);
-            User trackUser = null;
+            User trackUser = null;  
             Genre trackGenre = null;
             if( track != null)
             {

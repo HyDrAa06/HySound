@@ -114,6 +114,17 @@
                         </div>
                     </div>
                 }
+
+                <a asp-action="AddPlaylist" asp-controller="Playlist">
+                    <div class="library-track-card add-playlist-card">
+                    <div class="add-playlist-content">
+                        <div class="add-playlist-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3 class="add-playlist-text">Create New Playlist</h3>
+                    </div>
+                    </div>
+                </a>
             }
         </div>
         <div id="albums-content" class="library-grid" style="display: none;">
@@ -153,7 +164,7 @@
     </section>
 </div>
 
-<!-- Updated Modal with Cover Images -->
+<!-- Replace the existing Add to Playlist modal with this code -->
 <div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content spotify-modal">
@@ -169,13 +180,11 @@
                         {
                             @foreach (var playlist in Model.Playlists)
                             {
-                                <div class="form-check spotify-playlist-item">
-                                    <input class="form-check-input" type="checkbox" value="@playlist.Id" id="playlist-@playlist.Id">
-                                    <label class="form-check-label" for="playlist-@playlist.Id">
-                                        <div class="playlist-item-content">
-                                            <img src="@playlist.CoverImage" alt="@playlist.Title Cover" class="playlist-cover">
-                                            <span class="playlist-title">@playlist.Title</span>
-                                        </div>
+                                <div class="playlist-selection-item">
+                                    <input class="playlist-checkbox" type="checkbox" value="@playlist.Id" id="playlist-@playlist.Id">
+                                    <label class="playlist-selection-label" for="playlist-@playlist.Id">
+                                        <img src="@playlist.CoverImage" alt="@playlist.Title Cover" class="playlist-cover">
+                                        <span class="playlist-title">@playlist.Title</span>
                                     </label>
                                 </div>
                             }
@@ -194,7 +203,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function openAddToPlaylistModal(trackId) {
         const hiddenInput = document.getElementById('selected-track-id');
@@ -848,6 +856,111 @@ body {
   }
 }
 
+/* Redesigned playlist modal */
+.playlist-checkboxes {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlist-selection-item {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.playlist-selection-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.playlist-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #535353;
+    border-radius: 4px;
+    margin-right: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.playlist-checkbox:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.playlist-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.playlist-selection-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    margin: 0;
+}
+
+.playlist-cover {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+.playlist-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+/* Mobile responsiveness for the modal */
+@@media (max-width: 576px) {
+    .playlist-selection-item {
+        padding: 6px 8px;
+    }
+    
+    .playlist-cover {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+    }
+    
+    .playlist-checkbox {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+    }
+    
+    .playlist-title {
+        font-size: 12px;
+    }
+}
+
 /* Content section animations */
 #favourites-content, #playlists-content, #albums-content, #tracklist-content {
   animation: fadeIn 0.5s ease-out;
@@ -1045,4 +1158,47 @@ body {
     max-height: 250px;
   }
 }
+
+    /* Add Playlist Card */
+    .add-playlist-card {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 2px dashed #555;
+        transition: all var(--transition-speed) ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+        .add-playlist-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+    .add-playlist-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .add-playlist-icon {
+        font-size: 40px;
+        color: var(--primary-color);
+        margin-bottom: 16px;
+        transition: transform var(--transition-speed) ease;
+    }
+
+    .add-playlist-card:hover .add-playlist-icon {
+        transform: scale(1.2);
+    }
+
+    .add-playlist-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-top: 8px;
+    }
 </style>

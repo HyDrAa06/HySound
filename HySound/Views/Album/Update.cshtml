@@ -1,125 +1,371 @@
 ﻿@using HySound.ViewModels.Album
 @model EditAlbumViewModel
 
-<h1 class="page-title">Edit Album</h1>
-
-<form method="post" enctype="multipart/form-data" class="add-album-form">
-    <input type="text" placeholder="Заглавие" asp-for="Title" class="input-field" />
-    <br />
-
-    <div class="add-track-input-group" id="fileUploadGroup">
-        <label for="imageFile" class="add-track-input-label">Обложка</label>
-        <input type="file" id="ImageFile" asp-for="ImageFile" class="add-track-input-field" accept="image/*" />
+<div class="album-container">
+    <div class="album-header">
+        <h1 class="album-title">Update Album</h1>
     </div>
 
-    <input type="date" placeholder="Дата на издаване" asp-for="ReleaseDate" class="input-field" />
+    <form method="post" class="album-form" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="AlbumCover" />
+        <input type="hidden" asp-for="UserId" />
+        <div class="album-form-grid">
+            <div class="album-details">
+                <div class="cover-upload-container">
+                    <div class="cover-preview" id="coverPreview">
+                        @if (!string.IsNullOrEmpty(Model.AlbumCover))
+                        {
+                            <img src="@Model.AlbumCover" class="cover-preview-image" alt="Album Cover">
+                        }
+                        else
+                        {
+                            <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span class="upload-text">Change Cover</span>
+                        }
+                    </div>
+                    <input type="file" id="imageFile" name="ImageFile" asp-for="ImageFile" accept="image/*" class="cover-upload" />
+                </div>
+                <div class="input-group">
+                    <label for="Title">Album Title</label>
+                    <input type="text" id="Title" placeholder="@Model.Title" asp-for="Title" class="album-input" required />
+                </div>
+            </div>
+            
+            <div class="playlist-info">
+                <div class="info-header">
+                    <h2>Your Album</h2>
+                </div>
 
-    <select asp-for="UserId" asp-items="Model.UserList" class="input-field select-input">
-        <option value="">Избери потребител</option>
-    </select>
-    <br />
+                <div class="playlist-tips">
+                    <h3>Album Management Tips</h3>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Update your album title to reflect its content</span>
+                        </li>
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Ensure the release year is accurate</span>
+                        </li>
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Upload a high-quality album cover image</span>
+                        </li>
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Verify the correct artist is selected</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a asp-controller="Album" asp-action="AllAlbums" class="album-cancel">Cancel</a>
+            <button type="submit" class="album-submit">Save Changes</button>
+        </div>
+    </form>
+</div>
 
-    <button type="submit" class="submit-btn">Запази</button>
-</form>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const coverInput = document.getElementById('imageFile');
+        const coverPreview = document.getElementById('coverPreview');
+
+        coverPreview.addEventListener('click', function (e) {
+            if (!coverPreview.classList.contains('has-image')) {
+                console.log("Triggering file input click");
+                coverInput.click();
+            }
+        });
+
+        coverInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                console.log("File selected: ", this.files[0].name);
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Remove placeholder and add image
+                    coverPreview.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'cover-preview-image';
+                    img.alt = 'Album Cover';
+                    coverPreview.appendChild(img);
+                    coverPreview.classList.add('has-image');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+</script>
 
 <style>
-    /* Main page styling */
-    .page-title {
-        font-size: 32px;
-        font-weight: bold;
-        color: white;
-        margin-bottom: 30px;
+    /* Base Styles */
+    :root {
+        --primary-color: #1DB954;
+        --primary-hover: #1ed760;
+        --background: #121212;
+        --secondary-bg: #181818;
+        --card-bg: #282828;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --border-radius: 8px;
     }
 
-    /* Form styling */
-    .add-album-form {
-        background-color: #181818;
-        padding: 30px;
-        border-radius: 12px;
-        width: 100%;
-        max-width: 600px;
+    body {
+        background: var(--background);
+        color: var(--text-primary);
+        font-family: 'Circular', 'Spotify Circular', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    /* Container Layout */
+    .album-container {
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 24px;
     }
 
-    /* Input field styling */
-    .input-field {
-        width: 100%;
-        padding: 12px 20px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: 1px solid #444;
-        background-color: #333;
-        color: white;
+    .album-header {
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .album-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Form Grid Layout */
+    .album-form-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 32px;
+    }
+
+    /* Album Details Section */
+    .album-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Cover Upload */
+    .cover-upload-container {
         margin-bottom: 20px;
-        outline: none;
-        transition: border-color 0.3s;
+        position: relative;
     }
 
-        .input-field:focus {
-            border-color: #1db954;
-            background-color: #444;
-        }
-
-    /* Label styling */
-    .add-track-input-label {
-        font-size: 16px;
-        color: #bbb;
-        margin-bottom: 8px;
-        display: block;
-    }
-
-    /* File upload group */
-    .add-track-input-group {
-        margin-bottom: 20px;
-    }
-
-    .add-track-input-field {
-        width: 100%;
-        padding: 12px;
-        background-color: #333;
-        color: white;
-        border-radius: 8px;
-        border: 1px solid #444;
+    .cover-preview {
+        width: 260px;
+        height: 260px;
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
     }
 
-        .add-track-input-field:hover {
-            background-color: #444;
-        }
-
-    /* Select input styling */
-    .select-input {
-        padding: 12px 20px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: 1px solid #444;
-        background-color: #333;
-        color: white;
-        margin-bottom: 20px;
-        outline: none;
-        transition: border-color 0.3s;
+    .cover-preview:hover {
+        background: #333333;
     }
 
-        .select-input:focus {
-            border-color: #1db954;
-            background-color: #444;
-        }
+    .cover-preview.has-image {
+        background: none;
+    }
 
-    /* Submit button styling */
-    .submit-btn {
-        background-color: #1DB954;
-        color: white;
-        padding: 15px 20px;
-        font-size: 18px;
-        border-radius: 8px;
+    .cover-preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-placeholder {
+        opacity: 0.6;
+        margin-bottom: 12px;
+    }
+
+    .upload-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .cover-upload {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    /* Input Styling */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-group label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .album-input {
+        background: var(--card-bg);
         border: none;
-        width: 100%;
-        cursor: pointer;
-        transition: background-color 0.3s;
+        border-radius: var(--border-radius);
+        padding: 12px 16px;
+        font-size: 16px;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
     }
 
-        .submit-btn:hover {
-            background-color: #1aa34a;
+    .album-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .album-input::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    /* Playlist Info Section */
+    .playlist-info {
+        background: var(--secondary-bg);
+        border-radius: var(--border-radius);
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-header {
+        margin-bottom: 24px;
+    }
+
+    .info-header h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Playlist Tips */
+    .playlist-tips {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+    }
+
+    .playlist-tips h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tips-list li {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 12px;
+    }
+
+    .tip-marker {
+        color: var(--primary-color);
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .tip-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 32px;
+    }
+
+    .album-cancel {
+        padding: 12px 24px;
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--text-secondary);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .album-cancel:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .album-submit {
+        padding: 12px 24px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .album-submit:hover {
+        background: var(--primary-hover);
+        transform: scale(1.02);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .album-form-grid {
+            grid-template-columns: 1fr;
         }
+
+        .cover-preview {
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .album-container {
+            padding: 16px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .album-cancel, .album-submit {
+            width: 100%;
+        }
+    }
 </style>

@@ -30,6 +30,10 @@
                     <h2>Select Tracks</h2>
                     <span class="track-counter" id="trackCounter">0 selected</span>
                 </div>
+
+                <div class="validation-summary">
+                    @Html.ValidationMessageFor(model => model.SelectedTracksIds, "", new { @class = "validation-error" })
+                </div>
                 
                 <div class="search-container">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +60,7 @@
                                 <div class="track-info">
                                     <span class="track-name">@track.Text</span>
                                 </div>
-                                <input type="checkbox" name="SelectedTracksIds" value="@track.Value" class="track-checkbox" />
+                                <input type="checkbox" name="SelectedTracksIds"  value="@track.Value" class="track-checkbox" />
                             </div>
                         </label>
                     }
@@ -73,51 +77,47 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Cover image preview
+        // Cover image preview (unchanged)
         const coverInput = document.getElementById('Picture');
         const coverPreview = document.getElementById('coverPreview');
-        
-        coverInput.addEventListener('change', function() {
+
+        coverInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Album Cover">`;
                     coverPreview.classList.add('has-image');
                 }
-                
                 reader.readAsDataURL(this.files[0]);
             }
         });
-        
-        // Click to trigger file upload
-        coverPreview.addEventListener('click', function() {
+
+        coverPreview.addEventListener('click', function () {
             coverInput.click();
         });
-        
+
         // Track selection and counter
         const checkboxes = document.querySelectorAll(".track-checkbox");
         const trackCounter = document.getElementById("trackCounter");
-        
+
         function updateCounter() {
             const selectedCount = document.querySelectorAll(".track-checkbox:checked").length;
             trackCounter.textContent = selectedCount + " selected";
         }
-        
+
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", function() {
+            checkbox.addEventListener("change", function () {
                 this.closest(".track-item").classList.toggle("selected", this.checked);
                 updateCounter();
             });
         });
-        
-        // Track search functionality
+
+        // Track search functionality (unchanged)
         const searchInput = document.getElementById("trackSearch");
         const trackItems = document.querySelectorAll(".track-item");
-        
-        searchInput.addEventListener("input", function() {
+
+        searchInput.addEventListener("input", function () {
             const query = this.value.toLowerCase().trim();
-            
             trackItems.forEach(item => {
                 const trackName = item.dataset.trackName;
                 if (trackName.includes(query) || query === '') {
@@ -127,9 +127,28 @@
                 }
             });
         });
+
+        // Form submission validation
+        const form = document.querySelector(".album-form");
+        const errorContainer = document.createElement("div");
+        errorContainer.className = "validation-error";
+        form.insertBefore(errorContainer, form.querySelector(".form-actions"));
+
+        form.addEventListener("submit", function (e) {
+            const selectedCount = document.querySelectorAll(".track-checkbox:checked").length;
+            if (selectedCount === 0) {
+                e.preventDefault(); // Prevent form submission
+                errorContainer.innerHTML = '<span><i class="fas fa-exclamation-circle"></i> Please select at least one track.</span>';
+                errorContainer.style.display = "block";
+                setTimeout(() => {
+                    errorContainer.style.display = "none";
+                }, 3000); // Hide after 3 seconds
+            } else {
+                errorContainer.style.display = "none";
+            }
+        });
     });
 </script>
-
 <style>
     /* Base Styles */
     :root {
@@ -529,4 +548,28 @@
             width: 100%;
         }
     }
+
+    /* Validation Error Styling */
+    .validation-error {
+        display: none;
+        background: #3c2f1a; /* Subtle brownish-yellow for warning */
+        color: #ffca28; /* Bright yellow text */
+        padding: 12px 16px;
+        border-radius: var(--border-radius);
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid #5a431f;
+    }
+
+        .validation-error span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .validation-error i {
+            color: #ffca28;
+        }
 </style>

@@ -4,6 +4,7 @@ namespace HySound.ViewModels.Album
 {
     public class EditAlbumViewModel
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
 

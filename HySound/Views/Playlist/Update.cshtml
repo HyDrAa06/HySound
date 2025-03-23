@@ -1,12 +1,525 @@
-﻿@using HySound.Models.Models
-@model Playlist
+﻿@using HySound.ViewModels.Playlist
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model EditPlaylistViewModel
 
-<h1>Update Playlist</h1>
+<div class="album-container">
+    <div class="album-header">
+        <h1 class="album-title">Update Playlist</h1>
+    </div>
 
-<form method="post">
-    <input type="text" placeholder="Title" asp-for="Title" />
-    <br />
-    <input type="text" placeholder="Description" asp-for="Description" />
-    <br />
-    <button type="submit">Submit</button>
-</form>
+    <form method="post" class="album-form" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="PictureUrl" />
+        <div class="album-form-grid">
+            <div class="album-details">
+                <div class="cover-upload-container">
+                    <div class="cover-preview" id="coverPreview">
+                        @if (!string.IsNullOrEmpty(Model.PictureUrl))
+                        {
+                            <img src="@Model.PictureUrl" class="cover-preview-image" alt="Playlist Cover">
+                        }
+                        else
+                        {
+                            <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span class="upload-text">Change Cover</span>
+                        }
+                    </div>
+                    <input type="file" id="imageFile" name="Picture" asp-for="Picture" accept="image/*" class="cover-upload" />
+                </div>
+                <div class="input-group">
+                    <label for="Title">Playlist Title</label>
+                    <input type="text" id="Title" placeholder="@Model.Title" asp-for="Title" class="album-input" required />
+                </div>
+            </div>
+            
+            <div class="playlist-info">
+                <div class="info-header">
+                    <h2>Your Playlist</h2>
+                </div>
+
+                <div class="playlist-tips">
+                    <h3>Playlist Management Tips</h3>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Update your playlist title to reflect its current theme</span>
+                        </li>
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Upload a new cover image to match the updated vibe</span>
+                        </li>
+                        <li>
+                            <span class="tip-marker">•</span>
+                            <span class="tip-text">Select or deselect tracks to customize your playlist</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        
+
+        </div>
+        <div class="form-actions">
+            <a href="/playlists" class="album-cancel">Cancel</a>
+            <button type="submit" class="album-submit">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const coverInput = document.getElementById('imageFile');
+        const coverPreview = document.getElementById('coverPreview');
+
+        coverPreview.addEventListener('click', function (e) {
+            if (!coverPreview.classList.contains('has-image')) {
+                console.log("Triggering file input click");
+                coverInput.click();
+            }
+        });
+
+        coverInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                console.log("File selected: ", this.files[0].name);
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Remove placeholder and add image
+                    coverPreview.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'cover-preview-image';
+                    img.alt = 'Playlist Cover';
+                    coverPreview.appendChild(img);
+                    coverPreview.classList.add('has-image');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+</script>
+
+<!-- Your existing <style> section remains unchanged -->
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #1DB954;
+        --primary-hover: #1ed760;
+        --background: #121212;
+        --secondary-bg: #181818;
+        --card-bg: #282828;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --border-radius: 8px;
+    }
+
+    body {
+        background: var(--background);
+        color: var(--text-primary);
+        font-family: 'Circular', 'Spotify Circular', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    /* Container Layout */
+    .album-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    .album-header {
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .album-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Form Grid Layout - Matching the album page */
+    .album-form-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 32px;
+    }
+
+    /* Album Details Section */
+    .album-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Cover Upload */
+    .cover-upload-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .cover-preview {
+        width: 260px;
+        height: 260px;
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+        .cover-preview:hover {
+            background: #333333;
+        }
+
+        .cover-preview.has-image {
+            background: none;
+        }
+
+    .cover-preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-placeholder {
+        opacity: 0.6;
+        margin-bottom: 12px;
+    }
+
+    .upload-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .cover-upload {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    /* Input Styling */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .input-group label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+    .album-input {
+        background: var(--card-bg);
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 12px 16px;
+        font-size: 16px;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+    }
+
+        .album-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .album-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+    /* Playlist Info Section */
+    .playlist-info {
+        background: var(--secondary-bg);
+        border-radius: var(--border-radius);
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-header {
+        margin-bottom: 24px;
+    }
+
+        .info-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    /* Track Selection */
+    .track-selection {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-bottom: 32px;
+    }
+
+        .track-selection h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+    .track-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 12px;
+        max-height: 350px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .track-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+        .track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+    .track-checkbox-wrapper {
+        position: relative;
+    }
+
+    .track-checkbox {
+        position: absolute;
+        opacity: 0;
+        height: 0;
+        width: 0;
+    }
+
+    .track-checkbox-label {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .track-checkbox:checked + .track-checkbox-label {
+        background-color: rgba(29, 185, 84, 0.2);
+    }
+
+        .track-checkbox:checked + .track-checkbox-label::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 1L3.5 6.5L1 4' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+    .track-art {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+        .track-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .track-art-placeholder {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .track-info {
+        overflow: hidden;
+    }
+
+    .track-title {
+        display: block;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .no-tracks {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 0;
+        color: var(--text-secondary);
+    }
+
+        .no-tracks svg {
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .no-tracks p {
+            margin: 4px 0;
+            font-size: 16px;
+        }
+
+    /* Playlist Tips */
+    .playlist-tips {
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 20px;
+    }
+
+        .playlist-tips h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .tips-list li {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+    .tip-marker {
+        color: var(--primary-color);
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .tip-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 32px;
+    }
+
+    .album-cancel {
+        padding: 12px 24px;
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--text-secondary);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .album-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+    .album-submit {
+        padding: 12px 24px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .album-submit:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+        }
+
+    /* Custom scrollbar for track grid */
+    .track-grid::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .track-grid::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .track-grid::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+    }
+
+        .track-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .album-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cover-preview {
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+
+        .track-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .album-container {
+            padding: 16px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .album-cancel, .album-submit {
+            width: 100%;
+        }
+
+        .track-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
