@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace HySound.ViewModels
 {
     public class AddTrackViewModel
     {
+        [Required]
+        [MaxLength(100)]
         public string Title { get; set; }
         public bool IsYoutube { get; set; }
         public string? AudioUrl { get; set; }

@@ -29,47 +29,6 @@
                 <div class="info-header">
                     <h2>About Your Playlist</h2>
                 </div>
-
-                <div class="info-content">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 19V5L21 12L9 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="info-text">
-                            <h3>Your Personal Collection</h3>
-                            <p>Create a playlist that reflects your unique music taste or fits your mood.</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M9.5 9C9.5 8.17157 10.1716 7.5 11 7.5H13C13.8284 7.5 14.5 8.17157 14.5 9C14.5 9.82843 13.8284 10.5 13 10.5H11C10.1716 10.5 9.5 11.1716 9.5 12C9.5 12.8284 10.1716 13.5 11 13.5H13C13.8284 13.5 14.5 14.1716 14.5 15C14.5 15.8284 13.8284 16.5 13 16.5H11C10.1716 16.5 9.5 15.8284 9.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M12 7.5V6M12 18V16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="info-text">
-                            <h3>Free to Create</h3>
-                            <p>Unlimited playlists at no cost. Let your creativity flow.</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 21V5C19 3.89543 18.1046 3 17 3H7C5.89543 3 5 3.89543 5 5V21M19 21H5M19 21H21M5 21H3M9 6.5H15M9 10.5H15M9 14.5H13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div class="info-text">
-                            <h3>Easy Organization</h3>
-                            <p>After creating, you can add tracks to your playlist from your library.</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="playlist-tips">
                     <h3>Tips for Great Playlists</h3>
                     <ul class="tips-list">
@@ -91,7 +50,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" class="album-cancel">Cancel</button>
+            <a asp-action="AllPlaylists" asp-controller="Playlist" type="button" class="album-cancel">Cancel</a>
             <button type="submit" class="album-submit">Create Playlist</button>
         </div>
     </form>

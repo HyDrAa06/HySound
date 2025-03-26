@@ -1,5 +1,4 @@
-﻿using Azure;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using HySound.Core.Service;
 using HySound.Core.Service.IService;
 using HySound.Models.Models;
@@ -9,14 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Xml;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HySound.Controllers
 {
@@ -32,7 +23,7 @@ namespace HySound.Controllers
         IPlaylistService playlistService;
         ICommentService commentService;
         ILikeService likesService;
-        public TrackController(ILikeService likes, ICommentService commentService,UserManager<IdentityUser> _userManager, CloudinaryService cloud,IConfiguration configuration, IPlaylistService playlistService,ITrackService trackService, IUserService userService, IGenreService genreService)
+        public TrackController(ILikeService likes, ICommentService commentService, UserManager<IdentityUser> _userManager, CloudinaryService cloud, IConfiguration configuration, IPlaylistService playlistService, ITrackService trackService, IUserService userService, IGenreService genreService)
         {
             userManager = _userManager;
             this.cloudService = cloud;
@@ -53,7 +44,7 @@ namespace HySound.Controllers
         }
         public async Task<IActionResult> Delete(int id)
         {
-            if(id != null)
+            if (id != null)
             {
                 await likesService.DeleteAllLikesByTracks(id);
                 await playlistService.DeleteTrackFromAllPlaylistsAsync(id);
@@ -64,61 +55,61 @@ namespace HySound.Controllers
         }
 
         [HttpPost]
-public async Task<IActionResult> Update(EditTrackViewModel model)
-{
-    if (!ModelState.IsValid)
-    {
-        model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-        model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
-        return View(model);
-    }
-
-    var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-    User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
-
-    Track track = trackService.GetAll().FirstOrDefault(x => x.Id == model.Id);
-    if (track == null)
-        return NotFound();
-
-    // Update image
-    if (model.ImageFile != null)
-    {
-        var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
-        track.CoverImage = imageUploadResult;
-    }
-    else
-    {
-        track.CoverImage = model.ImageUrl; // Preserve existing image
-    }
-
-    // Update basic fields
-    track.Title = model.Title;
-    track.GenreId = model.GenreId;
-    track.UserId = user.Id;
-    track.IsYoutube = model.IsYoutube;
-
-    // Update audio
-    if (model.IsYoutube)
-    {
-        track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
-    }
-    else if (model.audioFile != null) // Only update AudioUrl if a new file is uploaded
-    {
-        var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
-        if (string.IsNullOrEmpty(audioUploadResult))
+        public async Task<IActionResult> Update(EditTrackViewModel model)
         {
-            ModelState.AddModelError("", "Failed to upload audio file to Cloudinary.");
-            model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
-            model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
-            return View(model);
-        }
-        track.AudioUrl = audioUploadResult;
-    }
-    // If no new audioFile and not YouTube, track.AudioUrl remains unchanged
+            if (!ModelState.IsValid)
+            {
+                model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
+                model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
+                return View(model);
+            }
 
-    await trackService.UpdateTrackAsync(track);
-    return RedirectToAction("AllTracks");
-}
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+            Track track = trackService.GetAll().FirstOrDefault(x => x.Id == model.Id);
+            if (track == null)
+                return NotFound();
+
+            // Update image
+            if (model.ImageFile != null)
+            {
+                var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
+                track.CoverImage = imageUploadResult;
+            }
+            else
+            {
+                track.CoverImage = model.ImageUrl; // Preserve existing image
+            }
+
+            // Update basic fields
+            track.Title = model.Title;
+            track.GenreId = model.GenreId;
+            track.UserId = user.Id;
+            track.IsYoutube = model.IsYoutube;
+
+            // Update audio
+            if (model.IsYoutube)
+            {
+                track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
+            }
+            else if(model.audioFile != null) // Only update AudioUrl if a new file is uploaded
+            {
+                var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
+                if (string.IsNullOrEmpty(audioUploadResult))
+                {
+                    ModelState.AddModelError("", "Failed to upload audio file to Cloudinary.");
+                    model.GenresList = new SelectList(await genreService.GetAllGenresAsync(), "Id", "Name");
+                    model.UserList = new SelectList(await userService.GetAllUsersAsync(), "Id", "Username");
+                    return View(model);
+                }
+                track.AudioUrl = audioUploadResult;
+            }
+            // If no new audioFile and not YouTube, track.AudioUrl remains unchanged
+
+            await trackService.UpdateTrackAsync(track);
+            return RedirectToAction("AllTracks");
+        }
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
@@ -129,7 +120,7 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                 .Include(x => x.User)
                 .Select(x => new EditTrackViewModel()
                 {
-                    Id= x.Id,
+                    Id = x.Id,
                     Title = x.Title,
                     AudioUrl = x.AudioUrl,
                     ImageUrl = x.CoverImage,
@@ -175,7 +166,7 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                     Track track = new Track()
                     {
                         Title = model.Title,
-                        IsYoutube=true,
+                        IsYoutube = true,
                         AudioUrl = model.AudioUrl,
                         UserId = user.Id,
                         GenreId = model.GenreId,
@@ -199,7 +190,7 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                     await trackService.AddTrackAsync(track);
                     return RedirectToAction("AllTracks");
                 }
-                
+
             }
             else
             {
@@ -264,10 +255,10 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
 
             Track track = await trackService.GetTrackByIdAsync(id);
 
-            var comments = commentService.AllWithInclude().Include(x => x.User).Where(x=>x.TrackId==id);
-            User trackUser = null;  
+            var comments = commentService.AllWithInclude().Include(x => x.User).Where(x => x.TrackId == id);
+            User trackUser = null;
             Genre trackGenre = null;
-            if( track != null)
+            if (track != null)
             {
                 if (track.UserId.HasValue)
                 {
@@ -283,7 +274,7 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
 
                 bool isLiked = false;
 
-                var like = likesService.GetAll().Where(x => x.UserId == user.Id && x.TrackId==id);
+                var like = likesService.GetAll().Where(x => x.UserId == user.Id && x.TrackId == id);
                 if (like.Any())
                 {
                     isLiked = true;
@@ -308,7 +299,7 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
             {
                 return RedirectToAction("Home", "Index");
             }
-            
+
         }
         public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {
@@ -326,7 +317,8 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
                     IsYoutube = x.IsYoutube,
-                    ImageLink=x.CoverImage
+                    ImageLink = x.CoverImage,
+                    LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
                 }).ToList();
 
                 var filterModel = new TrackFilterViewModel
@@ -361,7 +353,8 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                     AudioUrl = x.AudioUrl,
                     GenreName = x.Genre.Name,
                     UserName = x.User.Username,
-                    ImageLink=x.CoverImage
+                    ImageLink = x.CoverImage,
+                    LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
                 }).ToList(),
                     Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
                     Title = filter.Title,
@@ -370,8 +363,8 @@ public async Task<IActionResult> Update(EditTrackViewModel model)
                 };
 
                 return View(filterModel);
-            }   
-       
+            }
+
         }
     }
 }

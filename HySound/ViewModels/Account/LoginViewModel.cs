@@ -11,8 +11,9 @@ namespace HySound.ViewModels.Account
         public string Email { get; set; }
 
 
-
         [Required]
+        [MinLength(8, ErrorMessage = "Полето трябва да съдържа поне 8 символа.")]
+        [MaxLength(50, ErrorMessage = "Полето не може да съдържа повече от 50 символа.")]
 
         [DataType(DataType.Password)]
 

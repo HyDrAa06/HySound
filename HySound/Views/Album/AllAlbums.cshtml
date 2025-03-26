@@ -28,26 +28,13 @@
             <div class="filter-section mb-4">
                 <form asp-action="AllAlbums" method="get" class="search-form">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-10">
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-dark text-light">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" asp-for="Search" class="form-control bg-dark border-dark text-light" placeholder="Search by title">
+                                <input type="text" asp-for="Search" class="form-control bg-dark border-dark text-light" placeholder="Search by title or artist">
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select bg-dark border-dark text-light">
-                                <option value="">All Genres</option>
-                                <!-- Add genre options here -->
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select bg-dark border-dark text-light">
-                                <option value="">Sort by: Latest</option>
-                                <option value="oldest">Sort by: Oldest</option>
-                                <option value="alphabetical">Sort by: A-Z</option>
-                            </select>
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary w-100">Apply</button>
@@ -56,15 +43,12 @@
                 </form>
             </div>
 
-            <!-- Albums Table -->
             <div class="tracks-table-container">
                 <table class="table table-dark table-hover tracks-table">
                     <thead>
                         <tr>
                             <th style="width: 50px">#</th>
                             <th>Album</th>
-                            <th>Genre</th>
-                            <th class="text-center">Songs</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -90,9 +74,8 @@
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="Details" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
                                             <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Edit</a></li>
-                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="AddSong" asp-route-albumId="@album.Id"><i class="fas fa-plus me-2"></i> Add Song</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item text-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
                                         </ul>
@@ -127,7 +110,7 @@
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="Details" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
                                         <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Edit</a></li>
                                         <li><a class="dropdown-item" asp-controller="Album" asp-action="AddSong" asp-route-albumId="@album.Id"><i class="fas fa-plus me-2"></i> Add Song</a></li>
                                         <li><hr class="dropdown-divider"></li>

@@ -20,6 +20,7 @@ namespace HySound.Models.Models
         public bool IsYoutube { get; set; }
         public string? CoverImage { get; set; }
         [Range(0, int.MaxValue)]
+        
         public int? UserId { get; set; }
 
         public int? AlbumId { get; set; }

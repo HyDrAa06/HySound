@@ -248,7 +248,8 @@ namespace HySound.Controllers
                 AudioUrl = x.AudioUrl,
                 GenreName = x.Genre.Name,
                 UserName = x.User.Username,
-                ImageLink = x.CoverImage
+                ImageLink = x.CoverImage,
+                IsYoutube = x.IsYoutube
             }).ToList();
 
             if(model.Count >= 8)

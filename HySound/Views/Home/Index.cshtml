@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HySound - Начало</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-   
+    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script> <!-- Add your Font Awesome kit ID -->
 </head>
 <body>
     <!-- Hero Section -->
@@ -37,14 +37,36 @@
             <div class="track-list-home">
                 @foreach(var track in Model)
                 {
-                    <div class="track-item-home">
-                        <img src="@track.ImageLink" alt="Track 1" class="track-img-home">
-                        <div class="track-info-home">
-                            <h3 class="track-title-home">@track.Title</h3>
-                            <p class="track-artist-home">@track.UserName</p>
-                            <button class="track-play-btn-home">Пусни</button>
+                    @if (track.IsYoutube)
+                    {
+                        <div class="track-item-home youtube-track">
+                            <iframe class="youtube-iframe"
+                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&rel=0"
+                            >
+                            </iframe>
+                            <div class="track-info-home">
+                                <h3 class="track-title-home">@track.Title</h3>
+                                <p class="track-artist-home">@track.UserName</p>
+                            </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="track-item-home">
+                            <img src="@track.ImageLink" alt="@track.Title" class="track-img-home">
+                            <div class="track-info-home">
+                                <h3 class="track-title-home">@track.Title</h3>
+                                <p class="track-artist-home">@track.UserName</p>
+                                <button class="track-play-btn-home"
+                                        data-src="@track.AudioUrl"
+                                        data-title="@track.Title"
+                                        data-artist="@track.UserName"
+                                        data-image="@track.ImageLink">
+                                    Пусни
+                                </button>
+                            </div>
+                        </div>
+                    }
                 }
             </div>
         </section>
@@ -59,9 +81,140 @@
                 </div>
             </section>
         }
-        
     </div>
 
+    <!-- Audio Player -->
+    <div class="player-container">
+        <div class="player-left">
+            <img class="player-image" id="song-image" src="" alt="Song Image">
+            <div class="player-info">
+                <span class="player-song-name" id="song-title">Song Title</span>
+                <span class="player-artist-name" id="artist-name">Artist Name</span>
+            </div>
+        </div>
+        <div class="player-center">
+            <div class="player-btn-container">
+                <button class="player-btn player-prev" id="prev-btn">
+                    <i class="player-icon fas fa-step-backward"></i>
+                </button>
+                <button class="player-btn player-play" id="play-btn">
+                    <i class="player-icon fas fa-play"></i>
+                </button>
+                <button class="player-btn player-next" id="next-btn">
+                    <i class="player-icon fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="player-timebar-container">
+                <input type="range" class="player-timebar" id="timebar" value="0" max="100">
+            </div>
+        </div>
+        <div class="player-right">
+            <i class="volume-icon fas fa-volume-up"></i>
+            <input type="range" class="player-sound-bar" id="sound-bar" min="0" max="100" value="50">
+        </div>
+    </div>
+
+    <audio id="global-audio" class="hidden" controls>
+        <source id="global-audio-source" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // home-page-audio.js
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get references to DOM elements
+            const globalAudio = document.getElementById("global-audio");
+            const globalAudioSource = document.getElementById("global-audio-source");
+            const playButtons = document.querySelectorAll(".track-play-btn-home");
+            const playerContainer = document.querySelector('.player-container');
+            const playButton = document.getElementById("play-btn");
+            const songImage = document.getElementById("song-image");
+            const songTitle = document.getElementById("song-title");
+            const artistName = document.getElementById("artist-name");
+            const timebar = document.getElementById("timebar");
+            const soundBar = document.getElementById("sound-bar");
+
+            let isPlaying = false;
+
+            // Helper function to update progress bars
+            function updateProgressBar(bar, value) {
+                bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
+            }
+
+            // Function to load and play a track
+            function playTrack(button) {
+                const src = button.dataset.src;
+                const title = button.dataset.title;
+                const artist = button.dataset.artist;
+                const image = button.dataset.image;
+
+                // Update player UI
+                globalAudioSource.src = src;
+                songImage.src = image || '/Images/default-track.jpg';
+                songTitle.textContent = title || 'Unknown Title';
+                artistName.textContent = artist || 'Unknown Artist';
+
+                // Reset and load audio
+                globalAudio.load();
+                globalAudio.currentTime = 0;
+                timebar.value = 0;
+                updateProgressBar(timebar, 0);
+                globalAudio.volume = soundBar.value / 100 || 1.0;
+                updateProgressBar(soundBar, soundBar.value);
+
+                // Play the track
+                globalAudio.play()
+                    .then(() => {
+                        isPlaying = true;
+                        playButton.querySelector("i").classList.replace("fa-play", "fa-pause");
+                        playerContainer.classList.add('visible');
+                    })
+                    .catch(error => console.error('Error playing audio:', error));
+            }
+
+            // Add click event listeners to all play buttons
+            playButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    playTrack(this);
+                });
+            });
+
+            // Play/Pause button functionality
+            playButton.addEventListener("click", function () {
+                if (globalAudio.paused) {
+                    globalAudio.play();
+                    playButton.querySelector("i").classList.replace("fa-play", "fa-pause");
+                    isPlaying = true;
+                    playerContainer.classList.add('visible');
+                } else {
+                    globalAudio.pause();
+                    playButton.querySelector("i").classList.replace("fa-pause", "fa-play");
+                    isPlaying = false;
+                }
+            });
+
+            // Update timebar as audio plays
+            globalAudio.addEventListener("timeupdate", function () {
+                if (!isNaN(globalAudio.duration)) {
+                    const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
+                    timebar.value = progress || 0;
+                    updateProgressBar(timebar, timebar.value);
+                }
+            });
+
+            // Seek audio when timebar is adjusted
+            timebar.addEventListener("input", function () {
+                globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
+                updateProgressBar(timebar, timebar.value);
+            });
+
+            // Adjust volume with sound bar
+            soundBar.addEventListener("input", function () {
+                globalAudio.volume = soundBar.value / 100;
+                updateProgressBar(soundBar, soundBar.value);
+            });
+        });
+    </script>
 </body>
 </html>
 
@@ -115,30 +268,30 @@
         overflow: hidden;
     }
 
-        .hero-home::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, var(--background-color), transparent);
-        }
+    .hero-home::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(to top, var(--background-color), transparent);
+    }
 
-        .hero-home h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-            letter-spacing: -1px;
-        }
+    .hero-home h1 {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        letter-spacing: -1px;
+    }
 
-        .hero-home p {
-            font-size: 1.3rem;
-            margin-bottom: 2.5rem;
-            max-width: 700px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-            opacity: 0.9;
-        }
+    .hero-home p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        opacity: 0.9;
+    }
 
     .hero-btn-home {
         background-color: var(--primary-color);
@@ -155,11 +308,11 @@
         margin: 0.5rem;
     }
 
-        .hero-btn-home:hover {
-            background-color: var(--hover-color);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(29, 185, 84, 0.6);
-        }
+    .hero-btn-home:hover {
+        background-color: var(--hover-color);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(29, 185, 84, 0.6);
+    }
 
     /* Section Titles */
     .section-title {
@@ -172,15 +325,15 @@
         border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 28px;
-            background-color: var(--primary-color);
-            margin-right: 1rem;
-            border-radius: 3px;
-        }
+    .section-title::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 28px;
+        background-color: var(--primary-color);
+        margin-right: 1rem;
+        border-radius: 3px;
+    }
 
     /* Tracks Section */
     .tracks-home {
@@ -206,16 +359,22 @@
         height: 250px;
     }
 
-        .track-item-home:hover {
-            transform: translateY(-5px);
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
+    .track-item-home:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
 
     .track-img-home {
         width: 100%;
         height: 150px;
         object-fit: cover;
+    }
+
+    .youtube-iframe {
+        width: 100%;
+        height: 150px; /* Match the height of track-img-home */
+        border: none;
     }
 
     .track-info-home {
@@ -259,15 +418,119 @@
         margin-top: auto;
     }
 
-        .track-play-btn-home:hover {
-            background-color: var(--hover-color);
-            transform: scale(1.05);
-        }
+    .track-play-btn-home:hover {
+        background-color: var(--hover-color);
+        transform: scale(1.05);
+    }
 
-        .track-play-btn-home::before {
-            content: '▶';
-            font-size: 0.8rem;
-        }
+    .track-play-btn-home::before {
+        content: '▶';
+        font-size: 0.8rem;
+    }
+
+    /* Player Styles */
+    .player-container {
+        display: none; /* Hidden by default */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--card-background);
+        padding: 1rem;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+
+    .player-container.visible {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .player-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .player-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .player-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .player-song-name {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .player-artist-name {
+        font-size: 0.85rem;
+        opacity: 0.7;
+    }
+
+    .player-center {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        max-width: 500px;
+    }
+
+    .player-btn-container {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .player-btn {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color var(--transition-speed);
+    }
+
+    .player-btn:hover {
+        color: var(--primary-color);
+    }
+
+    .player-timebar {
+        width: 100%;
+        height: 5px;
+        background: #1e1e1e;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .player-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .volume-icon {
+        font-size: 1.2rem;
+    }
+
+    .player-sound-bar {
+        width: 100px;
+        height: 5px;
+        background: #1e1e1e;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .hidden {
+        display: none;
+    }
 
     /* Featured Section */
     .featured-section {
@@ -286,45 +549,30 @@
         overflow: hidden;
     }
 
-        .featured-banner::before {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            top: -100px;
-            right: -50px;
-        }
+    .featured-banner::before {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        top: -100px;
+        right: -50px;
+    }
 
     .featured-content {
         max-width: 60%;
     }
 
-        .featured-content h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .featured-content p {
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-
-    .featured-btn {
-        background-color: rgba(0, 0, 0, 0.3);
-        color: var(--text-color);
-        padding: 0.8rem 1.5rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all var(--transition-speed);
-        display: inline-block;
+    .featured-content h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
     }
 
-        .featured-btn:hover {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+    .featured-content p {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
 
     /* Artist Banner */
     .artist-banner {
@@ -342,15 +590,15 @@
         max-width: 70%;
     }
 
-        .artist-content h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
+    .artist-content h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
 
-        .artist-content p {
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
+    .artist-content p {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
 
     .artist-btn {
         background-color: var(--secondary-color);
@@ -363,55 +611,9 @@
         display: inline-block;
     }
 
-        .artist-btn:hover {
-            background-color: #333;
-            transform: translateY(-3px);
-        }
-
-    /* Footer */
-    .footer-home {
-        background-color: var(--secondary-color);
-        padding: 3rem 0;
-        text-align: center;
-        margin-top: 4rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    .footer-logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--primary-color);
-    }
-
-    .footer-links {
-        display: flex;
-        gap: 2rem;
-    }
-
-        .footer-links a {
-            color: var(--text-color);
-            text-decoration: none;
-            opacity: 0.7;
-            transition: opacity var(--transition-speed);
-        }
-
-            .footer-links a:hover {
-                opacity: 1;
-            }
-
-    .footer-copyright {
-        margin-top: 2rem;
-        opacity: 0.7;
-        font-size: 0.9rem;
+    .artist-btn:hover {
+        background-color: #333;
+        transform: translateY(-3px);
     }
 
     /* Responsive Design */
@@ -448,11 +650,6 @@
         .track-list-home {
             grid-template-columns: repeat(2, 1fr);
         }
-
-        .footer-content {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
     }
 
     @@media (max-width: 576px) {
@@ -464,9 +661,9 @@
             height: 60vh;
         }
 
-            .hero-home h1 {
-                font-size: 2.5rem;
-            }
+        .hero-home h1 {
+            font-size: 2.5rem;
+        }
 
         .track-play-btn-home {
             padding: 0.4rem 1rem;
@@ -477,4 +674,5 @@
             font-size: 1.5rem;
         }
     }
+
 </style>

@@ -9,7 +9,6 @@
     <form method="post" class="album-form" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="ImageUrl" />
-        <input type="hidden" asp-for="AudioUrl" /> <!-- Keep original AudioUrl -->
         <div class="album-form-grid">
             <div class="album-details">
                 <div class="cover-upload-container">
@@ -80,7 +79,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" class="album-cancel">Cancel</button>
+            <a asp-action="AllTracks" asp-controller="Track" type="button" class="album-cancel">Cancel</a>
             <button type="submit" class="album-submit">Save Changes</button>
         </div>
     </form>

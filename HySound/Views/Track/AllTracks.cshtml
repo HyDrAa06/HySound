@@ -21,7 +21,7 @@
             <div class="filter-section mb-4">
                 <form asp-action="AllTracks" method="get" class="search-form">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-dark text-light">
                                     <i class="fas fa-search"></i>
@@ -29,16 +29,9 @@
                                 <input type="text" asp-for="Title" class="form-control bg-dark border-dark text-light" placeholder="Search by title">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-5">
                             <select asp-for="GenreId" asp-items="Model.Genres" class="form-select bg-dark border-dark text-light">
                                 <option value="">All Genres</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select bg-dark border-dark text-light">
-                                <option value="">Sort by: Latest</option>
-                                <option value="plays">Sort by: Most Played</option>
-                                <option value="likes">Sort by: Most Liked</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -68,7 +61,7 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="track-thumbnail me-3">
-                                            @if (track.IsYoutube)
+                                            @if (track.IsYoutube && track.ImageLink == null)
                                             {
                                                 <div class="thumbnail-youtube">
                                                     <i class="fab fa-youtube"></i>
@@ -86,7 +79,7 @@
                                     </div>
                                 </td>
                                 <td class="align-middle">@track.GenreName</td>
-                                <td class="text-center align-middle">0</td>
+                                <td class="text-center align-middle">@track.LikesCount</td>
                                 <td class="text-center align-middle">
                                     <div class="dropdown">
                                         <button class="btn btn-link text-light" type="button" data-bs-toggle="dropdown">
@@ -142,8 +135,8 @@
                                     {
                                         <div class="youtube-container">
                                             <iframe class="track-iframe"
-                                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
-                                                    frameborder="0" allow="autoplay">
+                                            src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
+                                            frameborder="0" allow="autoplay">
                                             </iframe>
                                         </div>
                                     }
@@ -159,7 +152,7 @@
                                     <h5 class="track-title">@track.Title</h5>
                                     <p class="track-meta">@track.GenreName</p>
                                     <div class="d-flex justify-content-between">
-                                        <span><i class="fas fa-heart me-1"></i>0</span>
+                                        <span><i class="fas fa-heart me-1"></i>@track.LikesCount</span>
                                     </div>
                                 </div>
                             </div>

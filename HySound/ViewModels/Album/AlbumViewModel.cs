@@ -6,8 +6,8 @@ namespace HySound.ViewModels.Album
     {
         public int Id { get; set; }
         [Required]
+        [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
         public string Title { get; set; }
-        public DateTime ReleaseDate { get; set; }
         [Required]
 
         public string UserName { get; set; }

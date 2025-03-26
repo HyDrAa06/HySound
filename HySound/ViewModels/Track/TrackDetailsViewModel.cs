@@ -1,9 +1,13 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace HySound.ViewModels.Track
 {
     public class TrackDetailsViewModel
     {
         public int Id { get; set; }
+        [Required]
+        [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
         public string Title { get; set; }
         public string Username { get; set; }
         public string TrackImage { get; set; }

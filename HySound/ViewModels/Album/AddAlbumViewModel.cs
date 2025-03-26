@@ -6,9 +6,10 @@ namespace HySound.ViewModels
     public class AddAlbumViewModel
     {
         [Required]
+        [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
+
         public string Title { get; set; }
         public IFormFile? Picture {  get; set; }
-        public DateTime ReleaseDate { get; set; }
         public List<SelectListItem>? Tracks { get; set; }
         public List<int>? SelectedTracksIds { get; set; }    
         public Dictionary<int, string>? TrackPictures { get; set; }
