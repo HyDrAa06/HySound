@@ -1,4 +1,6 @@
-﻿using HySound.Core.Service.IService;
+﻿using Azure.Core;
+using HySound.Core.Service.IService;
+using HySound.Models.Models;
 using HySound.ViewModels.Artist;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,22 +33,29 @@ namespace HySound.Controllers
 
             return View(viewModels);
         }
-
         [HttpPost("Approve/{id}")]
         public async Task<IActionResult> Approve(int id)
         {
-            var admin = await _userService.GetUserAsync(x => x.Email == "admin@admin.com"); 
-            await _artistRequestService.ApproveRequestAsync(id, admin.Id);
-            TempData["Message"] = "Request approved successfully!";
+            var request = await _artistRequestService.GetByIdAsync(id);
+            if (request != null)
+            {
+                var user = _userService.GetUserAsync(x => x.Id == request.UserId);
+                await _artistRequestService.ApproveRequestAsync(id,1);
+            }
+
+            TempData["Message"] = "Request approved!";
             return RedirectToAction("ArtistRequests");
         }
-
         [HttpPost("Deny/{id}")]
         public async Task<IActionResult> Deny(int id)
         {
-            var admin = await _userService.GetUserAsync(x => x.Email == "admin@admin.com");
-            await _artistRequestService.DenyRequestAsync(id, admin.Id);
-            TempData["Message"] = "Request denied successfully!";
+            var request = await _artistRequestService.GetByIdAsync(id);
+            if (request != null)
+            {
+                await _artistRequestService.DenyRequestAsync(id, 1);
+            }
+
+            TempData["Message"] = "Request denied!";
             return RedirectToAction("ArtistRequests");
         }
     }

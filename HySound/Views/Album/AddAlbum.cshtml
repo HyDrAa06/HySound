@@ -3,7 +3,7 @@
 
 <div class="album-container">
     <div class="album-header">
-        <h1 class="album-title">Create New Album</h1>
+        <h1 class="album-title">Създай нов албум</h1>
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
@@ -12,36 +12,36 @@
                 <div class="cover-upload-container">
                     <div class="cover-preview" id="coverPreview">
                         <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <span class="upload-text">Upload Cover</span>
+                        <span class="upload-text">Качи обложка</span>
                     </div>
                     <input type="file" id="Picture" asp-for="Picture" accept="image/*" class="cover-upload" />
                 </div>
 
                 <div class="input-group">
-                    <label for="Title">Album Title</label>
-                    <input type="text" id="Title" placeholder="My New Album" asp-for="Title" class="album-input" required />
+                    <label for="Title">Заглавие на албума</label>
+                    <input type="text" id="Title" placeholder="Моят нов албум" asp-for="Title" class="album-input" required />
                 </div>
             </div>
-            
+
             <div class="track-selection">
                 <div class="selection-header">
-                    <h2>Select Tracks</h2>
-                    <span class="track-counter" id="trackCounter">0 selected</span>
+                    <h2>Избери песни</h2>
+                    <span class="track-counter" id="trackCounter">0 избрани</span>
                 </div>
 
                 <div class="validation-summary">
                     @Html.ValidationMessageFor(model => model.SelectedTracksIds, "", new { @class = "validation-error" })
                 </div>
-                
+
                 <div class="search-container">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <input type="text" id="trackSearch" placeholder="Search your tracks" class="search-input" />
+                    <input type="text" id="trackSearch" placeholder="Търси в твоите песни" class="search-input" />
                 </div>
-                
+
                 <div class="track-list" id="trackList">
                     @foreach (var track in Model.Tracks)
                     {
@@ -52,7 +52,7 @@
                                     <div class="track-overlay">
                                         <div class="check-icon">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                             </svg>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                 <div class="track-info">
                                     <span class="track-name">@track.Text</span>
                                 </div>
-                                <input type="checkbox" name="SelectedTracksIds"  value="@track.Value" class="track-checkbox" />
+                                <input type="checkbox" name="SelectedTracksIds" value="@track.Value" class="track-checkbox" />
                             </div>
                         </label>
                     }
@@ -69,8 +69,8 @@
         </div>
 
         <div class="form-actions">
-            <a asp-action="AllAlbums" asp-controller="Album" type="button" class="album-cancel">Cancel</a>
-            <button type="submit" class="album-submit">Create Album</button>
+            <a asp-action="AllAlbums" asp-controller="Album" type="button" class="album-cancel">Отказ</a>
+            <button type="submit" class="album-submit">Създай албум</button>
         </div>
     </form>
 </div>
@@ -85,7 +85,7 @@
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Album Cover">`;
+                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Обложка на албума">`;
                     coverPreview.classList.add('has-image');
                 }
                 reader.readAsDataURL(this.files[0]);
@@ -102,7 +102,7 @@
 
         function updateCounter() {
             const selectedCount = document.querySelectorAll(".track-checkbox:checked").length;
-            trackCounter.textContent = selectedCount + " selected";
+            trackCounter.textContent = selectedCount + " избрани";
         }
 
         checkboxes.forEach(checkbox => {
@@ -138,7 +138,7 @@
             const selectedCount = document.querySelectorAll(".track-checkbox:checked").length;
             if (selectedCount === 0) {
                 e.preventDefault(); // Prevent form submission
-                errorContainer.innerHTML = '<span><i class="fas fa-exclamation-circle"></i> Please select at least one track.</span>';
+                errorContainer.innerHTML = '<span><i class="fas fa-exclamation-circle"></i> Моля, избери поне една песен.</span>';
                 errorContainer.style.display = "block";
                 setTimeout(() => {
                     errorContainer.style.display = "none";
@@ -231,13 +231,13 @@
         overflow: hidden;
     }
 
-    .cover-preview:hover {
-        background: #333333;
-    }
+        .cover-preview:hover {
+            background: #333333;
+        }
 
-    .cover-preview.has-image {
-        background: none;
-    }
+        .cover-preview.has-image {
+            background: none;
+        }
 
     .cover-preview-image {
         width: 100%;
@@ -269,11 +269,11 @@
         gap: 8px;
     }
 
-    .input-group label {
-        font-size: 14px;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
+        .input-group label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
 
     .album-input {
         background: var(--card-bg);
@@ -285,15 +285,15 @@
         transition: all 0.2s ease;
     }
 
-    .album-input:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--primary-color);
-    }
+        .album-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
 
-    .album-input::placeholder {
-        color: var(--text-secondary);
-        opacity: 0.7;
-    }
+        .album-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
 
     /* Track Selection Section */
     .track-selection {
@@ -310,11 +310,11 @@
         margin-bottom: 20px;
     }
 
-    .selection-header h2 {
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0;
-    }
+        .selection-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
 
     .track-counter {
         background: var(--card-bg);
@@ -348,10 +348,10 @@
         font-size: 16px;
     }
 
-    .search-input:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--primary-color);
-    }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
 
     /* Track List */
     .track-list {
@@ -363,23 +363,23 @@
         padding-right: 8px;
     }
 
-    /* Scrollbar Styling */
-    .track-list::-webkit-scrollbar {
-        width: 6px;
-    }
+        /* Scrollbar Styling */
+        .track-list::-webkit-scrollbar {
+            width: 6px;
+        }
 
-    .track-list::-webkit-scrollbar-track {
-        background: var(--secondary-bg);
-    }
+        .track-list::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
 
-    .track-list::-webkit-scrollbar-thumb {
-        background: #555;
-        border-radius: 3px;
-    }
+        .track-list::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 3px;
+        }
 
-    .track-list::-webkit-scrollbar-thumb:hover {
-        background: #777;
-    }
+            .track-list::-webkit-scrollbar-thumb:hover {
+                background: #777;
+            }
 
     /* Track Items */
     .track-item {
@@ -389,9 +389,9 @@
         transition: transform 0.2s ease;
     }
 
-    .track-item:hover {
-        transform: translateY(-4px);
-    }
+        .track-item:hover {
+            transform: translateY(-4px);
+        }
 
     .track-card {
         background: var(--card-bg);
@@ -464,7 +464,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: block  display: block;
+        display: block;
     }
 
     .track-checkbox {
@@ -493,9 +493,9 @@
         transition: all 0.2s ease;
     }
 
-    .album-cancel:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
+        .album-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
     .album-submit {
         padding: 12px 24px;
@@ -509,23 +509,23 @@
         transition: all 0.2s ease;
     }
 
-    .album-submit:hover {
-        background: var(--primary-hover);
-        transform: scale(1.02);
-    }
+        .album-submit:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+        }
 
     /* Responsive adjustments */
     @@media (max-width: 768px) {
         .album-form-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .cover-preview {
             width: 100%;
             max-width: 260px;
             margin: 0 auto;
         }
-        
+
         .track-list {
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         }
@@ -535,15 +535,15 @@
         .album-container {
             padding: 16px;
         }
-        
+
         .track-list {
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         }
-        
+
         .form-actions {
             flex-direction: column;
         }
-        
+
         .album-cancel, .album-submit {
             width: 100%;
         }

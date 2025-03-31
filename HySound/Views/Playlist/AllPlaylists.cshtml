@@ -8,7 +8,7 @@
             <div class="d-flex justify-content-between align-items-center header-section mb-4">
                 <div>
                     <h1 class="text-light mb-0">Моите плейлисти</h1>
-                    <p class="text-muted">Manage your playlist collection</p>
+                    <p class="text-muted">Управлявай своята колекция от плейлисти</p>
                 </div>
                 <a class="btn btn-primary upload-btn" asp-action="AddPlaylist" asp-controller="Playlist">
                     <i class="fas fa-plus me-2"></i> Добави плейлист
@@ -39,7 +39,7 @@
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                        <li><a class="dropdown-item" asp-controller="Playlist" asp-action="PlaylistDetails" asp-route-id="@playlist.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Playlist" asp-action="PlaylistDetails" asp-route-id="@playlist.Id"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
                                         <li><a class="dropdown-item" asp-action="Update" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-danger" asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
@@ -95,7 +95,7 @@
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                            <li><a class="dropdown-item" asp-controller="Playlist" asp-action="PlaylistDetails" asp-route-id="@playlist.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Playlist" asp-action="PlaylistDetails" asp-route-id="@playlist.Id"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
                                             <li><a class="dropdown-item" asp-action="Update" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item text-danger" asp-action="Delete" asp-controller="Playlist" asp-route-id="@playlist.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
@@ -154,8 +154,6 @@
             });
         });
     });
-
-
 </script>
 
 <style>

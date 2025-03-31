@@ -4,10 +4,10 @@
 @if (Model == null)
 {
     <div class="error-message">
-        <h2>Playlist Not Found</h2>
-        <p>The requested playlist could not be found. Please try again.</p>
-        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Back">
-            <i class="fas fa-arrow-left"></i> Back
+        <h2>Плейлистът не е намерен</h2>
+        <p>Търсеният плейлист не може да бъде намерен. Моля, опитайте отново.</p>
+        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Назад">
+            <i class="fas fa-arrow-left"></i>
         </a>
     </div>
 }
@@ -17,15 +17,15 @@ else
         <div class="playlist-header" id="playlistHeader">
             <div class="playlist-cover-container">
                 <div class="back-button-container">
-                    <a asp-action="Search" asp-controller="Home" class="back-btn" title="Back">
+                    <a asp-action="Search" asp-controller="Home" class="back-btn" title="Назад">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                 </div>
-                <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Unknown Playlist")" class="playlist-cover" id="playlistCover" />
+                <img src="@(Model.CoverImage ?? "/images/default-cover.jpg")" alt="@(Model.Title ?? "Неизвестен плейлист")" class="playlist-cover" id="playlistCover" />
             </div>
             <div class="playlist-info">
-                <p class="playlist-type">PLAYLIST</p>
-                <h1 class="playlist-title">@(Model.Title ?? "Unknown Playlist")</h1>
+                <p class="playlist-type">ПЛЕЙЛИСТ</p>
+                <h1 class="playlist-title">@(Model.Title ?? "Неизвестен плейлист")</h1>
                 <div class="playlist-meta">
                     @if (!string.IsNullOrEmpty(Model.UserName))
                     {
@@ -39,7 +39,7 @@ else
                     <p class="playlist-stats">
                         @if (Model.Tracks != null)
                         {
-                            <span>@Model.Tracks.Count() songs</span>
+                            <span>@Model.Tracks.Count() песни</span>
                         }
                     </p>
                 </div>
@@ -53,18 +53,18 @@ else
                 </button>
                 @if (Model.IsLiked == true)
                 {
-                    <a asp-controller="Like" asp-action="DislikePlaylist" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
+                    <a asp-controller="Like" asp-action="DislikePlaylist" asp-route-id="@Model.Id" class="like-btn" title="Премахни от твоята библиотека">
                         <i class="far fa-heart-broken"></i>
                     </a>
                 }
                 else
                 {
-                    <a asp-controller="Like" asp-action="LikePlaylist" asp-route-id="@Model.Id" class="like-btn" title="Save to Your Library">
+                    <a asp-controller="Like" asp-action="LikePlaylist" asp-route-id="@Model.Id" class="like-btn" title="Запази в твоята библиотека">
                         <i class="far fa-heart"></i>
                     </a>
                 }
 
-                <button class="options-btn" title="More options">
+                <button class="options-btn" title="Още опции">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
             </div>
@@ -72,7 +72,7 @@ else
             <div class="tracklist-container">
                 <div class="tracklist-header">
                     <div class="track-number">#</div>
-                    <div class="track-title">TITLE</div>
+                    <div class="track-title">ЗАГЛАВИЕ</div>
                     <div class="track-duration">
                         <i class="far fa-clock"></i>
                     </div>
@@ -89,24 +89,24 @@ else
                                     <span class="track-number">@trackNumber</span>
                                     <button class="play-btn"
                                             data-src="@(track.AudioUrl ?? "")"
-                                            data-title="@(track.Title ?? "Unknown Track")"
-                                            data-artist="@(track.User?.Username ?? "Unknown Artist")"
+                                            data-title="@(track.Title ?? "Неизвестна песен")"
+                                            data-artist="@(track.User?.Username ?? "Неизвестен изпълнител")"
                                             data-image="@(track.CoverImage ?? "/images/default-cover.jpg")">
                                         <i class="fas fa-play"></i>
                                     </button>
                                 </div>
                                 <div class="track-info">
-                                    <img src="@(track.CoverImage ?? "/images/default-cover.jpg")" alt="@(track.Title ?? "Unknown Track")" class="track-cover">
+                                    <img src="@(track.CoverImage ?? "/images/default-cover.jpg")" alt="@(track.Title ?? "Неизвестна песен")" class="track-cover">
                                     <div class="track-text">
-                                        <span class="track-name">@(track.Title ?? "Unknown Track")</span>
-                                        <span class="track-artist">@(track.User?.Username ?? "Unknown Artist")</span>
+                                        <span class="track-name">@(track.Title ?? "Неизвестна песен")</span>
+                                        <span class="track-artist">@(track.User?.Username ?? "Неизвестен изпълнител")</span>
                                     </div>
                                 </div>
                                 <div class="track-duration">
-                                    <button class="like-track-btn" title="Save to Your Library">
+                                    <button class="like-track-btn" title="Запази в твоята библиотека">
                                         <i class="far fa-heart"></i>
                                     </button>
-                                    <button class="more-options-btn" title="More">
+                                    <button class="more-options-btn" title="Още">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                 </div>
@@ -117,7 +117,7 @@ else
                     else
                     {
                         <li class="empty-tracklist">
-                            <p>No tracks available for this playlist.</p>
+                            <p>Няма налични песни за този плейлист.</p>
                         </li>
                     }
                 </ul>
@@ -127,7 +127,7 @@ else
 }
 
 <style>
-    /* Playlist Details Styles */
+    /* Стилове за детайлите на плейлиста */
     :root {
         --spotify-green: #1DB954;
         --spotify-green-hover: #1ed760;
@@ -153,7 +153,7 @@ else
         margin: 0 auto;
     }
 
-    /* Back Button */
+    /* Бутон за връщане */
     .back-button-container {
         padding: 24px 32px 0;
         margin-bottom: 0;
@@ -162,25 +162,28 @@ else
     .back-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        background: transparent;
-        border: 1px solid #b3b3b3;
-        color: white;
-        padding: 8px 16px;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(18, 18, 18, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--spotify-grey);
         font-size: 14px;
-        font-weight: 500;
-        border-radius: 4px;
+        border-radius: 50%;
         text-decoration: none;
-        transition: border-color 0.3s, color 0.3s;
+        transition: all 0.3s ease;
+        padding: 0;
     }
 
         .back-btn i {
             font-size: 14px;
+            margin: 0;
         }
 
         .back-btn:hover {
-            border-color: #1DB954;
-            color: #1DB954;
+            background: rgba(51, 51, 51, 0.7);
+            border-color: var(--spotify-grey);
+            color: white;
         }
 
     .playlist-header {
@@ -503,7 +506,7 @@ else
                 color: var(--spotify-green-hover);
             }
 
-    /* Responsive styles */
+    /* Отзивчиви стилове */
     @@media (max-width: 768px) {
         .playlist-header {
             flex-direction: column;
@@ -528,87 +531,87 @@ else
         }
     }
 
-    /* Update existing album-header styles */
-.album-header {
-    display: flex;
-    align-items: flex-start; /* Changed from flex-end to flex-start */
-    gap: 30px;
-    width: 100%;
-    padding: 32px; /* Adjusted padding to be consistent all around */
-    background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%);
-    position: relative;
-    min-height: 300px; /* Ensure enough space for content */
-}
-
-/* Update back button container */
-.back-button-container {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 3; /* Ensure it stays above other content */
-    padding: 0; /* Remove previous padding */
-}
-
-/* Update back button styles */
-.back-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(18, 18, 18, 0.7); /* Match grid dark background */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Match grid border color */
-    color: var(--spotify-grey); /* Match grid text color */
-    font-size: 14px;
-    border-radius: 50%; /* Make it circular */
-    text-decoration: none;
-    transition: all 0.3s ease;
-    padding: 0;
-}
-
-.back-btn i {
-    font-size: 14px;
-    margin: 0; /* Remove any default margins */
-}
-
-.back-btn:hover {
-    background: rgba(51, 51, 51, 0.7); /* Match grid hover state */
-    border-color: var(--spotify-grey);
-    color: white;
-}
-
-/* Ensure album cover stays in position */
-.album-cover-container {
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-}
-
-/* Adjust album info positioning */
-.album-info {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 10px;
-    position: relative;
-    z-index: 2;
-    margin-top: 48px; /* Add space from top to avoid overlap with button */
-}
-
-/* Responsive adjustments */
-@@media (max-width: 768px) {
+    /* Актуализиране на съществуващите стилове за заглавието на албума */
     .album-header {
-        padding: 16px;
+        display: flex;
+        align-items: flex-start; /* Променено от flex-end на flex-start */
+        gap: 30px;
+        width: 100%;
+        padding: 32px; /* Адаптирано подравняване за консистентност */
+        background: linear-gradient(transparent 0, rgba(0, 0, 0, 0.5) 100%);
+        position: relative;
+        min-height: 300px; /* Осигурява достатъчно място за съдържанието */
     }
-    
+
+    /* Актуализиране на контейнера за бутона за връщане */
     .back-button-container {
-        top: 8px;
-        left: 8px;
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        z-index: 3; /* Уверете се, че е над другото съдържание */
+        padding: 0; /* Премахва предишното подравняване */
     }
-    
+
+    /* Актуализиране на стиловете за бутона за връщане */
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(18, 18, 18, 0.7); /* Съответства на тъмния фон на мрежата */
+        border: 1px solid rgba(255, 255, 255, 0.1); /* Съответства на цвета на рамката на мрежата */
+        color: var(--spotify-grey); /* Съответства на цвета на текста на мрежата */
+        font-size: 14px;
+        border-radius: 50%; /* Прави го кръгъл */
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+
+        .back-btn i {
+            font-size: 14px;
+            margin: 0; /* Премахва всякакви стандартни отстъпи */
+        }
+
+        .back-btn:hover {
+            background: rgba(51, 51, 51, 0.7); /* Съответства на състоянието при ховър на мрежата */
+            border-color: var(--spotify-grey);
+            color: white;
+        }
+
+    /* Уверете се, че корицата на албума остава на място */
+    .album-cover-container {
+        flex-shrink: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Адаптиране на позицията на информацията за албума */
     .album-info {
-        margin-top: 36px;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+        position: relative;
+        z-index: 2;
+        margin-top: 48px; /* Добавя пространство отгоре, за да се избегне припокриване с бутона */
     }
-}
+
+    /* Отзивчиви адаптации */
+    @@media (max-width: 768px) {
+        .album-header {
+            padding: 16px;
+        }
+
+        .back-button-container {
+            top: 8px;
+            left: 8px;
+        }
+
+        .album-info {
+            margin-top: 36px;
+        }
+    }
 
     @@media (max-width: 480px) {
         .tracklist-header .track-duration {
@@ -631,7 +634,7 @@ else
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Add Font Awesome if not already included
+        // Добавяне на Font Awesome, ако още не е включен
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
@@ -639,34 +642,34 @@ else
             document.head.appendChild(link);
         }
 
-        // Set dynamic header background based on playlist cover
+        // Задаване на динамичен фон на заглавието въз основа на корицата на плейлиста
         function setHeaderBackground() {
             const coverImage = document.getElementById('playlistCover');
             const header = document.getElementById('playlistHeader');
 
-            // Only proceed if both elements exist
+            // Продължаваме само ако и двата елемента съществуват
             if (!coverImage || !header) return;
 
             try {
-                // Create invisible canvas to analyze image
+                // Създаваме невидим канвас за анализ на изображението
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 const img = new Image();
 
                 img.crossOrigin = 'Anonymous';
                 img.onload = function () {
-                    // Set canvas dimensions
+                    // Задаваме размерите на канваса
                     canvas.width = img.width;
                     canvas.height = img.height;
 
-                    // Draw image to canvas
+                    // Рисуваме изображението върху канваса
                     context.drawImage(img, 0, 0);
 
-                    // Get pixel data from top portion of image
+                    // Вземаме данните за пикселите от горната част на изображението
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height / 4);
                     const data = imageData.data;
 
-                    // Calculate average color
+                    // Изчисляваме средния цвят
                     let r = 0, g = 0, b = 0;
                     const pixelCount = data.length / 4;
 
@@ -680,29 +683,29 @@ else
                     g = Math.floor(g / pixelCount);
                     b = Math.floor(b / pixelCount);
 
-                    // Apply as header background gradient
+                    // Прилагаме като градиент за фона на заглавието
                     header.style.backgroundImage = `linear-gradient(rgba(${r}, ${g}, ${b}, 0.7) 0%, rgba(18, 18, 18, 1) 100%)`;
                 };
 
                 img.src = coverImage.src;
             } catch (error) {
-                console.error("Error setting dynamic header color:", error);
+                console.error("Грешка при задаване на динамичен цвят на заглавието:", error);
             }
         }
 
-        // Call function to set header background
+        // Извикваме функцията за задаване на фона на заглавието
         setHeaderBackground();
 
-        // Serialize playlist tracks
+        // Сериализиране на песните от плейлиста
         var playlistTracks = @Html.Raw(Json.Serialize(Model.Tracks.Select(t => new
         {
             src = t.AudioUrl,
             title = t.Title,
-            artist = t.User?.Username ?? "Unknown Artist",
+            artist = t.User?.Username ?? "Неизвестен изпълнител",
             image = t.CoverImage ?? "/images/default-cover.jpg"
         })));
 
-        // Element references for player
+        // Референции към елементите на плейъра
         const globalAudio = document.getElementById("global-audio");
         const globalAudioSource = document.getElementById("global-audio-source");
         const playButton = document.getElementById("play-btn");
@@ -722,7 +725,7 @@ else
         let isPlaying = false;
         const defaultImage = '/images/default-cover.jpg';
 
-        // Clone buttons to remove existing listeners if they exist
+        // Клонираме бутоните, за да премахнем съществуващи слушатели, ако има такива
         if (playButton && prevButton && nextButton) {
             [playButton, prevButton, nextButton].forEach(btn => {
                 const newBtn = btn.cloneNode(true);
@@ -738,8 +741,8 @@ else
             trackList = Array.from(playButtons)
                 .map(btn => ({
                     file: btn.dataset.src || '',
-                    title: btn.dataset.title || 'Unknown Title',
-                    artist: btn.dataset.artist || 'Unknown Artist',
+                    title: btn.dataset.title || 'Неизвестно заглавие',
+                    artist: btn.dataset.artist || 'Неизвестен изпълнител',
                     image: btn.dataset.image || defaultImage
                 }))
                 .filter(track => track.file);
@@ -780,7 +783,7 @@ else
                         isPlaying = true;
                         if (playerContainer) playerContainer.classList.add('visible');
                     })
-                    .catch(error => console.error('Play error:', error));
+                    .catch(error => console.error('Грешка при възпроизвеждане:', error));
             }
         }
 
@@ -846,10 +849,10 @@ else
             }
         }
 
-        // Make loadTrack available globally for track buttons
+        // Правим loadTrack достъпен глобално за бутоните на песните
         window.loadTrack = loadTrack;
 
-        // Event Listeners
+        // Слушатели за събития
         if (updatedPlayButton) {
             updatedPlayButton.addEventListener("click", function () {
                 if (isPlaying) {
@@ -909,7 +912,7 @@ else
             });
         }
 
-        // Add click events to each track's play button
+        // Добавяме събития за кликване към бутоните за възпроизвеждане на всяка песен
         playButtons.forEach((button, index) => {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -918,7 +921,7 @@ else
             });
         });
 
-        // Add double-click events to track rows
+        // Добавяме събития за двойно кликване към редовете на песните
         document.querySelectorAll('.track').forEach(track => {
             track.addEventListener('dblclick', function () {
                 const index = this.getAttribute('data-index');
@@ -929,15 +932,15 @@ else
             });
         });
 
-        // Initial setup
+        // Първоначална настройка
         populateTrackList();
 
-        // Only attempt to load stored track if player elements exist
+        // Опитваме се да заредим запазената песен само ако елементите на плейъра съществуват
         if (globalAudio && globalAudioSource) {
             loadStoredTrack();
         }
 
-        // Style the soundbar initially
+        // Стилизираме лентата за звук първоначално
         if (soundBar) {
             soundBar.style.background = `linear-gradient(to right, #1DB954 ${soundBar.value}%, #333 ${soundBar.value}%)`;
         }

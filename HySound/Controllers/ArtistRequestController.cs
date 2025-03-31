@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using HySound.ViewModels.Artist;
 using Microsoft.AspNetCore.Identity;
+using HySound.Models.Models;
 namespace HySound.Controllers
 {
     public class ArtistRequestController : Controller
@@ -9,7 +10,6 @@ namespace HySound.Controllers
         private readonly IArtistRequestService _artistRequestService;
         private readonly IUserService _userService;
         private readonly UserManager<IdentityUser> _userManager;
-
         public ArtistRequestController(UserManager<IdentityUser> userManager ,IUserService userService,IArtistRequestService artistRequestService)
         {
             _artistRequestService = artistRequestService;
@@ -38,6 +38,8 @@ namespace HySound.Controllers
             await _artistRequestService.SubmitArtistRequestAsync(user.Id, 
                 user.UserIdentityId, user.ProfilePicture, user.Username,user.Email,user.Bio,user.Password);
             TempData["Message"] = "Artist request submitted successfully!";
+
+          
             return RedirectToAction("Index");
         }
     }

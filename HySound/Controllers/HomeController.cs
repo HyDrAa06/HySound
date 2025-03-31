@@ -239,9 +239,9 @@ namespace HySound.Controllers
             return View(libraryModel);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = _trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x => x.Tracks).Select(x => new TrackViewModel()
+            var model = await _trackService.AllWithInclude().Include(x => x.Genre).ThenInclude(x => x.Tracks).Include(x => x.User).ThenInclude(x => x.Tracks).Select(x => new TrackViewModel()
             {
                 TrackId = x.Id,
                 Title = x.Title,
@@ -250,14 +250,14 @@ namespace HySound.Controllers
                 UserName = x.User.Username,
                 ImageLink = x.CoverImage,
                 IsYoutube = x.IsYoutube
-            }).ToList();
+            }).ToListAsync();
 
-            if(model.Count >= 8)
+            if(model.Count > 8)
             {
                 List<TrackViewModel> shownTracks = new List<TrackViewModel>();
                 Random k = new Random();
 
-                while(shownTracks.Count < 8)
+                while (shownTracks.Count < 8)
                 {
                     TrackViewModel track = model[k.Next(0, model.Count - 1)];
                     if (!shownTracks.Contains(track))
@@ -265,6 +265,7 @@ namespace HySound.Controllers
                         shownTracks.Add(track);
                     }
                 }
+
                 return View(shownTracks);
 
             }

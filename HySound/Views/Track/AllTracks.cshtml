@@ -9,11 +9,11 @@
         <div class="col-12 main-content">
             <div class="d-flex justify-content-between align-items-center header-section mb-4">
                 <div>
-                    <h1 class="text-light mb-0">My Tracks</h1>
-                    <p class="text-muted">Manage your music catalog</p>
+                    <h1 class="text-light mb-0">Моите песни</h1>
+                    <p class="text-muted">Управлявай своя музикален каталог</p>
                 </div>
                 <a class="btn btn-primary upload-btn" asp-controller="Track" asp-action="AddTrack">
-                    <i class="fas fa-plus me-2"></i> Upload New Track
+                    <i class="fas fa-plus me-2"></i> Качи нова песен
                 </a>
             </div>
 
@@ -26,16 +26,16 @@
                                 <span class="input-group-text bg-dark border-dark text-light">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" asp-for="Title" class="form-control bg-dark border-dark text-light" placeholder="Search by title">
+                                <input type="text" asp-for="Title" class="form-control bg-dark border-dark text-light" placeholder="Търси по заглавие">
                             </div>
                         </div>
                         <div class="col-md-5">
                             <select asp-for="GenreId" asp-items="Model.Genres" class="form-select bg-dark border-dark text-light">
-                                <option value="">All Genres</option>
+                                <option value="">Всички жанрове</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Apply</button>
+                            <button type="submit" class="btn btn-primary w-100">Приложи</button>
                         </div>
                     </div>
                 </form>
@@ -47,10 +47,10 @@
                     <thead>
                         <tr>
                             <th style="width: 50px">#</th>
-                            <th>Track</th>
-                            <th>Genre</th>
-                            <th class="text-center">Likes</th>
-                            <th class="text-center">Actions</th>
+                            <th>Песен</th>
+                            <th>Жанр</th>
+                            <th class="text-center">Харесвания</th>
+                            <th class="text-center">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,10 +86,10 @@
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
-                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                            <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -122,11 +122,11 @@
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal"><i class="fas fa-plus me-2"></i> Add to Playlist</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addToPlaylistModal"><i class="fas fa-plus me-2"></i> Добави в плейлист</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="TrackDetails" asp-route-id="@track.TrackId"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Track" asp-action="Update" asp-route-id="@track.TrackId"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                        <li><a class="dropdown-item text-danger" asp-controller="Track" asp-action="Delete" asp-route-id="@track.TrackId"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
                                     </ul>
                                 </div>
 
@@ -135,8 +135,8 @@
                                     {
                                         <div class="youtube-container">
                                             <iframe class="track-iframe"
-                                            src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
-                                            frameborder="0" allow="autoplay">
+                                                    src="https://www.youtube.com/embed/@track.AudioUrl?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0"
+                                                    frameborder="0" allow="autoplay">
                                             </iframe>
                                         </div>
                                     }

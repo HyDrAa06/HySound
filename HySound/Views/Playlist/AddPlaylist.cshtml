@@ -3,7 +3,7 @@
 
 <div class="album-container">
     <div class="album-header">
-        <h1 class="album-title">Add New Playlist</h1>
+        <h1 class="album-title">Добави нова плейлиста</h1>
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
@@ -14,35 +14,35 @@
                         <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <span class="upload-text">Upload Cover</span>
+                        <span class="upload-text">Качи обложка</span>
                     </div>
                     <input type="file" id="imageFile" asp-for="Picture" accept="image/*" class="cover-upload" />
                 </div>
 
                 <div class="input-group">
-                    <label for="Title">Playlist Title</label>
-                    <input type="text" id="Title" placeholder="Enter playlist title" asp-for="Title" class="album-input" required />
+                    <label for="Title">Заглавие на плейлистата</label>
+                    <input type="text" id="Title" placeholder="Въведи заглавие на плейлистата" asp-for="Title" class="album-input" required />
                 </div>
             </div>
 
             <div class="playlist-info">
                 <div class="info-header">
-                    <h2>About Your Playlist</h2>
+                    <h2>За твоята плейлиста</h2>
                 </div>
                 <div class="playlist-tips">
-                    <h3>Tips for Great Playlists</h3>
+                    <h3>Съвети за страхотни плейлисти</h3>
                     <ul class="tips-list">
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Choose a descriptive name that captures the mood or theme</span>
+                            <span class="tip-text">Избери описателно име, което улавя настроението или темата</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Upload a custom cover image that matches your playlist's vibe</span>
+                            <span class="tip-text">Качи персонализирана обложка, която съответства на атмосферата на плейлистата</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Keep playlists focused around a specific theme, genre, or mood</span>
+                            <span class="tip-text">Поддържай плейлистите фокусирани върху конкретна тема, жанр или настроение</span>
                         </li>
                     </ul>
                 </div>
@@ -50,8 +50,8 @@
         </div>
 
         <div class="form-actions">
-            <a asp-action="AllPlaylists" asp-controller="Playlist" type="button" class="album-cancel">Cancel</a>
-            <button type="submit" class="album-submit">Create Playlist</button>
+            <a asp-action="AllPlaylists" asp-controller="Playlist" type="button" class="album-cancel">Отказ</a>
+            <button type="submit" class="album-submit">Създай плейлиста</button>
         </div>
     </form>
 </div>
@@ -67,7 +67,7 @@
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
-                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Playlist Cover">`;
+                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Обложка на плейлистата">`;
                     coverPreview.classList.add('has-image');
                 }
 

@@ -1,12 +1,10 @@
-﻿// site.js
-document.addEventListener("DOMContentLoaded", function () {
-    // Check if we're on the AlbumDetails or PlaylistDetails page
+﻿document.addEventListener("DOMContentLoaded", function () {
+    // Проверяваме дали сме на страницата AlbumDetails или PlaylistDetails
     const isAlbumDetailsPage = window.location.pathname.includes('AlbumDetails');
     const isPlaylistDetailsPage = window.location.pathname.includes('PlaylistDetails');
     if (isAlbumDetailsPage || isPlaylistDetailsPage) return;
 
-   
-    // Get references to DOM elements
+    // Вземаме референции към DOM елементи
     const globalAudio = document.getElementById("global-audio");
     const globalAudioSource = document.getElementById("global-audio-source");
     const playButton = document.getElementById("play-btn");
@@ -21,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const navLinks = document.getElementsByClassName("nav-link");
 
-    // State variables
+    // Променливи за състояние
     let trackList = [];
     let currentTrackIndex = 0;
     let isPlaying = false;
@@ -29,12 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentTracks = [];
     let selectedPlaylistId = null;
 
-    // Helper function to update progress bars
+    // Помощна функция за актуализиране на лентите за напредък
     function updateProgressBar(bar, value) {
         bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
     }
 
-    // Load stored track state from localStorage
+    // Зареждаме запазеното състояние на песента от localStorage
     function loadStoredTrack() {
         const storedTrack = localStorage.getItem("currentTrack");
         if (storedTrack) {
@@ -62,12 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Save track state on navigation
+    // Запазваме състоянието на песента при навигация
     for (let navLink of navLinks) {
         navLink.addEventListener("click", saveTrackState);
     }
 
-    // Play/Pause button functionality
+    // Функционалност на бутона за пускане/пауза
     playButton.addEventListener("click", function () {
         if (globalAudio.paused) {
             globalAudio.play();
@@ -82,32 +80,32 @@ document.addEventListener("DOMContentLoaded", function () {
         saveTrackState();
     });
 
-    // Previous track button
+    // Бутон за предишна песен
     prevButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex - 1 + trackList.length) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
-    // Next track button
+    // Бутон за следваща песен
     nextButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex + 1) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
-    // Load a track into the player
+    // Зареждаме песен в плейъра
     function loadTrack(index, shouldPlay = false) {
         const track = trackList[index];
-        console.log('Loading track:', track);
+        console.log('Зареждане на песен:', track);
 
         globalAudioSource.src = track.file;
         songImage.src = track.image || 'path/to/default/image.jpg';
-        console.log('Image set to:', songImage.src);
+        console.log('Изображението е зададено на:', songImage.src);
 
-        songTitle.textContent = track.title || 'Unknown Title';
-        console.log('Title set to:', songTitle.textContent);
+        songTitle.textContent = track.title || 'Песен без име';
+        console.log('Заглавието е зададено на:', songTitle.textContent);
 
-        artistName.textContent = track.artist || 'Unknown Artist';
-        console.log('Artist set to:', artistName.textContent);
+        artistName.textContent = track.artist || 'Неизвестен изпълнител';
+        console.log('Изпълнителят е зададен на:', artistName.textContent);
 
         globalAudio.load();
         globalAudio.currentTime = 0;
@@ -133,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
         saveTrackState();
     }
 
-    // Save current track state to localStorage
+    // Запазваме текущото състояние на песента в localStorage
     function saveTrackState() {
         localStorage.setItem("currentTrack", JSON.stringify({
             file: globalAudioSource.src,
@@ -145,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
     }
 
-    // Update timebar as audio plays
+    // Актуализираме лентата за време по време на възпроизвеждане
     globalAudio.addEventListener("timeupdate", function () {
         if (!isNaN(globalAudio.duration)) {
             const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
@@ -154,65 +152,63 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Seek audio when timebar is adjusted
+    // Превъртаме аудиото, когато лентата за време се регулира
     timebar.addEventListener("input", function () {
         globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
         updateProgressBar(timebar, timebar.value);
         saveTrackState();
     });
 
-    // Adjust volume with sound bar
+    // Регулираме силата на звука с лентата за звук
     soundBar.addEventListener("input", function () {
         globalAudio.volume = soundBar.value / 100;
         updateProgressBar(soundBar, soundBar.value);
     });
 
-    // Default track list (for testing or initial load)
+    // Списък с песни по подразбиране (за тестване или първоначално зареждане)
     trackList = [
         {
             file: 'path-to-song1.mp3',
-            title: 'Song 1',
-            artist: 'Artist 1',
+            title: 'Песен 1',
+            artist: 'Изпълнител 1',
             image: 'path-to-image1.jpg'
         },
         {
             file: 'path-to-song2.mp3',
-            title: 'Song 2',
-            artist: 'Artist 2',
+            title: 'Песен 2',
+            artist: 'Изпълнител 2',
             image: 'path-to-image2.jpg'
         },
         {
             file: 'path-to-song3.mp3',
-            title: 'Song 3',
-            artist: 'Artist 3',
+            title: 'Песен 3',
+            artist: 'Изпълнител 3',
             image: 'path-to-image3.jpg'
         }
     ];
 
     loadStoredTrack();
 
-    // Library navigation event listeners
+    // Слушатели за събития за навигация в библиотеката
     document.getElementById('favourites-option').addEventListener('click', function () {
         toggleContent('favourites');
-        updateTitle('Favourites');
+        updateTitle('Любими');
         updateActiveState('favourites');
     });
 
     document.getElementById('playlists-option').addEventListener('click', function () {
         toggleContent('playlists');
-        updateTitle('Playlists');
+        updateTitle('Плейлисти');
         updateActiveState('playlists');
     });
 
     document.getElementById('albums-option').addEventListener('click', function () {
         toggleContent('albums');
-        updateTitle('Albums');
+        updateTitle('Албуми');
         updateActiveState('albums');
     });
 
-    
-
-    // Toggle library content visibility
+    // Превключваме видимостта на съдържанието в библиотеката
     function toggleContent(content) {
         document.getElementById('favourites-content').style.display = 'none';
         document.getElementById('playlists-content').style.display = 'none';
@@ -234,179 +230,178 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 document.getElementById('albums-content').style.display = 'grid';
             }
-        
         }
     }
 
-    // Update library title
+    // Актуализираме заглавието на библиотеката
     function updateTitle(title) {
         document.getElementById('library-title').textContent = title;
     }
 
-    // Update active navigation item
+    // Актуализираме активното състояние на навигацията
     function updateActiveState(option) {
         const navItems = document.querySelectorAll('.library-nav li');
         navItems.forEach(item => item.classList.remove('active'));
         document.getElementById(option + '-option').classList.add('active');
     }
 
-    // Main click event listener for albums, playlists, and tracks
+    // Главен слушател за кликване върху албуми, плейлисти и песни
     document.addEventListener("click", function (e) {
-        // Handle album card clicks
+        // Обработка на кликвания върху карти за албуми
         const albumCard = e.target.closest('.album-card');
         if (albumCard && albumCard.dataset.type === 'album') {
             const playButton = albumCard.querySelector('.album-play-btn');
             if (e.target === playButton || playButton.contains(e.target)) {
                 const albumId = playButton.dataset.albumid;
                 if (albumId) {
-                    console.log('Playing album with ID:', albumId);
+                    console.log('Възпроизвеждане на албум с ID:', albumId);
                     fetchAlbumTracks(albumId).then(tracks => {
                         trackList = tracks.map(track => ({
                             file: track.audioUrl || track.file || '',
-                            title: track.name || track.title || 'Unnamed Track',
-                            artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                            title: track.name || track.title || 'Песен без име',
+                            artist: track.userName || track.artist || track.creator || 'Неизвестен изпълнител',
                             image: track.imageLink || track.image || track.coverImage || ''
                         })).filter(track => track.file && track.file.trim().length > 0);
-                        console.log('Mapped trackList for album:', trackList);
+                        console.log('Създаден списък с песни за албума:', trackList);
                         if (trackList.length > 0) {
                             currentTrackIndex = 0;
                             loadTrack(0, true);
                         } else {
-                            console.log('No valid tracks in this album');
+                            console.log('Няма валидни песни в този албум');
                         }
-                    }).catch(error => console.error('Fetch error:', error));
+                    }).catch(error => console.error('Грешка при извличане:', error));
                 }
             } else {
                 const albumId = albumCard.dataset.albumid;
                 if (albumId) {
-                    console.log('Showing grid for album with ID:', albumId);
+                    console.log('Показване на мрежа за албум с ID:', albumId);
                     showAlbumTracks(albumId);
                 }
             }
         }
 
-        // Handle playlist card clicks
+        // Обработка на кликвания върху карти за плейлисти
         const playlistCard = e.target.closest('.library-track-card[data-type="playlist"]');
         if (playlistCard) {
             const playButton = playlistCard.querySelector('.playlist-play-btn');
             if (e.target === playButton || playButton.contains(e.target)) {
                 const playlistId = playButton.dataset.playlistid;
                 if (playlistId) {
-                    console.log('Playing playlist with ID:', playlistId);
+                    console.log('Възпроизвеждане на плейлист с ID:', playlistId);
                     fetchPlaylistTracks(playlistId).then(tracks => {
                         trackList = tracks.map(track => ({
                             file: track.audioUrl || track.file || '',
-                            title: track.name || track.title || 'Unnamed Track',
-                            artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                            title: track.name || track.title || 'Песен без име',
+                            artist: track.userName || track.artist || track.creator || 'Неизвестен изпълнител',
                             image: track.imageLink || track.image || track.coverImage || ''
                         })).filter(track => track.file && track.file.trim().length > 0);
-                        console.log('Mapped trackList for playlist:', trackList);
+                        console.log('Създаден списък с песни за плейлиста:', trackList);
                         if (trackList.length > 0) {
                             currentTrackIndex = 0;
                             loadTrack(0, true);
                         } else {
-                            console.log('No valid tracks in this playlist');
+                            console.log('Няма валидни песни в този плейлист');
                         }
-                    }).catch(error => console.error('Fetch error:', error));
+                    }).catch(error => console.error('Грешка при извличане:', error));
                 }
             } else {
                 const playlistId = playlistCard.dataset.playlistid;
                 if (playlistId) {
-                    console.log('Showing grid for playlist with ID:', playlistId);
+                    console.log('Показване на мрежа за плейлист с ID:', playlistId);
                     showPlaylistTracks(playlistId);
                 }
             }
         }
 
-        // Handle tracklist play button clicks (for both album and playlist grids)
+        // Обработка на кликвания върху бутони за възпроизвеждане в списъка с песни (за албуми и плейлисти)
         const trackPlayButton = e.target.closest('.tracklist-play-btn');
         if (trackPlayButton) {
             const index = parseInt(trackPlayButton.dataset.index);
             if (!isNaN(index) && currentTracks && currentTracks.length > index) {
                 trackList = currentTracks.slice(index).map(track => ({
                     file: track.audioUrl || track.file || '',
-                    title: track.name || track.title || 'Unnamed Track',
-                    artist: track.userName || track.artist || track.creator || 'Unknown Artist',
+                    title: track.name || track.title || 'Песен без име',
+                    artist: track.userName || track.artist || track.creator || 'Неизвестен изпълнител',
                     image: track.imageLink || track.image || track.coverImage || ''
                 })).filter(track => track.file && track.file.trim().length > 0);
-                console.log('Mapped trackList from grid:', trackList);
+                console.log('Създаден списък с песни от мрежата:', trackList);
                 if (trackList.length > 0) {
                     currentTrackIndex = 0;
                     loadTrack(0, true);
                 } else {
-                    console.log('No valid tracks from this point');
+                    console.log('Няма валидни песни от тази точка');
                 }
             } else {
-                // Fallback to single track playback
+                // Резервен вариант за възпроизвеждане на единична песен
                 const file = trackPlayButton.dataset.src;
-                const title = trackPlayButton.dataset.title || 'Unnamed Track';
-                const artist = trackPlayButton.dataset.artist || 'Unknown Artist';
+                const title = trackPlayButton.dataset.title || 'Песен без име';
+                const artist = trackPlayButton.dataset.artist || 'Неизвестен изпълнител';
                 const image = trackPlayButton.dataset.image || '';
                 if (file && file !== 'undefined') {
                     trackList = [{ file, title, artist, image }];
                     currentTrackIndex = 0;
                     loadTrack(0, true);
                 } else {
-                    console.log('No valid audio URL for this track in grid:', file);
+                    console.log('Няма валиден URL адрес за аудио за тази песен в мрежата:', file);
                 }
             }
         }
 
-        // Handle single track play button clicks
+        // Обработка на кликвания върху бутони за възпроизвеждане на единична песен
         const singlePlayButton = e.target.closest('.play-track-btn');
         if (singlePlayButton) {
-            console.log('Single track button clicked:', singlePlayButton);
+            console.log('Кликнат е бутон за единична песен:', singlePlayButton);
             const file = singlePlayButton.dataset.src;
-            const title = singlePlayButton.dataset.title || 'Unnamed Track';
-            const artist = singlePlayButton.dataset.artist || 'Unknown Artist';
+            const title = singlePlayButton.dataset.title || 'Песен без име';
+            const artist = singlePlayButton.dataset.artist || 'Неизвестен изпълнител';
             const image = singlePlayButton.dataset.image || '';
             if (file && file !== 'undefined') {
                 trackList = [{ file, title, artist, image }];
                 currentTrackIndex = 0;
                 loadTrack(0, true);
             } else {
-                console.log('No valid audio URL for this single track:', file);
+                console.log('Няма валиден URL адрес за аудио за тази единична песен:', file);
             }
         }
     });
 
-    // Fetch album tracks from the server
+    // Извличане на песни от албум от сървъра
     async function fetchAlbumTracks(albumId) {
         try {
             const response = await fetch('/Album/Tracks?albumId=' + albumId);
             if (!response.ok) {
-                throw new Error('Failed to fetch album tracks: Server returned ' + response.status);
+                throw new Error('Неуспешно извличане на песни от албума: Сървърът върна ' + response.status);
             }
             const tracks = await response.json();
-            console.log('Raw album tracks data:', tracks); // Log raw data for debugging
+            console.log('Необработени данни за песни от албума:', tracks);
             return tracks;
         } catch (error) {
             console.error(error);
-            alert('Error fetching album tracks. Please try again later.');
+            alert('Грешка при извличане на песни от албума. Моля, опитайте отново по-късно.');
             return [];
         }
     }
 
-    // Display album tracks in a grid
+    // Показване на песните от албума в мрежа
     async function showAlbumTracks(albumId) {
         selectedAlbumId = albumId;
         hideAlbumTracksGrid();
         const tracks = await fetchAlbumTracks(albumId);
         currentTracks = tracks;
-        console.log('Tracks for grid display:', tracks);
+        console.log('Песни за показване в мрежата:', tracks);
         populateTracksGrid(tracks);
         document.getElementById('albums-content').style.display = 'none';
         document.getElementById('selected-album-tracks').style.display = 'grid';
 
         const backButton = document.getElementById('back-to-albums');
         if (!backButton) {
-            const backButtonHtml = `<button id="back-to-albums" class="back-button">Back to Albums</button>`;
+            const backButtonHtml = `<button id="back-to-albums" class="back-button">Обратно към албумите</button>`;
             document.getElementById('selected-album-tracks').insertAdjacentHTML('beforeend', backButtonHtml);
             document.getElementById('back-to-albums').addEventListener('click', hideAlbumTracksGrid);
         }
     }
 
-    // Hide album tracks grid and return to albums view
+    // Скриване на мрежата с песни от албума и връщане към изгледа за албуми
     function hideAlbumTracksGrid() {
         selectedAlbumId = null;
         document.getElementById('albums-content').style.display = 'grid';
@@ -417,43 +412,43 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Fetch playlist tracks from the server
+    // Извличане на песни от плейлист от сървъра
     async function fetchPlaylistTracks(playlistId) {
         try {
             const response = await fetch('/Playlist/Tracks?playlistId=' + playlistId);
             if (!response.ok) {
-                throw new Error('Failed to fetch playlist tracks: Server returned ' + response.status);
+                throw new Error('Неуспешно извличане на песни от плейлиста: Сървърът върна ' + response.status);
             }
             const tracks = await response.json();
-            console.log('Raw playlist tracks data:', tracks); // Log raw data for debugging
+            console.log('Необработени данни за песни от плейлиста:', tracks);
             return tracks;
         } catch (error) {
             console.error(error);
-            alert('Error fetching playlist tracks. Please try again later.');
+            alert('Грешка при извличане на песни от плейлиста. Моля, опитайте отново по-късно.');
             return [];
         }
     }
 
-    // Display playlist tracks in a grid
+    // Показване на песните от плейлиста в мрежа
     async function showPlaylistTracks(playlistId) {
         selectedPlaylistId = playlistId;
         hidePlaylistTracksGrid();
         const tracks = await fetchPlaylistTracks(playlistId);
         currentTracks = tracks;
-        console.log('Tracks for playlist grid display:', tracks);
+        console.log('Песни за показване в мрежата на плейлиста:', tracks);
         populateTracksGrid(tracks, 'selected-playlist-tracks');
         document.getElementById('playlists-content').style.display = 'none';
         document.getElementById('selected-playlist-tracks').style.display = 'grid';
 
         const backButton = document.getElementById('back-to-playlists');
         if (!backButton) {
-            const backButtonHtml = `<button id="back-to-playlists" class="back-button">Back to Playlists</button>`;
+            const backButtonHtml = `<button id="back-to-playlists" class="back-button">Обратно към плейлистите</button>`;
             document.getElementById('selected-playlist-tracks').insertAdjacentHTML('beforeend', backButtonHtml);
             document.getElementById('back-to-playlists').addEventListener('click', hidePlaylistTracksGrid);
         }
     }
 
-    // Hide playlist tracks grid and return to playlists view
+    // Скриване на мрежата с песни от плейлиста и връщане към изгледа за плейлисти
     function hidePlaylistTracksGrid() {
         selectedPlaylistId = null;
         document.getElementById('playlists-content').style.display = 'grid';
@@ -464,22 +459,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Populate the tracks grid with track data
+    // Попълваме мрежата с песни с данни за песните
     function populateTracksGrid(tracks, containerId = 'selected-album-tracks') {
         const grid = document.getElementById(containerId);
         grid.innerHTML = '';
         grid.className = 'tracklist-grid';
         if (!tracks || tracks.length === 0) {
-            grid.innerHTML = '<p class="no-tracks">No tracks in this playlist.</p>';
+            grid.innerHTML = '<p class="no-tracks">Няма песни в този плейлист.</p>';
         } else {
             tracks.forEach((track, index) => {
                 const rowHtml = `
                     <div class="tracklist-row">
                         <div class="tracklist-cell image">
-                            <img src="${track.imageLink || track.image || track.coverImage || ''}" alt="Track Image" class="tracklist-image">
+                            <img src="${track.imageLink || track.image || track.coverImage || ''}" alt="Изображение на песен" class="tracklist-image">
                         </div>
-                        <div class="tracklist-cell title">${track.name || track.title || 'Unnamed Track'}</div>
-                        <div class="tracklist-cell artist">${track.userName || track.artist || track.creator || 'Unknown Artist'}</div>
+                        <div class="tracklist-cell title">${track.name || track.title || 'Песен без име'}</div>
+                        <div class="tracklist-cell artist">${track.userName || track.artist || track.creator || 'Неизвестен изпълнител'}</div>
                         <div class="tracklist-cell actions">
                             <button class="tracklist-play-btn" 
                                     data-index="${index}"
@@ -495,4 +490,74 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
+});
+
+$(document).ready(function () {
+    fetchNotifications();
+});
+
+function fetchNotifications() {
+    $.get("/api/notifications/unread", function (data) {
+        let notificationList = $("#notifications");
+        notificationList.empty();
+
+        data.forEach(notification => {
+            let listItem = `<li>${notification.message} <button onclick="markAsRead(${notification.id})">Отбележи като прочетено</button></li>`;
+            notificationList.append(listItem);
+        });
+    });
+}
+
+function markAsRead(id) {
+    $.post(`/api/notifications/mark-read/${id}`, function () {
+        fetchNotifications(); // Освежаваме списъка с известия
+    });
+}
+
+// Add this to your existing script section or a separate JS file
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const player = document.querySelector('.player-container');
+    const modals = document.querySelectorAll('.modal'); // Select all modals
+
+    function togglePlayerVisibility() {
+        modals.forEach(modal => {
+            if (modal.style.display === 'flex' || modal.style.display === 'block') {
+                player.classList.remove('visible'); // Hide player when modal is open
+            } else if (!Array.from(modals).some(m => m.style.display === 'flex' || m.style.display === 'block')) {
+                player.classList.add('visible'); // Show player when no modals are open
+            }
+        });
+    }
+
+    // Observe modal open/close events
+    modals.forEach(modal => {
+        modal.addEventListener('click', togglePlayerVisibility); // Adjust based on your modal trigger
+    });
+
+    // Example: Tie to existing modal functions (if using your previous code)
+    const openEditModal = () => {
+        document.getElementById('editModal').style.display = 'flex';
+        player.classList.remove('visible');
+    };
+    const closeEditModal = () => {
+        document.getElementById('editModal').style.display = 'none';
+        player.classList.add('visible');
+    };
+
+    // Attach to existing buttons (adjust IDs as needed)
+    document.querySelector('.edit-profile-btn')?.addEventListener('click', openEditModal);
+    document.querySelector('.close-btn')?.addEventListener('click', closeEditModal);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const player = document.querySelector('.player-container');
+    const body = document.body;
+
+    // Add padding to the body to prevent content from being hidden behind the player
+    const playerHeight = player.offsetHeight || 70; // Fallback to 70px if offsetHeight isn't available
+    body.style.paddingBottom = `${playerHeight}px`;
+
+    // Ensure the player is always visible by adding the 'visible' class (if still used elsewhere)
+    player.classList.add('visible');
 });

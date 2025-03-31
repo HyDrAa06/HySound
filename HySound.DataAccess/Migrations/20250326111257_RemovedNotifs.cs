@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HySound.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class FixedCascade : Migration
+    public partial class RemovedNotifs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

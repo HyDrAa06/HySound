@@ -2,18 +2,17 @@
 @model AlbumFilterViewModel
 @await Html.PartialAsync("_AddToPlaylistPartial", new List<HySound.Models.Models.Playlist>())
 
-
 <div class="container artist-dashboard py-4">
     <div class="row">
         <!-- Main Content -->
         <div class="col-12 main-content">
             <div class="d-flex justify-content-between align-items-center header-section mb-4">
                 <div>
-                    <h1 class="text-light mb-0">My Albums</h1>
-                    <p class="text-muted">Manage your music collection</p>
+                    <h1 class="text-light mb-0">Моите албуми</h1>
+                    <p class="text-muted">Управлявай своята музикална колекция</p>
                 </div>
                 <a class="btn btn-primary upload-btn" asp-controller="Album" asp-action="AddAlbum">
-                    <i class="fas fa-plus me-2"></i> Create New Album
+                    <i class="fas fa-plus me-2"></i> Създай нов албум
                 </a>
             </div>
             @if (TempData["Message"] != null)
@@ -33,11 +32,11 @@
                                 <span class="input-group-text bg-dark border-dark text-light">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" asp-for="Search" class="form-control bg-dark border-dark text-light" placeholder="Search by title or artist">
+                                <input type="text" asp-for="Search" class="form-control bg-dark border-dark text-light" placeholder="Търси по заглавие или изпълнител">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Apply</button>
+                            <button type="submit" class="btn btn-primary w-100">Приложи</button>
                         </div>
                     </div>
                 </form>
@@ -48,8 +47,8 @@
                     <thead>
                         <tr>
                             <th style="width: 50px">#</th>
-                            <th>Album</th>
-                            <th class="text-center">Actions</th>
+                            <th>Албум</th>
+                            <th class="text-center">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,10 +73,10 @@
                                             <i class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
-                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                            <li><a class="dropdown-item text-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -110,11 +109,11 @@
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Edit</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="AddSong" asp-route-albumId="@album.Id"><i class="fas fa-plus me-2"></i> Add Song</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="AlbumDetails" asp-route-id="@album.Id"><i class="fas fa-info-circle me-2"></i> Виж детайли</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="Update" asp-route-id="@album.Id"><i class="fas fa-edit me-2"></i> Редактирай</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Album" asp-action="AddSong" asp-route-albumId="@album.Id"><i class="fas fa-plus me-2"></i> Добави песен</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id"><i class="fas fa-trash-alt me-2"></i> Delete</a></li>
+                                        <li><a class="dropdown-item text-danger" asp-controller="Album" asp-action="Delete" asp-route-id="@album.Id"><i class="fas fa-trash-alt me-2"></i> Изтрий</a></li>
                                     </ul>
                                 </div>
 
@@ -141,10 +140,10 @@
             {
                 <div class="text-center py-5 empty-state">
                     <i class="fas fa-compact-disc fa-4x mb-3 text-muted"></i>
-                    <h4 class="mb-3">No Albums Found</h4>
-                    <p class="text-muted mb-4">Get started by creating your first album</p>
+                    <h4 class="mb-3">Няма намерени албуми</h4>
+                    <p class="text-muted mb-4">Започни, като създадеш първия си албум</p>
                     <a class="btn btn-primary upload-btn" asp-controller="Album" asp-action="AddAlbum">
-                        <i class="fas fa-plus me-2"></i> Create New Album
+                        <i class="fas fa-plus me-2"></i> Създай нов албум
                     </a>
                 </div>
             }

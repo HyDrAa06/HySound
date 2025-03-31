@@ -11,69 +11,67 @@
         <div class="profile-main">
             <img src="@Model.ProfilePicture" class="profile-pic">
             <div class="profile-info">
-                <span class="profile-label">Profile</span>
+                <span class="profile-label">Профил</span>
                 <h1 class="profile-name">@Model.Name</h1>
-                <p class="profile-bio">@(Model.Bio ?? "No bio available")</p>
+                <p class="profile-bio">@(Model.Bio ?? "Няма налична биография")</p>
                 <div class="profile-stats">
                     <span class="profile-email">@Model.Email</span>
                     <span class="stats-dot">•</span>
                     <span class="profile-followers" onclick="openFollowersModal()">
-                        <strong>@Model.FollowersCount</strong> Followers
+                        <strong>@Model.FollowersCount</strong> Последователи
                     </span>
                     <span class="stats-dot">•</span>
                     <span class="profile-following" onclick="openFollowingModal()">
-                        <strong>@Model.FollowingCount</strong> Following
+                        <strong>@Model.FollowingCount</strong> Следвани
                     </span>
                 </div>
             </div>
         </div>
         <div class="action-buttons">
-            <button class="edit-profile-btn" onclick="openEditModal()">Edit profile</button>
+            <button class="edit-profile-btn" onclick="openEditModal()">Редактирай профила</button>
         </div>
     </div>
-    
-   
-    
+
     <div class="empty-state">
         <div class="empty-icon">🎵</div>
     </div>
 </div>
 
+<!-- Edit Profile Modal -->
 <div id="editModal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeEditModal()">&times;</span>
-        <h2>Edit profile</h2>
+        <span class="close-btn" onclick="closeEditModal()">×</span>
+        <h2>Редактирай профила</h2>
         <form asp-action="Update" asp-controller="User" method="post" enctype="multipart/form-data">
             <div class="profile-pic-upload">
                 <div class="current-pic" style="background-image: url('@Model.ProfilePicture')">
                     <div class="upload-overlay">
                         <span class="upload-icon">📷</span>
-                        <span>Choose photo</span>
+                        <span>Избери снимка</span>
                     </div>
                 </div>
                 <input type="file" id="ImageFile" asp-for="ImageFile" class="hidden-upload" accept="image/*" />
             </div>
-            
+
             <div class="input-group">
-                <label for="username">Username</label>
+                <label for="username">Потребителско име</label>
                 <input type="text" id="username" name="Name" value="@Model.Name" required>
                 <div class="char-counter"><span id="userCharCount">0</span>/50</div>
-
             </div>
 
             <div class="input-group">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="Bio" placeholder="Add a bio to your profile">@Model.Bio</textarea>
+                <label for="bio">Биография</label>
+                <textarea id="bio" name="Bio" placeholder="Добави биография към профила си">@Model.Bio</textarea>
                 <div class="char-counter"><span id="bioCharCount">0</span>/150</div>
             </div>
-            
+
             <div class="hidden">
                 <input type="text" id="email" name="Email" value="@Model.Email" />
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
-                <button type="submit" class="save-btn">Save</button>
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Отказ</button>
+                <button type="submit" class="save-btn">Запази</button>
             </div>
         </form>
     </div>
@@ -83,8 +81,8 @@
 <div id="followersModal" class="modal">
     <div class="modal-content user-list-modal">
         <div class="modal-header">
-            <h2>Followers</h2>
-            <span class="close-btn" onclick="closeFollowersModal()">&times;</span>
+            <h2>Последователи</h2>
+            <span class="close-btn" onclick="closeFollowersModal()">×</span>
         </div>
         <ul class="modal-list">
             @foreach (var follower in Model.FollowersAsUsers)
@@ -93,14 +91,14 @@
                     <img src="@follower.ProfilePicture" class="user-pfp">
                     <div class="user-info">
                         <span class="user-name">@follower.Username</span>
-                        <span class="user-status">Follower</span>
+                        <span class="user-status">Последовател</span>
                     </div>
                 </li>
             }
             @if (!Model.FollowersAsUsers.Any())
             {
                 <div class="empty-list">
-                    <p>No followers yet</p>
+                    <p>Все още няма последователи</p>
                 </div>
             }
         </ul>
@@ -110,29 +108,31 @@
 <div id="followingModal" class="modal">
     <div class="modal-content user-list-modal">
         <div class="modal-header">
-            <h2>Following</h2>
-            <span class="close-btn" onclick="closeFollowingModal()">&times;</span>
+            <h2>Следвани</h2>
+            <span class="close-btn" onclick="closeFollowingModal()">×</span>
         </div>
         <ul class="modal-list">
-            @foreach(var following in Model.FollowingAsUsers)
+            @foreach (var following in Model.FollowingAsUsers)
             {
                 <li class="user-list-item">
                     <img src="@following.ProfilePicture" class="user-pfp">
                     <div class="user-info">
                         <span class="user-name">@following.Username</span>
-                        <span class="user-status">Following</span>
+                        <span class="user-status">Следван</span>
                     </div>
                 </li>
             }
             @if (!Model.FollowingAsUsers.Any())
             {
                 <div class="empty-list">
-                    <p>Not following anyone yet</p>
+                    <p>Все още не следва никого</p>
                 </div>
             }
         </ul>
     </div>
 </div>
+
+
 
 <style>
     :root {
@@ -265,10 +265,10 @@
         transition: all 0.3s;
     }
 
-    .edit-profile-btn:hover {
-        border-color: white;
-        transform: scale(1.05);
-    }
+        .edit-profile-btn:hover {
+            border-color: white;
+            transform: scale(1.05);
+        }
 
     /* Content Tabs */
     .content-tabs {
@@ -288,23 +288,23 @@
         transition: color 0.3s;
     }
 
-    .tab:hover {
-        color: white;
-    }
+        .tab:hover {
+            color: white;
+        }
 
-    .tab.active {
-        color: white;
-    }
+        .tab.active {
+            color: white;
+        }
 
-    .tab.active:after {
-        content: "";
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background-color: var(--spotify-green);
-    }
+            .tab.active:after {
+                content: "";
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background-color: var(--spotify-green);
+            }
 
     /* Empty State */
     .empty-state {
@@ -342,9 +342,9 @@
         transition: transform 0.3s;
     }
 
-    .create-playlist-btn:hover {
-        transform: scale(1.05);
-    }
+        .create-playlist-btn:hover {
+            transform: scale(1.05);
+        }
 
     /* Modal Styles */
     .modal {
@@ -357,7 +357,8 @@
         background: rgba(0, 0, 0, 0.7);
         justify-content: center;
         align-items: center;
-        z-index: 100;
+        z-index: 1000; /* Higher than player */
+        overflow-y: auto; /* Allow scrolling if modal content exceeds viewport */
     }
 
     .modal-content {
@@ -367,7 +368,10 @@
         max-width: 90%;
         color: white;
         position: relative;
-        overflow: hidden;
+        padding: 12px;
+        padding-bottom: 70px; /* Added padding to account for player height */
+        max-height: 80vh; /* Limit height to viewport with margin */
+        overflow-y: auto; /* Allow scrolling within modal */
     }
 
     .user-list-modal {
@@ -383,10 +387,10 @@
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .modal-header h2 {
-        margin: 0;
-        font-size: 24px;
-    }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
 
     .close-btn {
         font-size: 28px;
@@ -395,21 +399,21 @@
         transition: color 0.3s;
     }
 
-    .close-btn:hover {
-        color: white;
-    }
+        .close-btn:hover {
+            color: white;
+        }
 
     /* Edit Modal */
     .modal-content h2 {
-        font-size: 24px;
-        margin: 24px 0;
+        font-size: 20px;
+        margin: 12px 0;
         text-align: center;
     }
 
     .profile-pic-upload {
-        width: 180px;
-        height: 180px;
-        margin: 0 auto 24px;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 12px;
         position: relative;
     }
 
@@ -443,8 +447,8 @@
     }
 
     .upload-icon {
-        font-size: 24px;
-        margin-bottom: 8px;
+        font-size: 20px;
+        margin-bottom: 6px;
     }
 
     .hidden-upload {
@@ -457,63 +461,64 @@
     }
 
     .input-group {
-        padding: 0 24px;
-        margin-bottom: 24px;
+        padding: 0 16px;
+        margin-bottom: 12px;
         text-align: left;
     }
 
-    .input-group label {
-        font-size: 14px;
-        font-weight: 700;
-        color: white;
-        display: block;
-        margin-bottom: 8px;
-    }
+        .input-group label {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            display: block;
+            margin-bottom: 6px;
+        }
 
-    .input-group input, .input-group textarea {
-        width: 100%;
-        padding: 12px;
-        background: rgba(255,255,255,0.1);
-        border: none;
-        border-radius: 4px;
-        color: white;
-        font-size: 16px;
-        transition: background-color 0.3s;
-        resize: none;
-    }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            resize: none;
+        }
 
-    .input-group textarea {
-        height: 100px;
-    }
+        .input-group textarea {
+            height: 60px;
+        }
 
-    .input-group input:focus, .input-group textarea:focus {
-        background: rgba(255,255,255,0.2);
-        outline: none;
-    }
+            .input-group input:focus, .input-group textarea:focus {
+                background: rgba(255,255,255,0.2);
+                outline: none;
+            }
 
     .char-counter {
         text-align: right;
         font-size: 12px;
         color: var(--spotify-text-gray);
-        margin-top: 4px;
+        margin-top: 2px;
     }
 
     .modal-actions {
         display: flex;
         justify-content: center;
-        padding: 24px;
+        padding: 12px;
         border-top: 1px solid rgba(255,255,255,0.1);
+        position: relative;
     }
 
     .cancel-btn, .save-btn {
-        padding: 12px 32px;
+        padding: 8px 20px;
         border-radius: 500px;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.3s;
-        margin: 0 8px;
+        margin: 0 6px;
     }
 
     .cancel-btn {
@@ -522,9 +527,9 @@
         border: 1px solid rgba(255,255,255,0.3);
     }
 
-    .cancel-btn:hover {
-        border-color: white;
-    }
+        .cancel-btn:hover {
+            border-color: white;
+        }
 
     .save-btn {
         background: var(--spotify-green);
@@ -532,10 +537,10 @@
         border: none;
     }
 
-    .save-btn:hover {
-        background: var(--spotify-green-hover);
-        transform: scale(1.05);
-    }
+        .save-btn:hover {
+            background: var(--spotify-green-hover);
+            transform: scale(1.05);
+        }
 
     /* Search in Modal */
     .modal-search {
@@ -565,10 +570,10 @@
         font-size: 14px;
     }
 
-    .search-input:focus {
-        outline: none;
-        background: rgba(255,255,255,0.2);
-    }
+        .search-input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.2);
+        }
 
     /* User List */
     .modal-list {
@@ -586,9 +591,9 @@
         transition: background-color 0.3s;
     }
 
-    .user-list-item:hover {
-        background-color: rgba(255,255,255,0.1);
-    }
+        .user-list-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
 
     .user-pfp {
         width: 40px;
@@ -630,10 +635,10 @@
         border: 1px solid rgba(255,255,255,0.3);
     }
 
-    .follow-btn:hover {
-        border-color: white;
-        transform: scale(1.05);
-    }
+        .follow-btn:hover {
+            border-color: white;
+            transform: scale(1.05);
+        }
 
     .following-btn {
         background: var(--spotify-green);
@@ -641,10 +646,10 @@
         border: none;
     }
 
-    .following-btn:hover {
-        background: var(--spotify-green-hover);
-        transform: scale(1.05);
-    }
+        .following-btn:hover {
+            background: var(--spotify-green-hover);
+            transform: scale(1.05);
+        }
 
     .empty-list {
         text-align: center;
@@ -655,7 +660,168 @@
     .hidden {
         display: none;
     }
-    
+
+    /* Player Container */
+    .player-container {
+        display: flex;
+        align-items: center;
+        background-color: #181818;
+        padding: 10px 20px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 50; /* Lower than modal */
+        box-sizing: border-box;
+    }
+
+    /* Left Section */
+    .player-left {
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+
+    .player-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .player-info {
+        margin-left: 10px;
+        color: #fff;
+    }
+
+    .player-song-name {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .player-artist-name {
+        font-size: 12px;
+        color: #b3b3b3;
+        display: block;
+    }
+
+    /* Center Section */
+    .player-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 2;
+    }
+
+    .player-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        margin-bottom: 8px;
+    }
+
+    .player-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .player-btn:hover {
+            transform: scale(1.1);
+        }
+
+    .player-icon {
+        font-size: 20px;
+    }
+
+    /* Time Bar Container & Input */
+    .player-timebar-container {
+        width: 80%;
+        position: relative;
+        margin-top: -3px;
+    }
+
+    .player-timebar {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 4px;
+        background: #1e1e1e;
+        border-radius: 2px;
+        outline: none;
+        margin: 0;
+        background: linear-gradient(to right, #1db954 0%, #1db954 0%, #1e1e1e 0%, #1e1e1e 100%);
+    }
+
+        .player-timebar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1db954;
+            cursor: pointer;
+            margin-top: -2px;
+        }
+
+        .player-timebar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1db954;
+            cursor: pointer;
+        }
+
+    /* Right Section: Volume Control */
+    .player-right {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        justify-content: flex-end;
+        margin-right: 20px;
+    }
+
+    .volume-icon {
+        color: #fff;
+        font-size: 16px;
+        margin-right: 5px;
+    }
+
+    .player-sound-bar {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100px;
+        height: 4px;
+        background: #1e1e1e;
+        border-radius: 2px;
+        outline: none;
+        margin: 0;
+        background: linear-gradient(to right, #1db954 0%, #1db954 100%, #1e1e1e 100%, #1e1e1e 100%);
+    }
+
+        .player-sound-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1db954;
+            cursor: pointer;
+            margin-top: -2px;
+        }
+
+        .player-sound-bar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1db954;
+            cursor: pointer;
+        }
+
     /* Responsive Adjustments */
     @@media (max-width: 768px) {
         .profile-main {
@@ -664,22 +830,22 @@
             text-align: center;
             padding: 0 16px;
         }
-        
+
         .profile-pic {
             margin-right: 0;
             margin-bottom: 16px;
             width: 150px;
             height: 150px;
         }
-        
+
         .profile-name {
             font-size: 48px;
         }
-        
+
         .profile-bio {
             max-width: 100%;
         }
-        
+
         .action-buttons {
             position: relative;
             top: auto;
@@ -687,65 +853,90 @@
             margin-top: 16px;
             text-align: center;
         }
+
+        .modal-content {
+            width: 90%;
+        }
     }
 </style>
-
 <script>
+    // Modal open/close functions (moved to global scope)
     function openEditModal() {
-        document.getElementById('editModal').style.display = 'flex';
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'flex';
     }
-    
+
     function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'none';
     }
 
     function openFollowersModal() {
-        document.getElementById('followersModal').style.display = 'flex';
+        const modal = document.getElementById('followersModal');
+        modal.style.display = 'flex';
     }
-    
+
     function closeFollowersModal() {
-        document.getElementById('followersModal').style.display = 'none';
+        const modal = document.getElementById('followersModal');
+        modal.style.display = 'none';
     }
 
     function openFollowingModal() {
-        document.getElementById('followingModal').style.display = 'flex';
+        const modal = document.getElementById('followingModal');
+        modal.style.display = 'flex';
     }
-    
+
     function closeFollowingModal() {
-        document.getElementById('followingModal').style.display = 'none';
+        const modal = document.getElementById('followingModal');
+        modal.style.display = 'none';
     }
-    
-    // Setup for image upload
-    document.addEventListener('DOMContentLoaded', function() {
+
+    // Additional setup after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        const player = document.querySelector('.player-container');
+        const body = document.body;
+
+        // Add padding to the body for the player
+        const playerHeight = player ? player.offsetHeight : 70; // Fallback to 70px if player not found
+        body.style.paddingBottom = `${playerHeight}px`;
+
+        // Function to update body padding on resize
+        function updateBodyPadding() {
+            const playerHeight = player ? player.offsetHeight : 70;
+            body.style.paddingBottom = `${playerHeight}px`;
+        }
+
+        window.addEventListener('resize', updateBodyPadding);
+
+        // Setup for image upload
         const currentPic = document.querySelector('.current-pic');
         const fileInput = document.getElementById('ImageFile');
-        
+
         if (currentPic && fileInput) {
-            currentPic.addEventListener('click', function() {
+            currentPic.addEventListener('click', function () {
                 fileInput.click();
             });
-            
-            fileInput.addEventListener('change', function() {
+
+            fileInput.addEventListener('change', function () {
                 if (this.files && this.files[0]) {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         currentPic.style.backgroundImage = `url('${e.target.result}')`;
                     };
                     reader.readAsDataURL(this.files[0]);
                 }
             });
         }
-        
-        // Character counter for bio
+
+        // Character counter for bio and username
         const bioTextarea = document.getElementById('bio');
         const charCount = document.getElementById('bioCharCount');
         const usernameInput = document.getElementById('username');
         const userCharCount = document.getElementById('userCharCount');
 
-        
-        if (bioTextarea && charCount && userCharCount && usernameInput) {
+        if (bioTextarea && charCount && usernameInput && userCharCount) {
             charCount.textContent = bioTextarea.value.length;
-            userCharCount.textContext = usernameInput.value.length;
+            userCharCount.textContent = usernameInput.value.length;
 
             usernameInput.addEventListener('input', function () {
                 userCharCount.textContent = this.value.length;
@@ -754,42 +945,13 @@
                     userCharCount.textContent = 50;
                 }
             });
-            
-            bioTextarea.addEventListener('input', function() {
+
+            bioTextarea.addEventListener('input', function () {
                 charCount.textContent = this.value.length;
                 if (this.value.length > 150) {
                     this.value = this.value.substring(0, 150);
                     charCount.textContent = 150;
                 }
-            });
-        }
-        
-        // Make tabs clickable
-        const tabs = document.querySelectorAll('.tab');
-        if (tabs.length > 0) {
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        }
-        
-        // Toggle following buttons
-        const followButtons = document.querySelectorAll('.follow-btn, .following-btn');
-        if (followButtons.length > 0) {
-            followButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (this.classList.contains('follow-btn')) {
-                        this.classList.remove('follow-btn');
-                        this.classList.add('following-btn');
-                        this.textContent = 'Following';
-                    } else {
-                        this.classList.remove('following-btn');
-                        this.classList.add('follow-btn');
-                        this.textContent = 'Follow';
-                    }
-                });
             });
         }
     });

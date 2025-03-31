@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HySound.DataAccess.Migrations
 {
     [DbContext(typeof(HySoundContext))]
-    [Migration("20250320084918_FixedCascade")]
-    partial class FixedCascade
+    [Migration("20250326111257_RemovedNotifs")]
+    partial class RemovedNotifs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -17,6 +17,7 @@ namespace HySound.Core.Service
         IRepository<User> _userRepository;
         UserManager<IdentityUser> _userManager;
 
+
         public ArtistRequestService(UserManager<IdentityUser> userManager,IRepository<User> userRepository,IRepository<ArtistRequest> requestRepository)
         {
             _requestRepository = requestRepository;

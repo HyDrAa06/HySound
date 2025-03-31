@@ -145,12 +145,12 @@ namespace HySound.Controllers
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
             User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
-            var singles = await trackService.GetAllTracksAsync();
+            var singles = await trackService.GetAllTracksAsync(x=>x.IsYoutube == false);
             singles = singles.Where(x => x.AlbumId is null && x.UserId == user.Id).ToList();
 
             if(singles.Count() <= 0)
             {
-                TempData["Message"] = "No records found.";
+                TempData["Message"] = "No records with audio files found.";
                 return RedirectToAction("AllAlbums");
             }
 
@@ -192,7 +192,7 @@ namespace HySound.Controllers
                 album.UserId = user.Id;
                 await albumService.AddAlbumAsync(album);
 
-                var tracks = await trackService.GetAllTracksAsync();
+                var tracks = await trackService.GetAllTracksAsync(x=>x.IsYoutube == false);
 
                 if (model.SelectedTracksIds != null && model.SelectedTracksIds.Any())
                 {

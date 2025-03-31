@@ -1,14 +1,14 @@
 ﻿@using HySound.ViewModels.Artist
 @model List<PendingArtistRequestViewModel>
 @{
-    ViewData["Title"] = "Pending Artist Requests";
+    ViewData["Title"] = "Чакащи заявки за артисти";
 }
 
 <div class="spotify-container">
     <div class="content-wrapper">
         <div class="page-header">
-            <h1>Pending Artist Requests</h1>
-            <p class="subtitle">Review and manage artist applications</p>
+            <h1>Чакащи заявки за артисти</h1>
+            <p class="subtitle">Преглед и управление на кандидатури за артисти</p>
         </div>
 
         <!-- Alert Message -->
@@ -19,7 +19,7 @@
                 <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">×</button>
             </div>
         }
-        
+
         <!-- Main Content -->
         <div class="spotify-card">
             @if (Model.Any())
@@ -28,11 +28,11 @@
                     <table class="spotify-table">
                         <thead>
                             <tr>
-                                <th>Profile</th>
-                                <th>Username</th>
-                                <th>Bio</th>
-                                <th>Email</th>
-                                <th>Actions</th>
+                                <th>Профил</th>
+                                <th>Потребителско име</th>
+                                <th>Биография</th>
+                                <th>Имейл</th>
+                                <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,12 +51,12 @@
                                         <div class="action-buttons">
                                             <form asp-action="Approve" asp-route-id="@request.Id" method="post" style="display:inline;">
                                                 <button type="submit" class="spotify-button approve">
-                                                    <i class="bi bi-check-circle"></i> Approve
+                                                    <i class="bi bi-check-circle"></i> Одобри
                                                 </button>
                                             </form>
                                             <form asp-action="Deny" asp-route-id="@request.Id" method="post" style="display:inline;">
                                                 <button type="submit" class="spotify-button deny">
-                                                    <i class="bi bi-x-circle"></i> Deny
+                                                    <i class="bi bi-x-circle"></i> Откажи
                                                 </button>
                                             </form>
                                         </div>
@@ -73,79 +73,78 @@
                     <div class="empty-icon">
                         <i class="bi bi-music-note"></i>
                     </div>
-                    <h3>No Pending Requests</h3>
-                    <p>There are currently no artist applications waiting for approval.</p>
+                    <h3>Няма чакащи заявки</h3>
+                    <p>В момента няма кандидатури за артисти, чакащи одобрение.</p>
                 </div>
             }
         </div>
     </div>
 </div>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    /* Spotify-inspired styles */
+    :root {
+        --spotify-green: #1DB954;
+        --spotify-black: #191414;
+        --spotify-dark-gray: #212121;
+        --spotify-light-gray: #282828;
+        --spotify-lighter-gray: #333333;
+        --spotify-text: #FFFFFF;
+        --spotify-text-secondary: #b3b3b3;
+        --spotify-red: #E61E32;
+    }
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <style>
-        /* Spotify-inspired styles */
-        :root {
-            --spotify-green: #1DB954;
-            --spotify-black: #191414;
-            --spotify-dark-gray: #212121;
-            --spotify-light-gray: #282828;
-            --spotify-lighter-gray: #333333;
-            --spotify-text: #FFFFFF;
-            --spotify-text-secondary: #b3b3b3;
-            --spotify-red: #E61E32;
-        }
-        
-        body {
-            background-color: var(--spotify-black);
-            color: var(--spotify-text);
-            font-family: 'Circular', Helvetica, Arial, sans-serif;
-        }
-        
-        .spotify-container {
-            max-width: 100%;
-            min-height: 100vh;
-            background: linear-gradient(to bottom, #1e1e1e, var(--spotify-black));
-            padding: 40px 20px;
-        }
-        
-        .content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .page-header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
+    body {
+        background-color: var(--spotify-black);
+        color: var(--spotify-text);
+        font-family: 'Circular', Helvetica, Arial, sans-serif;
+    }
+
+    .spotify-container {
+        max-width: 100%;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #1e1e1e, var(--spotify-black));
+        padding: 40px 20px;
+    }
+
+    .content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
         .page-header h1 {
             font-size: 42px;
             font-weight: 900;
             margin-bottom: 10px;
             letter-spacing: -0.04em;
         }
-        
-        .subtitle {
-            color: var(--spotify-text-secondary);
-            font-size: 18px;
-        }
-        
-        .spotify-card {
-            background-color: var(--spotify-light-gray);
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .spotify-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-            margin-top: 10px;
-        }
-        
+
+    .subtitle {
+        color: var(--spotify-text-secondary);
+        font-size: 18px;
+    }
+
+    .spotify-card {
+        background-color: var(--spotify-light-gray);
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .spotify-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        margin-top: 10px;
+    }
+
         .spotify-table thead th {
             padding: 15px;
             text-align: left;
@@ -156,176 +155,176 @@
             letter-spacing: 1px;
             border-bottom: 1px solid var(--spotify-lighter-gray);
         }
-        
+
         .spotify-table tbody tr {
             background-color: var(--spotify-lighter-gray);
             transition: all 0.2s ease;
         }
-        
-        .spotify-table tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
+
+            .spotify-table tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+            }
+
         .spotify-table td {
             padding: 15px;
             vertical-align: middle;
         }
-        
-        .profile-cell {
-            width: 70px;
-        }
-        
-        .profile-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            overflow: hidden;
-            background-color: var(--spotify-dark-gray);
-        }
-        
+
+    .profile-cell {
+        width: 70px;
+    }
+
+    .profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--spotify-dark-gray);
+    }
+
         .profile-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
-        .bio-cell {
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .username-cell {
-            font-weight: 700;
-        }
-        
-        .email-cell {
-            color: var(--spotify-text-secondary);
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .spotify-button {
-            display: inline-block;
-            font-weight: 700;
-            padding: 8px 16px;
-            border-radius: 500px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 12px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        
+
+    .bio-cell {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .username-cell {
+        font-weight: 700;
+    }
+
+    .email-cell {
+        color: var(--spotify-text-secondary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .spotify-button {
+        display: inline-block;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 500px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
         .spotify-button i {
             margin-right: 5px;
         }
-        
+
         .spotify-button.approve {
             background-color: var(--spotify-green);
             color: var(--spotify-black);
         }
-        
-        .spotify-button.approve:hover {
-            background-color: #1ed760;
-            transform: scale(1.05);
-        }
-        
+
+            .spotify-button.approve:hover {
+                background-color: #1ed760;
+                transform: scale(1.05);
+            }
+
         .spotify-button.deny {
             background-color: var(--spotify-red);
             color: var(--spotify-text);
         }
-        
-        .spotify-button.deny:hover {
-            background-color: #fa293e;
-            transform: scale(1.05);
-        }
-        
-        .spotify-alert {
-            background-color: rgba(29, 185, 84, 0.2);
-            border-left: 4px solid var(--spotify-green);
-            color: var(--spotify-text);
-            padding: 16px;
-            margin-bottom: 25px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        
+
+            .spotify-button.deny:hover {
+                background-color: #fa293e;
+                transform: scale(1.05);
+            }
+
+    .spotify-alert {
+        background-color: rgba(29, 185, 84, 0.2);
+        border-left: 4px solid var(--spotify-green);
+        color: var(--spotify-text);
+        padding: 16px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
         .spotify-alert i {
             margin-right: 10px;
             color: var(--spotify-green);
         }
-        
-        .close-btn {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            background: transparent;
-            border: none;
-            color: var(--spotify-text-secondary);
-            font-size: 20px;
-            cursor: pointer;
-        }
-        
-        .empty-state {
-            padding: 60px 20px;
-            text-align: center;
-        }
-        
-        .empty-icon {
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            background-color: var(--spotify-dark-gray);
-            border-radius: 50%;
-            margin-bottom: 20px;
-        }
-        
+
+    .close-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        background: transparent;
+        border: none;
+        color: var(--spotify-text-secondary);
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        background-color: var(--spotify-dark-gray);
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
         .empty-icon i {
             font-size: 32px;
             color: var(--spotify-text-secondary);
         }
-        
-        .empty-state h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
+
+    .empty-state h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: var(--spotify-text-secondary);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    @@media (max-width: 992px) {
+        .bio-cell {
+            max-width: 150px;
         }
-        
-        .empty-state p {
-            color: var(--spotify-text-secondary);
+    }
+
+    @@media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 32px;
         }
-        
-        .table-responsive {
-            overflow-x: auto;
+
+        .spotify-card {
+            padding: 20px 15px;
         }
-        
-        @@media (max-width: 992px) {
-            .bio-cell {
-                max-width: 150px;
-            }
+
+        .bio-cell {
+            display: none;
         }
-        
-        @@media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 32px;
-            }
-            
-            .spotify-card {
-                padding: 20px 15px;
-            }
-            
-            .bio-cell {
-                display: none;
-            }
-        }
-    </style>
+    }
+</style>

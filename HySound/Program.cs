@@ -53,8 +53,9 @@ var cloudinaryAccount = new Account(
     cloudinarySettings["ApiKey"],
     cloudinarySettings["ApiSecret"]
 );
+
 var cloudinary = new Cloudinary(cloudinaryAccount);
-builder.Services.AddSingleton(cloudinary); 
+builder.Services.AddSingleton(cloudinary);
 
 var app = builder.Build();
 
@@ -97,10 +98,16 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Seed();
 }
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.Run();
 
 static async Task CreateRoles(IServiceProvider serviceProvider)

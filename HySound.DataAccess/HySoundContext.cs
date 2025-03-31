@@ -26,10 +26,10 @@ namespace HySound.DataAccess
         public DbSet<Track> Tracks { get; set; }
         public DbSet<ArtistRequest> ArtistRequests { get; set; }
         public DbSet<User> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
 
             modelBuilder.Entity<ArtistRequest>()
                 .HasOne(u => u.User)
@@ -139,7 +139,7 @@ namespace HySound.DataAccess
             modelBuilder.Entity<User>()
                 .HasMany(x => x.Likes)
                 .WithOne(x => x.User)
-                .HasForeignKey(x=>x.UserId)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -235,7 +235,7 @@ namespace HySound.DataAccess
 
             if (Users.Count() <= 1)
             {
-               
+
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 if (!await roleManager.RoleExistsAsync("User"))
                 {
@@ -261,7 +261,7 @@ namespace HySound.DataAccess
                     new Track() { Title = "Sky", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
                     new Track() { Title = "EvilJordan", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
                     new Track() { Title = "Munyun", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
-                    );        
+                    );
                 }
 
 
@@ -291,7 +291,7 @@ namespace HySound.DataAccess
                           new Track() { Title = "Swerved It", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
                         );
                 }
-               
+
                 if (result3.Succeeded)
                 {
 
@@ -316,7 +316,7 @@ namespace HySound.DataAccess
                 await SaveChangesAsync();
             }
 
-           
+
 
         }
     }

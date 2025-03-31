@@ -3,7 +3,7 @@
 
 <div class="album-container">
     <div class="album-header">
-        <h1 class="album-title">Update Track</h1>
+        <h1 class="album-title">Редактирай песен</h1>
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
@@ -15,38 +15,38 @@
                     <div class="cover-preview" id="coverPreview">
                         @if (!string.IsNullOrEmpty(Model.ImageUrl))
                         {
-                            <img src="@Model.ImageUrl" class="cover-preview-image" alt="Track Cover">
+                            <img src="@Model.ImageUrl" class="cover-preview-image" alt="Обложка на песента">
                         }
                         else
                         {
                             <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <span class="upload-text">Update Cover</span>
+                            <span class="upload-text">Актуализирай обложката</span>
                         }
                     </div>
                     <input type="file" id="ImageFile" asp-for="ImageFile" accept="image/*" class="cover-upload" />
                 </div>
 
                 <div class="input-group">
-                    <label for="Title">Track Title</label>
-                    <input type="text" id="Title" placeholder="Enter track title" asp-for="Title" class="album-input" required />
+                    <label for="Title">Заглавие на песента</label>
+                    <input type="text" id="Title" placeholder="Въведи заглавие на песента" asp-for="Title" class="album-input" required />
                 </div>
 
                 <div class="input-group">
-                    <label for="GenreId">Genre</label>
+                    <label for="GenreId">Жанр</label>
                     <select asp-for="GenreId" asp-items="Model.GenresList" class="album-input" required>
-                        <option value="">Select Genre</option>
+                        <option value="">Избери жанр</option>
                     </select>
                 </div>
             </div>
 
             <div class="track-selection">
                 <div class="selection-header">
-                    <h2>Track Audio</h2>
+                    <h2>Аудио на песента</h2>
                     <div class="checkbox-container">
                         <input type="checkbox" id="IsYoutube" asp-for="IsYoutube" onchange="toggleInput()" />
-                        <label for="IsYoutube" class="checkbox-text">YouTube Track</label>
+                        <label for="IsYoutube" class="checkbox-text">YouTube песен</label>
                     </div>
                 </div>
 
@@ -55,32 +55,32 @@
                     @if (!string.IsNullOrEmpty(Model.AudioUrl))
                     {
                         <div class="input-group">
-                            <label>Current Audio</label>
+                            <label>Текущо аудио</label>
                             <input type="text" value="@Model.AudioUrl" class="album-input" readonly />
                         </div>
                     }
 
                     <!-- File upload for non-YouTube tracks -->
                     <div class="input-group" id="fileUploadGroup">
-                        <label for="audioFile">Replace Audio File</label>
+                        <label for="audioFile">Смени аудио файла</label>
                         <div class="file-upload-wrapper">
                             <input type="file" id="audioFile" asp-for="audioFile" class="album-input file-input" accept=".mp3,.wav,.ogg" />
-                            <div class="file-upload-info">Accepted formats: MP3, WAV, OGG</div>
+                            <div class="file-upload-info">Приети формати: MP3, WAV, OGG</div>
                         </div>
                     </div>
 
                     <!-- YouTube URL input -->
                     <div class="input-group" id="audioUrlGroup">
-                        <label for="AudioUrl">YouTube Audio URL</label>
-                        <input type="text" id="AudioUrl" placeholder="Enter the YouTube URL" asp-for="AudioUrl" class="album-input" />
+                        <label for="AudioUrl">YouTube аудио URL</label>
+                        <input type="text" id="AudioUrl" placeholder="Въведи YouTube URL" asp-for="AudioUrl" class="album-input" />
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="form-actions">
-            <a asp-action="AllTracks" asp-controller="Track" type="button" class="album-cancel">Cancel</a>
-            <button type="submit" class="album-submit">Save Changes</button>
+            <a asp-action="AllTracks" asp-controller="Track" type="button" class="album-cancel">Отказ</a>
+            <button type="submit" class="album-submit">Запази промените</button>
         </div>
     </form>
 </div>
@@ -99,7 +99,7 @@
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Track Cover">`;
+                    coverPreview.innerHTML = `<img src="${e.target.result}" class="cover-preview-image" alt="Обложка на песента">`;
                     coverPreview.classList.add('has-image');
                 }
                 reader.readAsDataURL(this.files[0]);
@@ -134,7 +134,6 @@
         }
     }
 </script>
-
 
 <style>
     /* Base Styles */

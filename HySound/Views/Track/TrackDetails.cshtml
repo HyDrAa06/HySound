@@ -2,10 +2,10 @@
 @model TrackDetailsViewModel
 
 <div class="track-details-container">
-    <!-- Back Button -->
+    <!-- Бутон за връщане -->
     <div class="back-button-container">
-        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Back">
-            <i class="fas fa-arrow-left"></i> Back
+        <a asp-controller="Home" asp-action="Search" class="back-btn" title="Назад">
+            <i class="fas fa-arrow-left"></i> Назад
         </a>
     </div>
 
@@ -29,20 +29,20 @@
             <p class="track-genre">Жанр: <span class="genre-tag">@Model.Genre</span></p>
             @if (Model.IsLiked)
             {
-                <a asp-controller="Like" asp-action="Dislike" asp-route-id="@Model.Id" class="like-btn disliked" title="Dislike">
+                <a asp-controller="Like" asp-action="Dislike" asp-route-id="@Model.Id" class="like-btn disliked" title="Не харесвам">
                     <i class="fas fa-heart"></i>
                 </a>
             }
             else
             {
-                <a asp-controller="Like" asp-action="Like" asp-route-id="@Model.Id" class="like-btn" title="Like">
+                <a asp-controller="Like" asp-action="Like" asp-route-id="@Model.Id" class="like-btn" title="Харесвам">
                     <i class="far fa-heart"></i>
                 </a>
             }
         </div>
     </div>
 
-    <!-- Local audio element as fallback (optional, can be removed if global player works) -->
+    <!-- Локален аудио елемент като резервен вариант (по избор, може да се премахне, ако глобалният плейър работи) -->
     <audio id="localAudio" src="@Model.AudioUrl" preload="auto" style="display:none;"></audio>
 
     <div class="comments-section">
@@ -63,21 +63,16 @@
                 {
                     <div class="comment-item">
                         <div class="comment-avatar">
-                            <img src="@comment.User.ProfilePicture" alt="User Avatar" />
+                            <img src="@comment.User.ProfilePicture" alt="Аватар на потребителя" />
                         </div>
                         <div class="comment-content">
                             <div class="comment-header">
                                 <p class="comment-user">@comment.User.Username</p>
-                                <p class="comment-date">1 day ago</p>
+                                <p class="comment-date">Преди 1 ден</p>
                             </div>
                             <p class="comment-text">@comment.Content</p>
                             <div class="comment-actions">
-                                <button class="comment-action-btn">
-                                    <i class="fas fa-heart"></i> Like
-                                </button>
-                                <button class="comment-action-btn">
-                                    <i class="fas fa-reply"></i> Reply
-                                </button>
+                                
                             </div>
                         </div>
                     </div>
@@ -99,7 +94,7 @@
             const playerContainer = document.querySelector(".player-container");
 
             if (playButton) {
-                console.log("Play button found with data:", {
+                console.log("Намерен е бутон за възпроизвеждане с данни:", {
                     src: playButton.dataset.src,
                     title: playButton.dataset.title,
                     artist: playButton.dataset.artist,
@@ -107,51 +102,51 @@
                 });
 
                 playButton.addEventListener("click", function () {
-                    console.log("Play button clicked!");
+                    console.log("Кликнат е бутонът за възпроизвеждане!");
                     const file = playButton.dataset.src;
                     const title = playButton.dataset.title;
                     const artist = playButton.dataset.artist;
                     const image = playButton.dataset.image;
 
                     if (file && file !== 'undefined') {
-                        // Rely on site.js to handle the global player
+                        // Разчитаме на site.js да управлява глобалния плейър
                         if (typeof loadTrack === 'function') {
                             trackList = [{ file, title, artist, image }];
                             currentTrackIndex = 0;
-                            console.log('trackList set for global player:', trackList);
+                            console.log('Списъкът с песни е зададен за глобалния плейър:', trackList);
                             loadTrack(0, true);
-                            // Ensure player is visible
+                            // Уверете се, че плейърът е видим
                             if (playerContainer) {
                                 playerContainer.classList.add('visible');
                                 playerContainer.style.display = 'flex';
-                                console.log('Player container forced visible');
+                                console.log('Контейнерът на плейъра е принудително видим');
                             } else {
-                                console.error('Player container not found');
+                                console.error('Контейнерът на плейъра не е намерен');
                             }
                         } else {
-                            // Fallback to local audio if global player fails
-                            console.log('Global player not available, using local audio');
+                            // Резервен вариант с локално аудио, ако глобалният плейър не работи
+                            console.log('Глобалният плейър не е наличен, използва се локално аудио');
                             localAudio.play().then(() => {
-                                console.log('Local audio playing');
+                                console.log('Локалното аудио се възпроизвежда');
                             }).catch(error => {
-                                console.error('Local audio play failed:', error);
+                                console.error('Неуспешно възпроизвеждане на локално аудио:', error);
                             });
                         }
                     } else {
-                        console.error('No valid audio URL:', file);
+                        console.error('Няма валиден URL адрес за аудио:', file);
                     }
                 });
             } else {
-                console.error("Play button not found!");
+                console.error("Бутонът за възпроизвеждане не е намерен!");
             }
         });
     </script>
 </div>
 
-<!-- Existing styles unchanged -->
+<!-- Съществуващите стилове остават непроменени -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
-    /* Existing styles remain unchanged */
+    /* Съществуващите стилове остават непроменени */
     .track-details-container {
         display: flex;
         flex-direction: column;
@@ -164,6 +159,7 @@
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
+    /* Стилът на бутона за връщане ще бъде актуализиран по-долу */
     .back-button-container {
         margin-bottom: 20px;
     }
@@ -173,22 +169,25 @@
         align-items: center;
         gap: 8px;
         background: transparent;
-        border: 1px solid #b3b3b3;
+        border: none; /* Премахваме рамката */
         color: white;
         padding: 8px 16px;
-        font-size: 14px;
+        font-size: 16px; /* Увеличаваме размера на шрифта */
         font-weight: 500;
-        border-radius: 4px;
+        border-radius: 50%; /* Кръгла форма */
         text-decoration: none;
-        transition: border-color 0.3s, color 0.3s;
+        transition: background-color 0.3s, color 0.3s;
+        width: 40px; /* Фиксирана ширина за кръг */
+        height: 40px; /* Фиксирана височина за кръг */
+        justify-content: center; /* Центрираме съдържанието */
     }
 
         .back-btn i {
-            font-size: 14px;
+            font-size: 18px; /* Увеличаваме иконата */
         }
 
         .back-btn:hover {
-            border-color: #1DB954;
+            background-color: rgba(255, 255, 255, 0.1); /* Лек фон при ховър */
             color: #1DB954;
         }
 
@@ -632,5 +631,5 @@
     }
 </style>
 
-<!-- Add Font Awesome for icons -->
+<!-- Добавяме Font Awesome за икони -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

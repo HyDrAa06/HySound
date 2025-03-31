@@ -84,40 +84,6 @@
     </div>
 
     <!-- Audio Player -->
-    <div class="player-container">
-        <div class="player-left">
-            <img class="player-image" id="song-image" src="" alt="Song Image">
-            <div class="player-info">
-                <span class="player-song-name" id="song-title">Song Title</span>
-                <span class="player-artist-name" id="artist-name">Artist Name</span>
-            </div>
-        </div>
-        <div class="player-center">
-            <div class="player-btn-container">
-                <button class="player-btn player-prev" id="prev-btn">
-                    <i class="player-icon fas fa-step-backward"></i>
-                </button>
-                <button class="player-btn player-play" id="play-btn">
-                    <i class="player-icon fas fa-play"></i>
-                </button>
-                <button class="player-btn player-next" id="next-btn">
-                    <i class="player-icon fas fa-step-forward"></i>
-                </button>
-            </div>
-            <div class="player-timebar-container">
-                <input type="range" class="player-timebar" id="timebar" value="0" max="100">
-            </div>
-        </div>
-        <div class="player-right">
-            <i class="volume-icon fas fa-volume-up"></i>
-            <input type="range" class="player-sound-bar" id="sound-bar" min="0" max="100" value="50">
-        </div>
-    </div>
-
-    <audio id="global-audio" class="hidden" controls>
-        <source id="global-audio-source" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
 
     <script>
         // home-page-audio.js
@@ -602,7 +568,7 @@
 
     .artist-btn {
         background-color: var(--secondary-color);
-        color: var(--text-color);
+        color: lightgreen;
         padding: 0.8rem 1.5rem;
         border-radius: 50px;
         text-decoration: none;
@@ -658,15 +624,15 @@
         }
 
         .hero-home {
-            height: 60vh;
+            height: 1200vh;
         }
 
         .hero-home h1 {
-            font-size: 2.5rem;
+            font-size: 6.5rem;
         }
 
         .track-play-btn-home {
-            padding: 0.4rem 1rem;
+            padding: 12.4rem 1rem;
             font-size: 0.9rem;
         }
 

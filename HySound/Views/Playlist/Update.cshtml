@@ -4,7 +4,7 @@
 
 <div class="album-container">
     <div class="album-header">
-        <h1 class="album-title">Update Playlist</h1>
+        <h1 class="album-title">Редактирай плейлиста</h1>
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
@@ -16,57 +16,54 @@
                     <div class="cover-preview" id="coverPreview">
                         @if (!string.IsNullOrEmpty(Model.PictureUrl))
                         {
-                            <img src="@Model.PictureUrl" class="cover-preview-image" alt="Playlist Cover">
+                            <img src="@Model.PictureUrl" class="cover-preview-image" alt="Обложка на плейлистата">
                         }
                         else
                         {
                             <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <span class="upload-text">Change Cover</span>
+                            <span class="upload-text">Смени обложката</span>
                         }
                     </div>
                     <input type="file" id="imageFile" name="Picture" asp-for="Picture" accept="image/*" class="cover-upload" />
                 </div>
                 <div class="input-group">
-                    <label for="Title">Playlist Title</label>
+                    <label for="Title">Заглавие на плейлистата</label>
                     <input type="text" id="Title" placeholder="@Model.Title" asp-for="Title" class="album-input" required />
                 </div>
             </div>
-            
+
             <div class="playlist-info">
                 <div class="info-header">
-                    <h2>Your Playlist</h2>
+                    <h2>Твоята плейлиста</h2>
                 </div>
 
                 <div class="playlist-tips">
-                    <h3>Playlist Management Tips</h3>
+                    <h3>Съвети за управление на плейлисти</h3>
                     <ul class="tips-list">
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Update your playlist title to reflect its current theme</span>
+                            <span class="tip-text">Актуализирай заглавието на плейлистата, за да отразява текущата й тема</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Upload a new cover image to match the updated vibe</span>
+                            <span class="tip-text">Качи нова обложка, която съответства на обновената атмосфера</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Select or deselect tracks to customize your playlist</span>
+                            <span class="tip-text">Избери или премахни песни, за да персонализираш плейлистата си</span>
                         </li>
                     </ul>
                 </div>
             </div>
-        
-
         </div>
         <div class="form-actions">
-            <a asp-controller="Playlist" asp-action="AllPlaylists" class="album-cancel">Cancel</a>
-            <button type="submit" class="album-submit">Save Changes</button>
+            <a asp-controller="Playlist" asp-action="AllPlaylists" class="album-cancel">Отказ</a>
+            <button type="submit" class="album-submit">Запази промените</button>
         </div>
     </form>
 </div>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -90,7 +87,7 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'cover-preview-image';
-                    img.alt = 'Playlist Cover';
+                    img.alt = 'Обложка на плейлистата';
                     coverPreview.appendChild(img);
                     coverPreview.classList.add('has-image');
                 };
@@ -99,8 +96,6 @@
         });
     });
 </script>
-
-<!-- Your existing <style> section remains unchanged -->
 
 <style>
     /* Base Styles */

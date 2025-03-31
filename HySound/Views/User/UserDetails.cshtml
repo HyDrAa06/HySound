@@ -2,10 +2,10 @@
 @model UserViewModel
 
 <div class="user-profile-container">
-    <!-- Back Button -->
+    <!-- Бутон за връщане -->
     <div class="back-button-container">
-        <a asp-action="Search" asp-controller="Home" class="back-btn" title="Back">
-            <i class="fas fa-arrow-left"></i> Back
+        <a asp-action="Search" asp-controller="Home" class="back-btn" title="Назад">
+            <i class="fas fa-arrow-left"></i>
         </a>
     </div>
 
@@ -17,37 +17,25 @@
             <h1 class="user-name">@Model.Name</h1>
             <p class="user-bio">@Model.Bio</p>
             <div class="follow-info">
-                <span class="followers-count">@Model.FollowersCount Followers</span>
-                <span class="following-count">@Model.FollowingCount Following</span>
+                <span class="followers-count">@Model.FollowersCount последователи</span>
+                <span class="following-count">@Model.FollowingCount следвани</span>
             </div>
             @if (Model.IsFollowed == false)
             {
-                <a asp-controller="User" asp-action="Follow" asp-route-followedId="@Model.Id" class="btn follow-btn">Follow</a>
+                <a asp-controller="User" asp-action="Follow" asp-route-followedId="@Model.Id" class="btn follow-btn">Следвай</a>
             }
             @if (Model.IsFollowed == true)
             {
-                <a asp-controller="User" asp-action="Unfollow" asp-route-followedId="@Model.Id" class="btn unfollow-btn">Unfollow</a>
+                <a asp-controller="User" asp-action="Unfollow" asp-route-followedId="@Model.Id" class="btn unfollow-btn">Спри да следваш</a>
             }
         </div>
     </div>
 
-    <div class="user-playlists">
-        <h3 class="section-title">Playlists</h3>
-        <div class="playlists-grid">
-            <div class="playlist-card">
-                <div class="playlist-img-container">
-                    <img src="https://res.cloudinary.com/ddcaeo5xq/image/upload/v1740651921/yoghjwghzliot1jvtmiu.jpg" class="playlist-img">
-                </div>
-                <div class="playlist-info">
-                    <h5 class="playlist-title">Title</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 </div>
 
 <style>
-    /* General Styles */
+    /* Общи стилове */
     body {
         background-color: #121212;
         font-family: 'Roboto', sans-serif;
@@ -62,7 +50,7 @@
         border-radius: 10px;
     }
 
-    /* Back Button */
+    /* Бутон за връщане */
     .back-button-container {
         margin-bottom: 20px;
     }
@@ -70,28 +58,31 @@
     .back-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        background: transparent;
-        border: 1px solid #b3b3b3;
-        color: white;
-        padding: 8px 16px;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(18, 18, 18, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #b3b3b3;
         font-size: 14px;
-        font-weight: 500;
-        border-radius: 4px;
+        border-radius: 50%;
         text-decoration: none;
-        transition: border-color 0.3s, color 0.3s;
+        transition: all 0.3s ease;
+        padding: 0;
     }
 
         .back-btn i {
             font-size: 14px;
+            margin: 0;
         }
 
         .back-btn:hover {
-            border-color: #1DB954;
-            color: #1DB954;
+            background: rgba(51, 51, 51, 0.7);
+            border-color: #b3b3b3;
+            color: white;
         }
 
-    /* Profile Header */
+    /* Заглавие на профила */
     .user-profile-header {
         display: flex;
         align-items: center;
@@ -105,7 +96,7 @@
         height: 180px;
         border-radius: 50%;
         overflow: hidden;
-        margin-right: 20px; /* Reduced margin to bring info closer to PFP */
+        margin-right: 20px;
     }
 
     .profile-img {
@@ -116,8 +107,8 @@
 
     .user-info {
         flex: 1;
-        text-align: left; /* Align text to the left */
-        padding-left: 0; /* Remove left padding to bring elements closer to PFP */
+        text-align: left;
+        padding-left: 0;
     }
 
     .user-name {
@@ -126,7 +117,7 @@
         margin-bottom: 10px;
         color: #fff;
         text-transform: uppercase;
-        margin-left: 0; /* Bring title more to the left */
+        margin-left: 0;
     }
 
     .user-bio {
@@ -134,7 +125,7 @@
         color: #b3b3b3;
         margin-bottom: 15px;
         max-width: 600px;
-        margin-left: 0; /* Bring bio closer to the left */
+        margin-left: 0;
     }
 
     .follow-info {
@@ -142,7 +133,7 @@
         color: #b3b3b3;
         margin-bottom: 15px;
         max-width: 600px;
-        margin-left: 0; /* Bring followers/following closer to the left */
+        margin-left: 0;
     }
 
     .followers-count,
@@ -150,13 +141,13 @@
         margin-right: 20px;
     }
 
-    /* Follow Button - Spotify Green */
+    /* Бутон за следване - Spotify Green */
     .follow-btn {
-        background-color: #1DB954; /* Spotify Green */
+        background-color: #1DB954;
         color: #fff;
         border: none;
-        padding: 12px 20px; /* Bigger for better interaction */
-        border-radius: 25px; /* Rounded style */
+        padding: 12px 20px;
+        border-radius: 25px;
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
@@ -164,16 +155,16 @@
     }
 
         .follow-btn:hover {
-            background-color: #1aa34a; /* Darker green on hover */
+            background-color: #1aa34a;
             transform: scale(1.05);
         }
 
-    /* Unfollow Button - Spotify Grey */
+    /* Бутон за спиране на следване - Spotify Grey */
     .unfollow-btn {
-        background-color: #535353; /* Spotify Grey */
+        background-color: #535353;
         color: #fff;
         border: none;
-        padding: 12px 20px; /* Same size as follow */
+        padding: 12px 20px;
         border-radius: 25px;
         font-size: 16px;
         font-weight: bold;
@@ -182,11 +173,11 @@
     }
 
         .unfollow-btn:hover {
-            background-color: #3e3e3e; /* Darker grey on hover */
+            background-color: #3e3e3e;
             transform: scale(1.05);
         }
 
-    /* Playlists Section */
+    /* Секция за плейлисти */
     .user-playlists {
         margin-top: 40px;
     }
@@ -236,7 +227,7 @@
         width: 100%;
         height: 180px;
         overflow: hidden;
-        border-radius: 12px 12px 0 0; /* Rounded top corners only */
+        border-radius: 12px 12px 0 0;
     }
 
     .playlist-img {
@@ -251,10 +242,10 @@
         }
 
     .playlist-info {
-        padding: 20px 10px 10px 10px; /* Increased top padding for space between image and title */
+        padding: 20px 10px 10px 10px;
         background-color: #242424;
         border-radius: 0 0 12px 12px;
-        text-align: center; /* Center the title */
+        text-align: center;
     }
 
     .playlist-title {
@@ -262,10 +253,10 @@
         font-weight: bold;
         color: white;
         margin: 0;
-        padding-left: 5px; /* Slight left shift for title */
+        padding-left: 5px;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; /* Truncate long titles */
+        text-overflow: ellipsis;
     }
 
     .playlist-card::after {
@@ -279,7 +270,7 @@
         border-radius: 12px;
     }
 
-    /* Media Queries for Mobile Responsiveness */
+    /* Медийни заявки за мобилна отзивчивост */
     @@media (max-width: 768px) {
         .user-profile-header {
             flex-direction: column;
@@ -316,5 +307,4 @@
             margin-left: 0;
         }
     }
-
 </style>

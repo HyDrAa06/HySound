@@ -3,7 +3,7 @@
 
 <div class="album-container">
     <div class="album-header">
-        <h1 class="album-title">Update Album</h1>
+        <h1 class="album-title">Актуализирай албум</h1>
     </div>
 
     <form method="post" class="album-form" enctype="multipart/form-data">
@@ -16,55 +16,55 @@
                     <div class="cover-preview" id="coverPreview">
                         @if (!string.IsNullOrEmpty(Model.AlbumCover))
                         {
-                            <img src="@Model.AlbumCover" class="cover-preview-image" alt="Album Cover">
+                            <img src="@Model.AlbumCover" class="cover-preview-image" alt="Обложка на албума">
                         }
                         else
                         {
                             <svg class="cover-placeholder" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 16V8M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <span class="upload-text">Change Cover</span>
+                            <span class="upload-text">Смени обложката</span>
                         }
                     </div>
                     <input type="file" id="imageFile" name="ImageFile" asp-for="ImageFile" accept="image/*" class="cover-upload" />
                 </div>
                 <div class="input-group">
-                    <label for="Title">Album Title</label>
+                    <label for="Title">Заглавие на албума</label>
                     <input type="text" id="Title" placeholder="@Model.Title" asp-for="Title" class="album-input" required />
                 </div>
             </div>
-            
+
             <div class="playlist-info">
                 <div class="info-header">
-                    <h2>Your Album</h2>
+                    <h2>Твоят албум</h2>
                 </div>
 
                 <div class="playlist-tips">
-                    <h3>Album Management Tips</h3>
+                    <h3>Съвети за управление на албума</h3>
                     <ul class="tips-list">
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Update your album title to reflect its content</span>
+                            <span class="tip-text">Актуализирай заглавието на албума, за да отразява съдържанието му</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Ensure the release year is accurate</span>
+                            <span class="tip-text">Увери се, че годината на издаване е точна</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Upload a high-quality album cover image</span>
+                            <span class="tip-text">Качи висококачествена обложка на албума</span>
                         </li>
                         <li>
                             <span class="tip-marker">•</span>
-                            <span class="tip-text">Verify the correct artist is selected</span>
+                            <span class="tip-text">Провери дали е избран правилният изпълнител</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="form-actions">
-            <a asp-controller="Album" asp-action="AllAlbums" class="album-cancel">Cancel</a>
-            <button type="submit" class="album-submit">Save Changes</button>
+            <a asp-controller="Album" asp-action="AllAlbums" class="album-cancel">Отказ</a>
+            <button type="submit" class="album-submit">Запази промените</button>
         </div>
     </form>
 </div>
@@ -91,7 +91,7 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'cover-preview-image';
-                    img.alt = 'Album Cover';
+                    img.alt = 'Обложка на албума';
                     coverPreview.appendChild(img);
                     coverPreview.classList.add('has-image');
                 };
@@ -177,13 +177,13 @@
         overflow: hidden;
     }
 
-    .cover-preview:hover {
-        background: #333333;
-    }
+        .cover-preview:hover {
+            background: #333333;
+        }
 
-    .cover-preview.has-image {
-        background: none;
-    }
+        .cover-preview.has-image {
+            background: none;
+        }
 
     .cover-preview-image {
         width: 100%;
@@ -215,11 +215,11 @@
         gap: 8px;
     }
 
-    .input-group label {
-        font-size: 14px;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
+        .input-group label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
 
     .album-input {
         background: var(--card-bg);
@@ -231,15 +231,15 @@
         transition: all 0.2s ease;
     }
 
-    .album-input:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px var(--primary-color);
-    }
+        .album-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
 
-    .album-input::placeholder {
-        color: var(--text-secondary);
-        opacity: 0.7;
-    }
+        .album-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
 
     /* Playlist Info Section */
     .playlist-info {
@@ -253,11 +253,11 @@
         margin-bottom: 24px;
     }
 
-    .info-header h2 {
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0;
-    }
+        .info-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
 
     /* Playlist Tips */
     .playlist-tips {
@@ -266,12 +266,12 @@
         padding: 20px;
     }
 
-    .playlist-tips h3 {
-        font-size: 18px;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 16px;
-    }
+        .playlist-tips h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
 
     .tips-list {
         list-style: none;
@@ -279,11 +279,11 @@
         margin: 0;
     }
 
-    .tips-list li {
-        display: flex;
-        align-items: baseline;
-        margin-bottom: 12px;
-    }
+        .tips-list li {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
 
     .tip-marker {
         color: var(--primary-color);
@@ -321,9 +321,9 @@
         justify-content: center;
     }
 
-    .album-cancel:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
+        .album-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
     .album-submit {
         padding: 12px 24px;
@@ -337,10 +337,10 @@
         transition: all 0.2s ease;
     }
 
-    .album-submit:hover {
-        background: var(--primary-hover);
-        transform: scale(1.02);
-    }
+        .album-submit:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+        }
 
     /* Responsive adjustments */
     @@media (max-width: 768px) {
