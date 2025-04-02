@@ -71,34 +71,18 @@ namespace HySound.Controllers
 
             };
             await playlistService.AddPlaylistAsync(playlist);
+
+            if (User.IsInRole("User"))
+            {
+                return RedirectToAction("Library","Home");
+
+            }
+
             return RedirectToAction("AllPlaylists");
         }
 
 
-     //   [HttpPost]
-     //   public async Task<IActionResult> AddPlaylist(PlaylistViewModel model)
-     //   {
-     //       if (model == null) return Content("Model is null");
-     //       if (model.Picture == null) return Content("Picture is null");
-     //       if (!ModelState.IsValid)
-     //       {
-     //           var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-     //           return Content("Validation failed: " + string.Join(", ", errors));
-     //       }
-     //       var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-     //       User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
-     //
-     //       var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
-     //       Playlist playlist = new Playlist()
-     //       {
-     //           Title = model.Title,
-     //           CoverImage = imageUploadResult,
-     //           UserId = user.Id,
-     //           
-     //       };
-     //       await playlistService.AddPlaylistAsync(playlist);
-     //       return RedirectToAction("AllPlaylists");
-     //   }
+   
 
 
         public async Task<IActionResult> PlaylistDetails(int id)
@@ -156,6 +140,14 @@ namespace HySound.Controllers
                 Id = x.Id,
                 Description = x.Description,
             });
+
+            if (!User.IsInRole("Admin"))
+            {
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+                playlists = playlists.Where(x => x.UserName ==user.Username);
+            }
 
             return View(playlists);
             

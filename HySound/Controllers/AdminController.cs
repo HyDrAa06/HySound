@@ -39,7 +39,7 @@ namespace HySound.Controllers
             var request = await _artistRequestService.GetByIdAsync(id);
             if (request != null)
             {
-                var user = _userService.GetUserAsync(x => x.Id == request.UserId);
+                var user = await _userService.GetUserAsync(x => x.Id == request.UserId);
                 await _artistRequestService.ApproveRequestAsync(id,1);
             }
 

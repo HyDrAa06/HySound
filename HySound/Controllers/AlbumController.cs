@@ -146,9 +146,17 @@ namespace HySound.Controllers
             User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
             var singles = await trackService.GetAllTracksAsync(x=>x.IsYoutube == false);
-            singles = singles.Where(x => x.AlbumId is null && x.UserId == user.Id).ToList();
 
-            if(singles.Count() <= 0)
+            if (User.IsInRole("Admin"))
+            {
+                singles = singles.Where(x => x.AlbumId is null).ToList();
+            }
+            else
+            {
+                singles = singles.Where(x => x.AlbumId is null && x.UserId == user.Id).ToList();
+            }
+
+            if (singles.Count() <= 0)
             {
                 TempData["Message"] = "No records with audio files found.";
                 return RedirectToAction("AllAlbums");
@@ -226,7 +234,7 @@ namespace HySound.Controllers
 
             if (string.IsNullOrEmpty(filter.Search))
             {
-
+              
                 var model = albumService.AllWithInclude().Include(x => x.User).Select(x => new AlbumViewModel()
                 {
                     Id = x.Id,
@@ -234,6 +242,13 @@ namespace HySound.Controllers
                     CoverImage = x.CoverImage,
                     UserName = x.User.Username
                 }).ToList();
+
+                if (!User.IsInRole("Admin"))
+                {
+                    var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                    User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+                    model = model.Where(x => x.UserName == user.Username).ToList();
+                }
 
                 filterModel = new AlbumFilterViewModel
                 {

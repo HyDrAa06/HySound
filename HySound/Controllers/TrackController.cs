@@ -93,7 +93,7 @@ namespace HySound.Controllers
             {
                 track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
             }
-            else if(model.audioFile != null) // Only update AudioUrl if a new file is uploaded
+            else if (model.audioFile != null) // Only update AudioUrl if a new file is uploaded
             {
                 var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
                 if (string.IsNullOrEmpty(audioUploadResult))
@@ -321,6 +321,13 @@ namespace HySound.Controllers
                     LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
                 }).ToList();
 
+                if (!User.IsInRole("Admin"))
+                {
+                    var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                    User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+                    model = model.Where(x => x.UserName == user.Username).ToList();
+                }
+
                 var filterModel = new TrackFilterViewModel
                 {
                     Tracks = model,
@@ -341,28 +348,60 @@ namespace HySound.Controllers
                     query = query.Where(x => x.Title == filter.Title);
                 }
 
-
-                var filterModel = new TrackFilterViewModel
+                if (!User.IsInRole("Admin"))
                 {
-                    Tracks = query.Include(x => x.Genre).ThenInclude(x => x.Tracks)
-                .Include(x => x.User).ThenInclude(x => x.Tracks)
-                .Select(x => new TrackViewModel()
-                {
-                    TrackId = x.Id,
-                    Title = x.Title,
-                    AudioUrl = x.AudioUrl,
-                    GenreName = x.Genre.Name,
-                    UserName = x.User.Username,
-                    ImageLink = x.CoverImage,
-                    LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
-                }).ToList(),
-                    Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
-                    Title = filter.Title,
-                    GenreId = filter.GenreId,
-                    Playlists = playlists.ToList()
-                };
+                    var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                    User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
-                return View(filterModel);
+                    var filterModel = new TrackFilterViewModel
+                    {
+                        Tracks = query.Include(x => x.Genre).ThenInclude(x => x.Tracks)
+               .Include(x => x.User).ThenInclude(x => x.Tracks)
+               .Select(x => new TrackViewModel()
+               {
+                   TrackId = x.Id,
+                   Title = x.Title,
+                   AudioUrl = x.AudioUrl,
+                   GenreName = x.Genre.Name,
+                   UserName = x.User.Username,
+                   ImageLink = x.CoverImage,
+                   LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
+               }).Where(x=>x.UserName==user.Username).ToList(),
+                        Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
+                        Title = filter.Title,
+                        GenreId = filter.GenreId,
+                        Playlists = playlists.ToList()
+                    };
+
+
+                    return View(filterModel);
+
+                }
+                else
+                {
+                    var filterModel = new TrackFilterViewModel
+                    {
+                        Tracks = query.Include(x => x.Genre).ThenInclude(x => x.Tracks)
+               .Include(x => x.User).ThenInclude(x => x.Tracks)
+               .Select(x => new TrackViewModel()
+               {
+                   TrackId = x.Id,
+                   Title = x.Title,
+                   AudioUrl = x.AudioUrl,
+                   GenreName = x.Genre.Name,
+                   UserName = x.User.Username,
+                   ImageLink = x.CoverImage,
+                   LikesCount = likesService.GetAll().Where(y => y.TrackId == x.Id).Count()
+               }).ToList(),
+                        Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
+                        Title = filter.Title,
+                        GenreId = filter.GenreId,
+                        Playlists = playlists.ToList()
+                    };
+
+                    return View(filterModel);
+                }
+
             }
 
         }
