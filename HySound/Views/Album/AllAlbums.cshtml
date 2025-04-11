@@ -434,7 +434,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // View switching functionality
         const tableViewBtn = document.getElementById('tableViewBtn');
         const gridViewBtn = document.getElementById('gridViewBtn');
         const tableView = document.querySelector('.tracks-table-container');
@@ -456,13 +455,11 @@
             localStorage.setItem('albumPreferredView', 'grid');
         });
 
-        // Check user preference from localStorage
         const preferredView = localStorage.getItem('albumPreferredView');
         if (preferredView === 'grid') {
             gridViewBtn.click();
         }
 
-        // Track card hover effects
         const cards = document.querySelectorAll(".track-card");
         cards.forEach(card => {
             card.addEventListener("mouseenter", () => {

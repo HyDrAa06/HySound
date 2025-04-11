@@ -158,7 +158,7 @@ namespace HySound.Controllers
 
             if (singles.Count() <= 0)
             {
-                TempData["Message"] = "No records with audio files found.";
+                TempData["Message"] = "Не са намерени песни с аудио файлове.";
                 return RedirectToAction("AllAlbums");
             }
 
@@ -215,7 +215,7 @@ namespace HySound.Controllers
                 }
                 else 
                 {
-                    ModelState.AddModelError("SelectedTracksIds", "Please select at least one track.");
+                    ModelState.AddModelError("SelectedTracksIds", "Моля изберете поне една песен.");
                 }
                 
 

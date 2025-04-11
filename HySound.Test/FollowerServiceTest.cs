@@ -84,7 +84,6 @@ namespace HySound.Test
 
         public async Task DeleteAllFollowersAndFollowing()
         {
-            // Arrange
             int userId = 1;
             var following = new List<Followed>
         {
@@ -106,10 +105,8 @@ namespace HySound.Test
                 .Returns(Task.CompletedTask)
                 .Callback<Followed>(f => deletedFollowers.Add(f));
 
-            // Act
             await _followerService.DeleteAllFollowersAndFollowing(userId);
 
-            // Assert
             Assert.AreEqual(following.Count + followed.Count, deletedFollowers.Count);
             foreach (var follow in following.Concat(followed))
             {

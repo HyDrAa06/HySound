@@ -115,7 +115,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // View switching functionality
         const tableViewBtn = document.getElementById('tableViewBtn');
         const gridViewBtn = document.getElementById('gridViewBtn');
         const tableView = document.querySelector('.tracks-table-container');
@@ -137,13 +136,11 @@
             localStorage.setItem('preferredPlaylistView', 'grid');
         });
 
-        // Check user preference from localStorage
         const preferredView = localStorage.getItem('preferredPlaylistView');
         if (preferredView === 'table') {
             tableViewBtn.click();
         }
 
-        // Playlist card hover effects
         const cards = document.querySelectorAll(".playlist-card");
         cards.forEach(card => {
             card.addEventListener("mouseenter", () => {

@@ -60,7 +60,7 @@
                         <div class="comment-content">
                             <div class="comment-header">
                                 <p class="comment-user">@comment.User.Username</p>
-                                <p class="comment-date">Преди 1 ден</p>
+                                
                             </div>
                             <p class="comment-text">@comment.Content</p>
                             <div class="comment-actions">
@@ -101,13 +101,11 @@
                     const image = playButton.dataset.image;
 
                     if (file && file !== 'undefined') {
-                        // Разчитаме на site.js да управлява глобалния плейър
                         if (typeof loadTrack === 'function') {
                             trackList = [{ file, title, artist, image }];
                             currentTrackIndex = 0;
                             console.log('Списъкът с песни е зададен за глобалния плейър:', trackList);
                             loadTrack(0, true);
-                            // Уверете се, че плейърът е видим
                             if (playerContainer) {
                                 playerContainer.classList.add('visible');
                                 playerContainer.style.display = 'flex';
@@ -116,7 +114,6 @@
                                 console.error('Контейнерът на плейъра не е намерен');
                             }
                         } else {
-                            // Резервен вариант с локално аудио, ако глобалният плейър не работи
                             console.log('Глобалният плейър не е наличен, използва се локално аудио');
                             localAudio.play().then(() => {
                                 console.log('Локалното аудио се възпроизвежда');

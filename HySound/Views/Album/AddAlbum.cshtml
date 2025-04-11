@@ -77,7 +77,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Cover image preview (unchanged)
         const coverInput = document.getElementById('Picture');
         const coverPreview = document.getElementById('coverPreview');
 
@@ -96,7 +95,6 @@
             coverInput.click();
         });
 
-        // Track selection and counter
         const checkboxes = document.querySelectorAll(".track-checkbox");
         const trackCounter = document.getElementById("trackCounter");
 
@@ -112,7 +110,6 @@
             });
         });
 
-        // Track search functionality (unchanged)
         const searchInput = document.getElementById("trackSearch");
         const trackItems = document.querySelectorAll(".track-item");
 
@@ -128,7 +125,6 @@
             });
         });
 
-        // Form submission validation
         const form = document.querySelector(".album-form");
         const errorContainer = document.createElement("div");
         errorContainer.className = "validation-error";

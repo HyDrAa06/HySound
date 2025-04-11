@@ -82,7 +82,6 @@
                 console.log("File selected: ", this.files[0].name);
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    // Remove placeholder and add image
                     coverPreview.innerHTML = '';
                     const img = document.createElement('img');
                     img.src = e.target.result;

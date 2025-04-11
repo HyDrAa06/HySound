@@ -634,7 +634,6 @@ else
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Добавяне на Font Awesome, ако още не е включен
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
@@ -642,34 +641,27 @@ else
             document.head.appendChild(link);
         }
 
-        // Задаване на динамичен фон на заглавието въз основа на корицата на плейлиста
         function setHeaderBackground() {
             const coverImage = document.getElementById('playlistCover');
             const header = document.getElementById('playlistHeader');
 
-            // Продължаваме само ако и двата елемента съществуват
             if (!coverImage || !header) return;
 
             try {
-                // Създаваме невидим канвас за анализ на изображението
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 const img = new Image();
 
                 img.crossOrigin = 'Anonymous';
                 img.onload = function () {
-                    // Задаваме размерите на канваса
                     canvas.width = img.width;
                     canvas.height = img.height;
 
-                    // Рисуваме изображението върху канваса
                     context.drawImage(img, 0, 0);
 
-                    // Вземаме данните за пикселите от горната част на изображението
                     const imageData = context.getImageData(0, 0, canvas.width, canvas.height / 4);
                     const data = imageData.data;
 
-                    // Изчисляваме средния цвят
                     let r = 0, g = 0, b = 0;
                     const pixelCount = data.length / 4;
 
@@ -683,7 +675,6 @@ else
                     g = Math.floor(g / pixelCount);
                     b = Math.floor(b / pixelCount);
 
-                    // Прилагаме като градиент за фона на заглавието
                     header.style.backgroundImage = `linear-gradient(rgba(${r}, ${g}, ${b}, 0.7) 0%, rgba(18, 18, 18, 1) 100%)`;
                 };
 
@@ -693,10 +684,8 @@ else
             }
         }
 
-        // Извикваме функцията за задаване на фона на заглавието
         setHeaderBackground();
 
-        // Сериализиране на песните от плейлиста
         var playlistTracks = @Html.Raw(Json.Serialize(Model.Tracks.Select(t => new
         {
             src = t.AudioUrl,
@@ -705,7 +694,6 @@ else
             image = t.CoverImage ?? "/images/default-cover.jpg"
         })));
 
-        // Референции към елементите на плейъра
         const globalAudio = document.getElementById("global-audio");
         const globalAudioSource = document.getElementById("global-audio-source");
         const playButton = document.getElementById("play-btn");
@@ -725,7 +713,6 @@ else
         let isPlaying = false;
         const defaultImage = '/images/default-cover.jpg';
 
-        // Клонираме бутоните, за да премахнем съществуващи слушатели, ако има такива
         if (playButton && prevButton && nextButton) {
             [playButton, prevButton, nextButton].forEach(btn => {
                 const newBtn = btn.cloneNode(true);
@@ -849,10 +836,8 @@ else
             }
         }
 
-        // Правим loadTrack достъпен глобално за бутоните на песните
         window.loadTrack = loadTrack;
 
-        // Слушатели за събития
         if (updatedPlayButton) {
             updatedPlayButton.addEventListener("click", function () {
                 if (isPlaying) {
@@ -912,7 +897,6 @@ else
             });
         }
 
-        // Добавяме събития за кликване към бутоните за възпроизвеждане на всяка песен
         playButtons.forEach((button, index) => {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -921,7 +905,6 @@ else
             });
         });
 
-        // Добавяме събития за двойно кликване към редовете на песните
         document.querySelectorAll('.track').forEach(track => {
             track.addEventListener('dblclick', function () {
                 const index = this.getAttribute('data-index');
@@ -932,15 +915,12 @@ else
             });
         });
 
-        // Първоначална настройка
         populateTrackList();
 
-        // Опитваме се да заредим запазената песен само ако елементите на плейъра съществуват
         if (globalAudio && globalAudioSource) {
             loadStoredTrack();
         }
 
-        // Стилизираме лентата за звук първоначално
         if (soundBar) {
             soundBar.style.background = `linear-gradient(to right, #1DB954 ${soundBar.value}%, #333 ${soundBar.value}%)`;
         }

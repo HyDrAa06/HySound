@@ -439,7 +439,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // View switching functionality
         const tableViewBtn = document.getElementById('tableViewBtn');
         const gridViewBtn = document.getElementById('gridViewBtn');
         const tableView = document.querySelector('.tracks-table-container');
@@ -461,13 +460,11 @@
             localStorage.setItem('preferredView', 'grid');
         });
 
-        // Check user preference from localStorage
         const preferredView = localStorage.getItem('preferredView');
         if (preferredView === 'grid') {
             gridViewBtn.click();
         }
 
-        // Track card hover effects - but only for non-YouTube tracks
         const cards = document.querySelectorAll(".track-card");
         cards.forEach(card => {
             if (card.querySelector('.youtube-container')) {

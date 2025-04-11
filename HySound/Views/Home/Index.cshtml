@@ -86,9 +86,7 @@
     <!-- Audio Player -->
 
     <script>
-        // home-page-audio.js
         document.addEventListener("DOMContentLoaded", function () {
-            // Get references to DOM elements
             const globalAudio = document.getElementById("global-audio");
             const globalAudioSource = document.getElementById("global-audio-source");
             const playButtons = document.querySelectorAll(".track-play-btn-home");
@@ -102,25 +100,21 @@
 
             let isPlaying = false;
 
-            // Helper function to update progress bars
             function updateProgressBar(bar, value) {
                 bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
             }
 
-            // Function to load and play a track
             function playTrack(button) {
                 const src = button.dataset.src;
                 const title = button.dataset.title;
                 const artist = button.dataset.artist;
                 const image = button.dataset.image;
 
-                // Update player UI
                 globalAudioSource.src = src;
                 songImage.src = image || '/Images/default-track.jpg';
                 songTitle.textContent = title || 'Unknown Title';
                 artistName.textContent = artist || 'Unknown Artist';
 
-                // Reset and load audio
                 globalAudio.load();
                 globalAudio.currentTime = 0;
                 timebar.value = 0;
@@ -128,7 +122,6 @@
                 globalAudio.volume = soundBar.value / 100 || 1.0;
                 updateProgressBar(soundBar, soundBar.value);
 
-                // Play the track
                 globalAudio.play()
                     .then(() => {
                         isPlaying = true;
@@ -138,14 +131,12 @@
                     .catch(error => console.error('Error playing audio:', error));
             }
 
-            // Add click event listeners to all play buttons
             playButtons.forEach(button => {
                 button.addEventListener("click", function () {
                     playTrack(this);
                 });
             });
 
-            // Play/Pause button functionality
             playButton.addEventListener("click", function () {
                 if (globalAudio.paused) {
                     globalAudio.play();
@@ -159,7 +150,6 @@
                 }
             });
 
-            // Update timebar as audio plays
             globalAudio.addEventListener("timeupdate", function () {
                 if (!isNaN(globalAudio.duration)) {
                     const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
@@ -168,13 +158,11 @@
                 }
             });
 
-            // Seek audio when timebar is adjusted
             timebar.addEventListener("input", function () {
                 globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
                 updateProgressBar(timebar, timebar.value);
             });
 
-            // Adjust volume with sound bar
             soundBar.addEventListener("input", function () {
                 globalAudio.volume = soundBar.value / 100;
                 updateProgressBar(soundBar, soundBar.value);

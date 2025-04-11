@@ -1,10 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    // Проверяваме дали сме на страницата AlbumDetails или PlaylistDetails
     const isAlbumDetailsPage = window.location.pathname.includes('AlbumDetails');
     const isPlaylistDetailsPage = window.location.pathname.includes('PlaylistDetails');
     if (isAlbumDetailsPage || isPlaylistDetailsPage) return;
 
-    // Вземаме референции към DOM елементи
     const globalAudio = document.getElementById("global-audio");
     const globalAudioSource = document.getElementById("global-audio-source");
     const playButton = document.getElementById("play-btn");
@@ -19,7 +17,6 @@
 
     const navLinks = document.getElementsByClassName("nav-link");
 
-    // Променливи за състояние
     let trackList = [];
     let currentTrackIndex = 0;
     let isPlaying = false;
@@ -27,12 +24,10 @@
     let currentTracks = [];
     let selectedPlaylistId = null;
 
-    // Помощна функция за актуализиране на лентите за напредък
     function updateProgressBar(bar, value) {
         bar.style.background = `linear-gradient(to right, #1db954 0%, #1db954 ${value}%, #1e1e1e ${value}%, #1e1e1e 100%)`;
     }
 
-    // Зареждаме запазеното състояние на песента от localStorage
     function loadStoredTrack() {
         const storedTrack = localStorage.getItem("currentTrack");
         if (storedTrack) {
@@ -60,12 +55,10 @@
         }
     }
 
-    // Запазваме състоянието на песента при навигация
     for (let navLink of navLinks) {
         navLink.addEventListener("click", saveTrackState);
     }
 
-    // Функционалност на бутона за пускане/пауза
     playButton.addEventListener("click", function () {
         if (globalAudio.paused) {
             globalAudio.play();
@@ -80,19 +73,16 @@
         saveTrackState();
     });
 
-    // Бутон за предишна песен
     prevButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex - 1 + trackList.length) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
-    // Бутон за следваща песен
     nextButton.addEventListener("click", function () {
         currentTrackIndex = (currentTrackIndex + 1) % trackList.length;
         loadTrack(currentTrackIndex, isPlaying);
     });
 
-    // Зареждаме песен в плейъра
     function loadTrack(index, shouldPlay = false) {
         const track = trackList[index];
         console.log('Зареждане на песен:', track);
@@ -131,7 +121,6 @@
         saveTrackState();
     }
 
-    // Запазваме текущото състояние на песента в localStorage
     function saveTrackState() {
         localStorage.setItem("currentTrack", JSON.stringify({
             file: globalAudioSource.src,
@@ -143,7 +132,6 @@
         }));
     }
 
-    // Актуализираме лентата за време по време на възпроизвеждане
     globalAudio.addEventListener("timeupdate", function () {
         if (!isNaN(globalAudio.duration)) {
             const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
@@ -152,20 +140,17 @@
         }
     });
 
-    // Превъртаме аудиото, когато лентата за време се регулира
     timebar.addEventListener("input", function () {
         globalAudio.currentTime = (timebar.value / 100) * globalAudio.duration;
         updateProgressBar(timebar, timebar.value);
         saveTrackState();
     });
 
-    // Регулираме силата на звука с лентата за звук
     soundBar.addEventListener("input", function () {
         globalAudio.volume = soundBar.value / 100;
         updateProgressBar(soundBar, soundBar.value);
     });
 
-    // Списък с песни по подразбиране (за тестване или първоначално зареждане)
     trackList = [
         {
             file: 'path-to-song1.mp3',
@@ -189,7 +174,6 @@
 
     loadStoredTrack();
 
-    // Слушатели за събития за навигация в библиотеката
     document.getElementById('favourites-option').addEventListener('click', function () {
         toggleContent('favourites');
         updateTitle('Любими');
@@ -208,7 +192,6 @@
         updateActiveState('albums');
     });
 
-    // Превключваме видимостта на съдържанието в библиотеката
     function toggleContent(content) {
         document.getElementById('favourites-content').style.display = 'none';
         document.getElementById('playlists-content').style.display = 'none';
@@ -233,21 +216,17 @@
         }
     }
 
-    // Актуализираме заглавието на библиотеката
     function updateTitle(title) {
         document.getElementById('library-title').textContent = title;
     }
 
-    // Актуализираме активното състояние на навигацията
     function updateActiveState(option) {
         const navItems = document.querySelectorAll('.library-nav li');
         navItems.forEach(item => item.classList.remove('active'));
         document.getElementById(option + '-option').classList.add('active');
     }
 
-    // Главен слушател за кликване върху албуми, плейлисти и песни
     document.addEventListener("click", function (e) {
-        // Обработка на кликвания върху карти за албуми
         const albumCard = e.target.closest('.album-card');
         if (albumCard && albumCard.dataset.type === 'album') {
             const playButton = albumCard.querySelector('.album-play-btn');
@@ -280,7 +259,6 @@
             }
         }
 
-        // Обработка на кликвания върху карти за плейлисти
         const playlistCard = e.target.closest('.library-track-card[data-type="playlist"]');
         if (playlistCard) {
             const playButton = playlistCard.querySelector('.playlist-play-btn');
@@ -313,7 +291,6 @@
             }
         }
 
-        // Обработка на кликвания върху бутони за възпроизвеждане в списъка с песни (за албуми и плейлисти)
         const trackPlayButton = e.target.closest('.tracklist-play-btn');
         if (trackPlayButton) {
             const index = parseInt(trackPlayButton.dataset.index);
@@ -332,7 +309,6 @@
                     console.log('Няма валидни песни от тази точка');
                 }
             } else {
-                // Резервен вариант за възпроизвеждане на единична песен
                 const file = trackPlayButton.dataset.src;
                 const title = trackPlayButton.dataset.title || 'Песен без име';
                 const artist = trackPlayButton.dataset.artist || 'Неизвестен изпълнител';
@@ -347,7 +323,6 @@
             }
         }
 
-        // Обработка на кликвания върху бутони за възпроизвеждане на единична песен
         const singlePlayButton = e.target.closest('.play-track-btn');
         if (singlePlayButton) {
             console.log('Кликнат е бутон за единична песен:', singlePlayButton);
@@ -365,7 +340,6 @@
         }
     });
 
-    // Извличане на песни от албум от сървъра
     async function fetchAlbumTracks(albumId) {
         try {
             const response = await fetch('/Album/Tracks?albumId=' + albumId);
@@ -382,7 +356,6 @@
         }
     }
 
-    // Показване на песните от албума в мрежа
     async function showAlbumTracks(albumId) {
         selectedAlbumId = albumId;
         hideAlbumTracksGrid();
@@ -401,7 +374,6 @@
         }
     }
 
-    // Скриване на мрежата с песни от албума и връщане към изгледа за албуми
     function hideAlbumTracksGrid() {
         selectedAlbumId = null;
         document.getElementById('albums-content').style.display = 'grid';
@@ -412,7 +384,6 @@
         }
     }
 
-    // Извличане на песни от плейлист от сървъра
     async function fetchPlaylistTracks(playlistId) {
         try {
             const response = await fetch('/Playlist/Tracks?playlistId=' + playlistId);
@@ -429,7 +400,6 @@
         }
     }
 
-    // Показване на песните от плейлиста в мрежа
     async function showPlaylistTracks(playlistId) {
         selectedPlaylistId = playlistId;
         hidePlaylistTracksGrid();
@@ -448,7 +418,6 @@
         }
     }
 
-    // Скриване на мрежата с песни от плейлиста и връщане към изгледа за плейлисти
     function hidePlaylistTracksGrid() {
         selectedPlaylistId = null;
         document.getElementById('playlists-content').style.display = 'grid';
@@ -459,7 +428,6 @@
         }
     }
 
-    // Попълваме мрежата с песни с данни за песните
     function populateTracksGrid(tracks, containerId = 'selected-album-tracks') {
         const grid = document.getElementById(containerId);
         grid.innerHTML = '';
@@ -514,7 +482,6 @@ function markAsRead(id) {
     });
 }
 
-// Add this to your existing script section or a separate JS file
 
         document.addEventListener('DOMContentLoaded', function () {
     const player = document.querySelector('.player-container');
@@ -530,12 +497,10 @@ function markAsRead(id) {
         });
     }
 
-    // Observe modal open/close events
     modals.forEach(modal => {
         modal.addEventListener('click', togglePlayerVisibility); // Adjust based on your modal trigger
     });
 
-    // Example: Tie to existing modal functions (if using your previous code)
     const openEditModal = () => {
         document.getElementById('editModal').style.display = 'flex';
         player.classList.remove('visible');
@@ -545,7 +510,6 @@ function markAsRead(id) {
         player.classList.add('visible');
     };
 
-    // Attach to existing buttons (adjust IDs as needed)
     document.querySelector('.edit-profile-btn')?.addEventListener('click', openEditModal);
     document.querySelector('.close-btn')?.addEventListener('click', closeEditModal);
 });
@@ -554,10 +518,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const player = document.querySelector('.player-container');
     const body = document.body;
 
-    // Add padding to the body to prevent content from being hidden behind the player
     const playerHeight = player.offsetHeight || 70; // Fallback to 70px if offsetHeight isn't available
     body.style.paddingBottom = `${playerHeight}px`;
 
-    // Ensure the player is always visible by adding the 'visible' class (if still used elsewhere)
     player.classList.add('visible');
 });

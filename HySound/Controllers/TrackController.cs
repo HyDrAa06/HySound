@@ -71,7 +71,6 @@ namespace HySound.Controllers
             if (track == null)
                 return NotFound();
 
-            // Update image
             if (model.ImageFile != null)
             {
                 var imageUploadResult = await cloudService.UploadImageAsync(model.ImageFile);
@@ -82,13 +81,11 @@ namespace HySound.Controllers
                 track.CoverImage = model.ImageUrl; // Preserve existing image
             }
 
-            // Update basic fields
             track.Title = model.Title;
             track.GenreId = model.GenreId;
             track.UserId = user.Id;
             track.IsYoutube = model.IsYoutube;
 
-            // Update audio
             if (model.IsYoutube)
             {
                 track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
@@ -105,7 +102,6 @@ namespace HySound.Controllers
                 }
                 track.AudioUrl = audioUploadResult;
             }
-            // If no new audioFile and not YouTube, track.AudioUrl remains unchanged
 
             await trackService.UpdateTrackAsync(track);
             return RedirectToAction("AllTracks");

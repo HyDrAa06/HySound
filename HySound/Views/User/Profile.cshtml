@@ -860,7 +860,6 @@
     }
 </style>
 <script>
-    // Modal open/close functions (moved to global scope)
     function openEditModal() {
         const modal = document.getElementById('editModal');
         modal.style.display = 'flex';
@@ -891,16 +890,13 @@
         modal.style.display = 'none';
     }
 
-    // Additional setup after DOM is loaded
     document.addEventListener('DOMContentLoaded', function () {
         const player = document.querySelector('.player-container');
         const body = document.body;
 
-        // Add padding to the body for the player
         const playerHeight = player ? player.offsetHeight : 70; // Fallback to 70px if player not found
         body.style.paddingBottom = `${playerHeight}px`;
 
-        // Function to update body padding on resize
         function updateBodyPadding() {
             const playerHeight = player ? player.offsetHeight : 70;
             body.style.paddingBottom = `${playerHeight}px`;
@@ -908,7 +904,6 @@
 
         window.addEventListener('resize', updateBodyPadding);
 
-        // Setup for image upload
         const currentPic = document.querySelector('.current-pic');
         const fileInput = document.getElementById('ImageFile');
 
@@ -928,7 +923,6 @@
             });
         }
 
-        // Character counter for bio and username
         const bioTextarea = document.getElementById('bio');
         const charCount = document.getElementById('bioCharCount');
         const usernameInput = document.getElementById('username');

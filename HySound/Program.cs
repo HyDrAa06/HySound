@@ -41,7 +41,6 @@ builder.Services.AddScoped<IArtistRequestService, ArtistRequestService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddRazorPages();
 
-// Add this to your Program.cs
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -60,11 +59,9 @@ builder.Services.AddSingleton(cloudinary);
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

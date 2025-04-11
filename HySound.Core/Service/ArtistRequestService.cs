@@ -45,11 +45,9 @@ namespace HySound.Core.Service
                 throw new InvalidOperationException("User not found.");
             }
 
-            // Update request status
             request.Status = "approved";
             request.AdminId = adminId;
 
-            // Assign "Artist" role and remove "User" role if present
             if (!await _userManager.IsInRoleAsync(user, "Artist"))
             {
                 await _userManager.AddToRoleAsync(user, "Artist");

@@ -32,10 +32,8 @@ namespace HySound.Test
         [Test]
         public async Task AddPlaylistAsync()
         {
-            // Arrange
             var playlist = new Playlist { Id = 1, Title = "Playlist 1", CoverImage = "cover1.jpg", Description = "Description 1", UserId = 1 };
 
-            // Setup mock to simulate adding the playlist and retrieving it
             _mockPlaylistRepository.Setup(r => r.AddAsync(playlist)).Returns(Task.CompletedTask);
             _mockPlaylistRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(playlist);
 
@@ -147,7 +145,6 @@ namespace HySound.Test
 
         public async Task AddTrackToPlaylistAsync()
         {
-            // Arrange
             var playlist = new Playlist { Id = 1 };
             var track = new Track { Id = 2 };
             var playlistTrack = new PlaylistTrack { PlaylistId = playlist.Id, TrackId = track.Id };
@@ -156,10 +153,8 @@ namespace HySound.Test
                 .Returns(Task.CompletedTask)
                 .Callback<PlaylistTrack>(pt => playlistTrack = pt);
 
-            // Act
             await _playlistService.AddTrackToPlaylistAsync(playlist, track);
 
-            // Assert
             Assert.AreEqual(playlist.Id, playlistTrack.PlaylistId);
             Assert.AreEqual(track.Id, playlistTrack.TrackId);
         }

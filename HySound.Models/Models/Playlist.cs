@@ -14,6 +14,8 @@ namespace HySound.Models.Models
         public int Id { get; set; }
         [Required]
         [MaxLength(100)]
+        [RegularExpression(@"\S.*", ErrorMessage = "Заглавието не може да е само празни интервали.")]
+
         public string Title { get; set; }
         public string? CoverImage { get; set; }
         [MaxLength(500)]
