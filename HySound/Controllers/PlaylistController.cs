@@ -209,8 +209,7 @@ namespace HySound.Controllers
                 else
                 {
                     Console.WriteLine("No new image, using existing PictureUrl");
-                    playlist.CoverImage = model.PictureUrl ?? playlist.CoverImage; // Fallback to DB value if null
-                }
+                    playlist.CoverImage = model.PictureUrl ?? playlist.CoverImage;                 }
 
                 playlist.Title = model.Title;
 

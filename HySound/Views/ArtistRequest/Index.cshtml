@@ -5,14 +5,14 @@
 
 <div class="spotify-container">
     <div class="content-wrapper">
-        <!-- Бутон за връщане -->
+        
         <div class="back-button-container">
             <a asp-action="Index" asp-controller="Home" class="back-btn" title="Назад">
                 <i class="fas fa-arrow-left"></i>
             </a>
         </div>
 
-        <!-- Съобщение за предупреждение -->
+        
         @if (TempData["Message"] != null)
         {
             <div class="spotify-alert">
@@ -21,7 +21,7 @@
             </div>
         }
 
-        <!-- Основно съдържание -->
+        
         <div class="spotify-card">
             <div class="card-content">
                 <h1>Стани изпълнител</h1>

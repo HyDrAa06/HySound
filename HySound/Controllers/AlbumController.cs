@@ -303,8 +303,7 @@ namespace HySound.Controllers
                     Name = t.Title,
                     UserName = t.User.Username,
                     ImageLink = t.CoverImage,
-                    AudioUrl = t.AudioUrl // This must be a valid URL
-                })
+                    AudioUrl = t.AudioUrl                 })
                 .ToList();
 
             if(tracks == null)

@@ -2,7 +2,7 @@
 @model IEnumerable<User>
 
 <div class="container-fluid py-5">
-    <!-- Header with improved Spotify-like styling -->
+    
     <div class="row align-items-center mb-5">
         <div class="col-12">
             <h1 class="display-4 text-white fw-bold mb-0">Потребители</h1>
@@ -10,14 +10,14 @@
         </div>
     </div>
 
-    <!-- Enhanced Users Grid with Spotify-like cards -->
+    
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
         @foreach (var user in Model)
         {
             <div class="col">
                 <div class="card bg-dark text-white h-100 spotify-card">
                     <div class="card-body text-center p-4">
-                        <!-- Circular profile picture with improved styling -->
+                        
                         <div class="profile-container mb-4">
                             @if (!string.IsNullOrEmpty(user.ProfilePicture))
                             {
@@ -36,11 +36,11 @@
                             </div>
                         </div>
 
-                        <!-- User info with improved typography -->
+                        
                         <h5 class="card-title fw-bold mb-1 text-truncate">@user.Username</h5>
                         <p class="card-text text-muted small mb-3">@user.Email</p>
 
-                        <!-- Bio with better handling -->
+                        
                         <div class="bio-container">
                             @if (!string.IsNullOrEmpty(user.Bio))
                             {
@@ -52,7 +52,7 @@
                             }
                         </div>
 
-                        <!-- Action buttons with improved styling -->
+                        
                         <div class="d-flex justify-content-between mt-auto">
                             <a href="#" class="btn btn-link text-muted p-0 view-btn" data-bs-toggle="tooltip" title="Виж профила">
                                 <i class="bi bi-eye-fill"></i>
@@ -246,7 +246,7 @@
         }
 </style>
 
-<!-- Required scripts -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -256,5 +256,5 @@
     });
 </script>
 
-<!-- Bootstrap Icons CSS -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">

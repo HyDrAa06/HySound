@@ -250,8 +250,7 @@ namespace HySound.Controllers
 
             if (followingUser == null || followedUser == null)
             {
-                return NotFound(); // One of the users doesn't exist
-            }
+                return NotFound();             }
 
             Followed follow = new Followed
             {

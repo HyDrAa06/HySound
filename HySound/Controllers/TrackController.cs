@@ -78,8 +78,7 @@ namespace HySound.Controllers
             }
             else
             {
-                track.CoverImage = model.ImageUrl; // Preserve existing image
-            }
+                track.CoverImage = model.ImageUrl;             }
 
             track.Title = model.Title;
             track.GenreId = model.GenreId;
@@ -88,10 +87,8 @@ namespace HySound.Controllers
 
             if (model.IsYoutube)
             {
-                track.AudioUrl = model.AudioUrl; // Use provided YouTube URL
-            }
-            else if (model.audioFile != null) // Only update AudioUrl if a new file is uploaded
-            {
+                track.AudioUrl = model.AudioUrl;             }
+            else if (model.audioFile != null)             {
                 var audioUploadResult = await cloudService.UploadTrackAsync(model.audioFile);
                 if (string.IsNullOrEmpty(audioUploadResult))
                 {
@@ -130,8 +127,7 @@ namespace HySound.Controllers
 
             if (model == null)
             {
-                return NotFound(); // Handle missing track
-            }
+                return NotFound();             }
 
             if (!model.IsYoutube)
             {
@@ -241,8 +237,7 @@ namespace HySound.Controllers
         public class AddToPlaylistsRequest
         {
             public int TrackId { get; set; }
-            public List<int> PlaylistIds { get; set; } // Changed to List<int>
-        }
+            public List<int> PlaylistIds { get; set; }         }
         public async Task<IActionResult> TrackDetails(int id)
         {
             var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
@@ -258,13 +253,11 @@ namespace HySound.Controllers
             {
                 if (track.UserId.HasValue)
                 {
-                    trackUser = await userService.GetUserByIdAsync(track.UserId.Value); // Assuming you have a UserService
-                }
+                    trackUser = await userService.GetUserByIdAsync(track.UserId.Value);                 }
 
                 if (track.GenreId.HasValue)
                 {
-                    trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value); // Assuming you have a GenreService
-                }
+                    trackGenre = await genreService.GetGenreByIdAsync(track.GenreId.Value);                 }
 
                 int likesCount = likesService.GetAll().Where(x => x.TrackId == id).Count();
 

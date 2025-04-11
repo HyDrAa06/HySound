@@ -2,7 +2,7 @@
 @model TrackDetailsViewModel
 
 <div class="track-details-container">
-    <!-- Бутон за връщане -->
+    
     <div class="back-button-container">
         <a asp-controller="Home" asp-action="Search" class="back-btn" title="Назад">
             <i class="fas fa-arrow-left"></i> Назад
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <!-- Локален аудио елемент като резервен вариант (по избор, може да се премахне, ако глобалният плейър работи) -->
+    
     <audio id="localAudio" src="@Model.AudioUrl" preload="auto" style="display:none;"></audio>
 
     <div class="comments-section">
@@ -132,7 +132,7 @@
     </script>
 </div>
 
-<!-- Съществуващите стилове остават непроменени -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
     /* Съществуващите стилове остават непроменени */
@@ -620,5 +620,5 @@
     }
 </style>
 
-<!-- Добавяме Font Awesome за икони -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

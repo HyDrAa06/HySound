@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="audio-upload-section">
-                    <!-- Show existing AudioUrl -->
+                    
                     @if (!string.IsNullOrEmpty(Model.AudioUrl))
                     {
                         <div class="input-group">
@@ -60,7 +60,7 @@
                         </div>
                     }
 
-                    <!-- File upload for non-YouTube tracks -->
+                    
                     <div class="input-group" id="fileUploadGroup">
                         <label for="audioFile">Смени аудио файла</label>
                         <div class="file-upload-wrapper">
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    <!-- YouTube URL input -->
+                    
                     <div class="input-group" id="audioUrlGroup">
                         <label for="AudioUrl">YouTube аудио URL</label>
                         <input type="text" id="AudioUrl" placeholder="Въведи YouTube URL" asp-for="AudioUrl" class="album-input" />

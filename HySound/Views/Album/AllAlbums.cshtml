@@ -4,7 +4,7 @@
 
 <div class="container artist-dashboard py-4">
     <div class="row">
-        <!-- Main Content -->
+        
         <div class="col-12 main-content">
             <div class="d-flex justify-content-between align-items-center header-section mb-4">
                 <div>
@@ -23,7 +23,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
-            <!-- Filter Section -->
+            
             <div class="filter-section mb-4">
                 <form asp-action="AllAlbums" method="get" class="search-form">
                     <div class="row g-3">
@@ -86,7 +86,7 @@
                 </table>
             </div>
 
-            <!-- Grid View Alternative -->
+            
             <div class="d-flex justify-content-end mb-3">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-dark active" id="tableViewBtn">
@@ -134,7 +134,7 @@
                 </div>
             </div>
 
-            <!-- Empty State -->
+            
             @if (!Model.Albums.Any())
             {
                 <div class="text-center py-5 empty-state">
