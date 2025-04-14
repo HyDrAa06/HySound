@@ -184,7 +184,7 @@ namespace HySound.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(user);
+                return RedirectToAction("Profile");
             }
             if (userModel == null)
             {

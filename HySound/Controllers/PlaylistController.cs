@@ -53,32 +53,34 @@ namespace HySound.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPlaylist(AddPlaylistViewModel model)
         {
-            if (model == null) return Content("Model is null");
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                return Content("Validation failed: " + string.Join(", ", errors));
+
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+                var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
+                Playlist playlist = new Playlist()
+                {
+                    Title = model.Title,
+                    CoverImage = imageUploadResult,
+                    UserId = user.Id,
+
+                };
+                await playlistService.AddPlaylistAsync(playlist);
+
+                if (User.IsInRole("User"))
+                {
+                    return RedirectToAction("Library", "Home");
+
+                }
+
+                return RedirectToAction("AllPlaylists");
             }
-            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
-
-            var imageUploadResult = await cloudService.UploadImageAsync(model.Picture);
-            Playlist playlist = new Playlist()
+            else
             {
-                Title = model.Title,
-                CoverImage = imageUploadResult,
-                UserId = user.Id,
-
-            };
-            await playlistService.AddPlaylistAsync(playlist);
-
-            if (User.IsInRole("User"))
-            {
-                return RedirectToAction("Library","Home");
-
+                return View(model);
             }
-
-            return RedirectToAction("AllPlaylists");
         }
 
 

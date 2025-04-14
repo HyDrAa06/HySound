@@ -24,18 +24,28 @@ namespace HySound.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(AddCommentViewModel model)
         {
-            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
-            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
-
-            Comment comment = new Comment()
+            if (ModelState.IsValid)
             {
-                Content = model.Content,
-                TrackId = model.TrackId,
-                UserId = user.Id
-            };
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
-            await commentService.AddCommentAsync(comment);
-            return RedirectToAction("TrackDetails", "Track", new { id=model.TrackId});
+                Comment comment = new Comment()
+                {
+                    Content = model.Content,
+                    TrackId = model.TrackId,
+                    UserId = user.Id
+                };
+
+                await commentService.AddCommentAsync(comment);
+                return RedirectToAction("TrackDetails", "Track", new { id = model.TrackId });
+
+            }
+            else
+            {
+                return RedirectToAction("TrackDetails", "Track", new { id = model.TrackId });
+
+            }
+
         }
         public IActionResult Index()
         {

@@ -7,6 +7,7 @@ namespace HySound.ViewModels
     {
         [Required]
         [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
 
         public string Title { get; set; }
         public IFormFile? Picture {  get; set; }

@@ -7,6 +7,7 @@ namespace HySound.ViewModels.Playlist
     {
         public int Id { get; set; }
         [Required]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
         [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
         public string Title { get; set; }
         public string? PictureUrl { get; set; }

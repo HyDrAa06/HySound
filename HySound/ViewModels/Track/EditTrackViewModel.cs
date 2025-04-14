@@ -9,9 +9,12 @@ namespace HySound.ViewModels
         public int Id { get; set; }
         [Required]
         [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
+
         public string Title { get; set; }
         
         public bool IsYoutube { get; set; }
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
 
         public string? AudioUrl { get; set; }
         public IFormFile? ImageFile { get; set; }

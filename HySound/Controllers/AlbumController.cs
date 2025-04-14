@@ -223,6 +223,41 @@ namespace HySound.Controllers
             }
             else
             {
+                var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+                User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
+
+                var singles = await trackService.GetAllTracksAsync(x => x.IsYoutube == false);
+
+                if (User.IsInRole("Admin"))
+                {
+                    singles = singles.Where(x => x.AlbumId is null).ToList();
+                }
+                else
+                {
+                    singles = singles.Where(x => x.AlbumId is null && x.UserId == user.Id).ToList();
+                }
+
+                if (singles.Count() <= 0)
+                {
+                    TempData["Message"] = "Не са намерени песни с аудио файлове.";
+                    return RedirectToAction("AllAlbums");
+                }
+                Dictionary<int, string> pics = new Dictionary<int, string>();
+
+
+                foreach (var item in singles)
+                {
+                    pics.Add(item.Id, item.CoverImage);
+                }
+                var tracks = singles.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Title,
+                    Selected = false
+                }).ToList();
+                model.Tracks = tracks;
+                model.TrackPictures = pics;
+
                 return View(model);
             }
         }

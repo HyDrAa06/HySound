@@ -8,6 +8,8 @@ namespace HySound.ViewModels.User
         public int Id { get; set; }
         [Required]
         [MaxLength(50)]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
+
         public string Name { get; set; }
         [Required]
         [EmailAddress]

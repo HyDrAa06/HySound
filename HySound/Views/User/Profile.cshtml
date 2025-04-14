@@ -55,8 +55,9 @@
 
             <div class="input-group">
                 <label for="username">Потребителско име</label>
-                <input type="text" id="username" name="Name" value="@Model.Name" required>
+                <input asp-for="Name" type="text" id="username" name="Name" value="@Model.Name" required>
                 <div class="char-counter"><span id="userCharCount">0</span>/50</div>
+                <span asp-validation-for="Name"></span>
             </div>
 
             <div class="input-group">

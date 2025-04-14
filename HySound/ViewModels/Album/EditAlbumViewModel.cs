@@ -9,6 +9,8 @@ namespace HySound.ViewModels.Album
 
         [Required]
         [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
+
         public string Title { get; set; }
         public SelectList? UserList { get; set; }
         public int? UserId { get; set; }

@@ -201,6 +201,12 @@ namespace HySound.DataAccess
                     await roleManager.CreateAsync(new IdentityRole("User"));
                 }
 
+                if (!await roleManager.RoleExistsAsync("Artist"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Artist"));
+                }
+
+
                 if (resultA.Succeeded)
                 {
 
@@ -220,99 +226,157 @@ namespace HySound.DataAccess
 
             }
 
-
-            var user = new IdentityUser { UserName = "carti@abv.bg", Email = "carti@abv.bg" };
-            var result = await userManager.CreateAsync(user, "Carti123!");
-
-
-            var user2 = new IdentityUser { UserName = "yeat@abv.bg", Email = "yeat@abv.bg" };
-            var result2 = await userManager.CreateAsync(user2, "Yeat123!");
-
-
-            var user3 = new IdentityUser { UserName = "thug@abv.bg", Email = "thug@abv.bg" };
-            var result3 = await userManager.CreateAsync(user3, "Thug123!");
-
-
             if (Users.Count() <= 1)
             {
 
+
+                var user = new IdentityUser { UserName = "carti@abv.bg", Email = "carti@abv.bg" };
+                var result = await userManager.CreateAsync(user, "Carti123!");
+
+
+                var user2 = new IdentityUser { UserName = "yeat@abv.bg", Email = "yeat@abv.bg" };
+                var result2 = await userManager.CreateAsync(user2, "Yeat123!");
+
+
+                var user3 = new IdentityUser { UserName = "thug@abv.bg", Email = "thug@abv.bg" };
+                var result3 = await userManager.CreateAsync(user3, "Thug123!");
+
+
+                var user4 = new IdentityUser { UserName = "kencarson@abv.bg", Email = "kencarson@abv.bg" };
+                var result4 = await userManager.CreateAsync(user4, "Carson123!");
+
+
+                var user5 = new IdentityUser { UserName = "guns@abv.bg", Email = "guns@abv.bg" };
+                var result5 = await userManager.CreateAsync(user5, "Guns123!");
+
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                if (!await roleManager.RoleExistsAsync("User"))
+                if (!await roleManager.RoleExistsAsync("Artist"))
                 {
-                    await roleManager.CreateAsync(new IdentityRole("User"));
+                    await roleManager.CreateAsync(new IdentityRole("Artist"));
                 }
 
                 if (result.Succeeded)
                 {
 
-                    await userManager.AddToRoleAsync(user, "User");
+                    await userManager.AddToRoleAsync(user, "Artist");
                     User user1 = new User()
                     {
                         Username = "Playboi Carti",
                         Email = "carti@abv.bg",
                         Password = "Carti123!",
                         UserIdentityId = user.Id,
-                        UserIdentity = user
+                        UserIdentity = user,
+                        ProfilePicture= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744657955/rjs2vurjep5jii46caqa.jpg"
                     };
 
                     Users.Add(user1);
                     await SaveChangesAsync();
                     Tracks.AddRange(
-                    new Track() { Title = "Sky", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
-                    new Track() { Title = "EvilJordan", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
-                    new Track() { Title = "Munyun", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                    new Track() { Title = "Vamp Anthem", IsYoutube = true, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744656988/HySound/Tracks/iebmvty3rpadugi7d5sa.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656986/cnlfjdf9upzvf9vvjeak.jpg" },
+                    new Track() { Title = "EvilJordan", IsYoutube = true, AudioUrl = "VcRc2DHHhoM", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
+                    new Track() { Title = "FOMDJ", IsYoutube = true, AudioUrl = "HDTo1Pieha0", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
+                    new Track() { Title = "Rather Lie", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744500643/HySound/Tracks/o3bzrzpprfzld6zlux1v.mp3", UserId = user1.Id, GenreId = 3, CoverImage = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
+                    new Track() { Title = "ALL RED", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744500883/HySound/Tracks/xa0bktsqw6hh1qvhgslw.mp3", UserId = user1.Id, GenreId = 3, CoverImage = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744020245/gylvmkwakjscfnwf4brl.jpg" }
+
                     );
                 }
 
 
-                if (!await roleManager.RoleExistsAsync("User"))
-                {
-                    await roleManager.CreateAsync(new IdentityRole("User"));
-                }
-
+     
                 if (result2.Succeeded)
                 {
 
-                    await userManager.AddToRoleAsync(user, "User");
+                    await userManager.AddToRoleAsync(user2, "Artist");
                     User user1 = new User()
                     {
                         Username = "Yeat",
                         Email = "yeat@abv.bg",
                         Password = "Yeat123!",
                         UserIdentityId = user2.Id,
-                        UserIdentity = user2
+                        UserIdentity = user2,
+                        ProfilePicture = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744657555/jtehrtcgeeuacdlc3duu.jpg"
                     };
                     Users.Add(user1);
 
                     await SaveChangesAsync();
 
                     Tracks.AddRange(
-                          new Track() { Title = "ILUV", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
-                          new Track() { Title = "Swerved It", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                          new Track() { Title = "ILUV", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744657378/HySound/Tracks/iukgt3uxupiqncl1fsiz.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744657374/f5moe7jbrokgzn5yjtqc.jpg" },
+                          new Track() { Title = "Swerved It", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744657330/HySound/Tracks/zxpd4psx4j3d2veke39m.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744657327/ifmtwrz08of9neyo91le.jpg" }
                         );
                 }
 
                 if (result3.Succeeded)
                 {
 
-                    await userManager.AddToRoleAsync(user3, "User");
+                    await userManager.AddToRoleAsync(user3, "Artist");
                     User user1 = new User()
                     {
                         Username = "Young Thug",
                         Email = "thug@abv.bg",
                         Password = "Thug123!",
                         UserIdentityId = user3.Id,
-                        UserIdentity = user3
+                        UserIdentity = user3,
+                        ProfilePicture = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501404/zmqzahfvewlku2nbvuh0.jpg"
                     };
 
                     Users.Add(user1);
                     await SaveChangesAsync();
 
                     Tracks.AddRange(
-                         new Track() { Title = "Ecstasy", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 },
-                         new Track() { Title = "Millions", IsYoutube = true, AudioUrl = "asd", UserId = user1.Id, GenreId = 3 }
+                         new Track() { Title = "Lil Baby", IsYoutube = true, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744501291/HySound/Tracks/uxsge5xgmdd9l5rzdxc8.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501361/i1tmic3zim9brc3ibqtl.png" },
+                         new Track() { Title = "Millions", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744501363/HySound/Tracks/bvnidbwigumniynzb3hv.mp3", UserId = user1.Id, GenreId = 3 , CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501361/i1tmic3zim9brc3ibqtl.png" }
                     );
                 }
+
+
+                if (result4.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user4, "Artist");
+                    User user1 = new User()
+                    {
+                        Username = "KenCarson",
+                        Email = "kencarson@abv.bg",
+                        Password = "Carson123!",
+                        UserIdentityId = user4.Id,
+                        UserIdentity = user4,
+                        ProfilePicture = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744655904/a4am6dg88dpdeaguqe34.jpg"
+                    };
+
+                    Users.Add(user1);
+                    await SaveChangesAsync();
+
+                    Tracks.AddRange(
+                         new Track() { Title = "LiveLeak", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744655825/HySound/Tracks/yyr5ajsicgzfxb5kjs9s.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744655823/fnhfzsfz7axjecbn6bvh.jpg" },
+                         new Track() { Title = "Diamnods", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744655907/HySound/Tracks/up9tgofq9aa7yvngxmoe.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744655823/fnhfzsfz7axjecbn6bvh.jpg" }
+                    );
+                }
+
+
+                if (result5.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user5, "Artist");
+                    User user1 = new User()
+                    {
+                        Username = "Guns N' Roses",
+                        Email = "guns@abv.bg",
+                        Password = "Guns123!",
+                        UserIdentityId = user5.Id,
+                        UserIdentity = user5,
+                        ProfilePicture = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656008/lixyb5iipsyybjudsavz.jpg"
+                    };
+
+                    Users.Add(user1);
+                    await SaveChangesAsync();
+
+                    Tracks.AddRange(
+                         new Track() { Title = "November Rain", IsYoutube = true, AudioUrl = "8SbUC-UaAxE", UserId = user1.Id, GenreId = 13, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656008/lixyb5iipsyybjudsavz.jpg" },
+                         new Track() { Title = "Don't Cry", IsYoutube = true, AudioUrl = "zRIbf6JqkNc", UserId = user1.Id, GenreId = 13, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656008/lixyb5iipsyybjudsavz.jpg" }
+                    );
+                }
+
                 await SaveChangesAsync();
             }
 

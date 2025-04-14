@@ -7,9 +7,11 @@ namespace HySound.ViewModels
     {
         [Required]
         [MaxLength(100)]
-        [RegularExpression(@"\S.*", ErrorMessage = "Заглавието не може да е само празни интервали.")]
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
         public string Title { get; set; }
         public bool IsYoutube { get; set; }
+        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
+
         public string? AudioUrl { get; set; }
         public IFormFile? audioFile { get; set; }
         public IFormFile? imageFile { get; set; }

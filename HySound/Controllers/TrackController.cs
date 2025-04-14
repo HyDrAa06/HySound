@@ -103,6 +103,7 @@ namespace HySound.Controllers
             await trackService.UpdateTrackAsync(track);
             return RedirectToAction("AllTracks");
         }
+
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
@@ -136,6 +137,8 @@ namespace HySound.Controllers
             return View(model);
         }
 
+        [HttpGet]
+
         public async Task<IActionResult> AddTrack()
         {
             var model = new AddTrackViewModel();
@@ -143,6 +146,7 @@ namespace HySound.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddTrack(AddTrackViewModel model)
         {
@@ -293,7 +297,6 @@ namespace HySound.Controllers
         public async Task<IActionResult> AllTracks(TrackFilterViewModel? filter)
         {
             var query = trackService.GetAll().AsQueryable();
-            var playlists = await playlistService.GetAllPlaylistsAsync();
 
 
             if (filter.GenreId == null && string.IsNullOrEmpty(filter.Title))
@@ -321,7 +324,6 @@ namespace HySound.Controllers
                 {
                     Tracks = model,
                     Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
-                    Playlists = playlists.ToList()
 
                 };
                 return View(filterModel);
@@ -359,7 +361,6 @@ namespace HySound.Controllers
                         Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
                         Title = filter.Title,
                         GenreId = filter.GenreId,
-                        Playlists = playlists.ToList()
                     };
 
 
@@ -385,7 +386,6 @@ namespace HySound.Controllers
                         Genres = new SelectList(genreService.GetAll(), "Id", "Name"),
                         Title = filter.Title,
                         GenreId = filter.GenreId,
-                        Playlists = playlists.ToList()
                     };
 
                     return View(filterModel);

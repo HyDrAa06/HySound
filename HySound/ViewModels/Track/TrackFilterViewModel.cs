@@ -13,6 +13,5 @@ namespace HySound.ViewModels.Track
         [Required]
         [MaxLength(100, ErrorMessage = "Полето не може да съдържа повече от 100 символа.")]
         public string? Title { get; set; }
-        public List<HySound.Models.Models.Playlist> Playlists { get; set; }
     }
 }
