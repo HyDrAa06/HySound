@@ -141,7 +141,7 @@ namespace HySound.Controllers
                 if (!query.IsNullOrEmpty())
                 {
                     
-                    model.User = query.Where(x=>x.Id != user.Id)
+                    model.User = query.Where(x=>x.Id != user.Id && x.Id != 1)
                         .Select(x => new UserViewModel()
                         {
                             Bio=x.Bio,
@@ -154,7 +154,7 @@ namespace HySound.Controllers
                         }).ToList();
                 }
             }
-
+            
             return View(model);
         }
         public async Task<IActionResult> Library()

@@ -204,6 +204,8 @@ namespace HySound.Controllers
             {
                 return Json(new { success = false, message = "No track selected." });
             }
+            var tempUser = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userService.GetUserAsync(x => x.Email == tempUser.Email);
 
             if (request.PlaylistIds == null || request.PlaylistIds.Count == 0)
             {
@@ -218,9 +220,13 @@ namespace HySound.Controllers
                     {
                         return Json(new { success = false, message = $"Invalid playlist ID: {playlistId}" });
                     }
-
-                    var track = await trackService.GetTrackByIdAsync(request.TrackId);
                     var playlist = await playlistService.GetPlaylistByIdAsync(playlistId);
+
+                    if (playlist.UserId != user.Id)
+                    {
+                        return Json(new { success = false, message = $"You can't add tracks to this playlist. You didn't create it!" });
+                    }
+                    var track = await trackService.GetTrackByIdAsync(request.TrackId);
                     if (track != null && playlist != null)
                     {
                         await playlistService.AddTrackToPlaylistAsync(playlist, track);

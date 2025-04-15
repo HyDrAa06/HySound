@@ -272,7 +272,7 @@ namespace HySound.DataAccess
                     Users.Add(user1);
                     await SaveChangesAsync();
                     Tracks.AddRange(
-                    new Track() { Title = "Vamp Anthem", IsYoutube = true, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744656988/HySound/Tracks/iebmvty3rpadugi7d5sa.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656986/cnlfjdf9upzvf9vvjeak.jpg" },
+                    new Track() { Title = "Vamp Anthem", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744656988/HySound/Tracks/iebmvty3rpadugi7d5sa.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744656986/cnlfjdf9upzvf9vvjeak.jpg" },
                     new Track() { Title = "EvilJordan", IsYoutube = true, AudioUrl = "VcRc2DHHhoM", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
                     new Track() { Title = "FOMDJ", IsYoutube = true, AudioUrl = "HDTo1Pieha0", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
                     new Track() { Title = "Rather Lie", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744500643/HySound/Tracks/o3bzrzpprfzld6zlux1v.mp3", UserId = user1.Id, GenreId = 3, CoverImage = "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744500537/ym7urjll9uxysp4xscwc.jpg" },
@@ -324,7 +324,7 @@ namespace HySound.DataAccess
                     await SaveChangesAsync();
 
                     Tracks.AddRange(
-                         new Track() { Title = "Lil Baby", IsYoutube = true, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744501291/HySound/Tracks/uxsge5xgmdd9l5rzdxc8.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501361/i1tmic3zim9brc3ibqtl.png" },
+                         new Track() { Title = "Lil Baby", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744501291/HySound/Tracks/uxsge5xgmdd9l5rzdxc8.mp3", UserId = user1.Id, GenreId = 3, CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501361/i1tmic3zim9brc3ibqtl.png" },
                          new Track() { Title = "Millions", IsYoutube = false, AudioUrl = "https://res.cloudinary.com/ddcaeo5xq/raw/upload/v1744501363/HySound/Tracks/bvnidbwigumniynzb3hv.mp3", UserId = user1.Id, GenreId = 3 , CoverImage= "https://res.cloudinary.com/ddcaeo5xq/image/upload/v1744501361/i1tmic3zim9brc3ibqtl.png" }
                     );
                 }
