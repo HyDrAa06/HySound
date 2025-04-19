@@ -323,7 +323,7 @@
             }
         }
 
-        const singlePlayButton = e.target.closest('.play-track-btn');
+        const singlePlayButton = e.target.closest('.play-track-btn, .track-play-btn-home');
         if (singlePlayButton) {
             console.log('Кликнат е бутон за единична песен:', singlePlayButton);
             const file = singlePlayButton.dataset.src;
@@ -478,27 +478,26 @@ function fetchNotifications() {
 
 function markAsRead(id) {
     $.post(`/api/notifications/mark-read/${id}`, function () {
-        fetchNotifications(); // Освежаваме списъка с известия
+        fetchNotifications();
     });
 }
 
-
-        document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const player = document.querySelector('.player-container');
-    const modals = document.querySelectorAll('.modal'); // Select all modals
+    const modals = document.querySelectorAll('.modal');
 
     function togglePlayerVisibility() {
         modals.forEach(modal => {
             if (modal.style.display === 'flex' || modal.style.display === 'block') {
-                player.classList.remove('visible'); // Hide player when modal is open
+                player.classList.remove('visible');
             } else if (!Array.from(modals).some(m => m.style.display === 'flex' || m.style.display === 'block')) {
-                player.classList.add('visible'); // Show player when no modals are open
+                player.classList.add('visible');
             }
         });
     }
 
     modals.forEach(modal => {
-        modal.addEventListener('click', togglePlayerVisibility); // Adjust based on your modal trigger
+        modal.addEventListener('click', togglePlayerVisibility);
     });
 
     const openEditModal = () => {
@@ -518,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const player = document.querySelector('.player-container');
     const body = document.body;
 
-    const playerHeight = player.offsetHeight || 70; // Fallback to 70px if offsetHeight isn't available
+    const playerHeight = player.offsetHeight || 70;
     body.style.paddingBottom = `${playerHeight}px`;
 
     player.classList.add('visible');
