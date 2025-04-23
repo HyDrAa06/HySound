@@ -41,6 +41,7 @@ namespace HySound.Controllers
             {
                 var user = await _userService.GetUserAsync(x => x.Id == request.UserId);
                 await _artistRequestService.ApproveRequestAsync(id,1);
+                
             }
 
             TempData["Message"] = "Request approved!";
@@ -54,6 +55,7 @@ namespace HySound.Controllers
             {
                 await _artistRequestService.DenyRequestAsync(id, 1);
             }
+            
 
             TempData["Message"] = "Request denied!";
             return RedirectToAction("ArtistRequests");

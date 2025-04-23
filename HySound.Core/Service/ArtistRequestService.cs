@@ -57,7 +57,9 @@ namespace HySound.Core.Service
                 }
             }
 
+            User userToDeleteRequests = await _userRepository.GetAsync(x => x.UserIdentityId == user.Id);
             await _requestRepository.UpdateAsync(request);
+            await DeleteAsync(userToDeleteRequests.Id);
         }
 
         public async Task DenyRequestAsync(int requestId, int adminId)
@@ -71,7 +73,11 @@ namespace HySound.Core.Service
             request.Status = "denied";
             request.AdminId = adminId;
 
+            var user = await _userManager.FindByIdAsync(request.IdentityUserId);
+
+            User userToDeleteRequests = await _userRepository.GetAsync(x => x.UserIdentityId == user.Id);
             await _requestRepository.UpdateAsync(request);
+            await DeleteAsync(userToDeleteRequests.Id);
         }
 
         public async Task<ArtistRequest> GetByIdAsync(int id)
