@@ -17,7 +17,10 @@ namespace HySound.ViewModels.Account
         public string Username { get; set; }
 
         [Required]
-        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
+        [MinLength(8, ErrorMessage = "Полето трябва да съдържа поне 8 символа.")]
+        [MaxLength(50, ErrorMessage = "Полето не може да съдържа повече от 50 символа.")]
+        [RegularExpression(@"^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s:]).{8,}$",
+    ErrorMessage = "Паролата трябва да има малка и главна буква, цифра, символ и да не започва с интервал.")]
         [DataType(DataType.Password)]
 
         public string Password { get; set; }
@@ -27,8 +30,10 @@ namespace HySound.ViewModels.Account
         [MinLength(8, ErrorMessage = "Полето трябва да съдържа поне 8 символа.")]
         [MaxLength(50, ErrorMessage = "Полето не може да съдържа повече от 50 символа.")]
         [DataType(DataType.Password)]
-        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
-        [Compare("Password", ErrorMessage = "The passwords do not match.")]
+        [RegularExpression(@"^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s:]).{8,}$",
+    ErrorMessage = "Паролата трябва да има малка и главна буква, цифра, символ и да не започва с интервал.")]
+
+        [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
 
         public string ConfirmPassword { get; set; }
     }

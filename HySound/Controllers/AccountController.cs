@@ -58,9 +58,10 @@ namespace HySound.Controllers
                 }
 
 
-                ModelState.AddModelError("", "Invalid login attempt.");
+                ModelState.AddModelError("Password", "Грешен имейл или парола. ");
 
             }
+
             return View(model);
 
         }
@@ -73,6 +74,14 @@ namespace HySound.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Потребител с този имейл вече е регистриран.");
+                    return View(model);
+                }
+
                 var user = new IdentityUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 

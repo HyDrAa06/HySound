@@ -15,8 +15,9 @@ namespace HySound.ViewModels.Account
         [Required]
         [MinLength(8, ErrorMessage = "Полето трябва да съдържа поне 8 символа.")]
         [MaxLength(50, ErrorMessage = "Полето не може да съдържа повече от 50 символа.")]
-        [RegularExpression(@"^\S.*$", ErrorMessage = "Полето не трябва да започва с интервал.")]
         [DataType(DataType.Password)]
+        [RegularExpression(@"^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s:]).{8,}$",
+    ErrorMessage = "Паролата трябва да има малка и главна буква, цифра, символ и да не започва с интервал.")]
 
         public string Password { get; set; }
 

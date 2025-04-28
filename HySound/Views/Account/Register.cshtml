@@ -28,8 +28,9 @@
             <div class="input-with-icon">
                 <i class="fa fa-lock register-input-icon"></i>
                 <input asp-for="Password" class="register-input-field" type="password" placeholder="Въведи парола" required />
-                <span asp-validation-for="Password" class="validation-error"></span>
             </div>
+            <span asp-validation-for="Password" class="validation-error"></span>
+
         </div>
 
         <div class="register-input-group">
@@ -37,8 +38,9 @@
             <div class="input-with-icon">
                 <i class="fa fa-lock register-input-icon"></i>
                 <input asp-for="ConfirmPassword" class="register-input-field" type="password" placeholder="Потвърди паролата" required />
-                <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
             </div>
+            <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+
         </div>
 
         <button type="submit" class="register-btn register-btn-green">
@@ -172,7 +174,11 @@
         color: var(--error-color);
         font-size: 0.8rem;
         margin-top: 0.3rem;
+        white-space: normal; 
+        word-break: break-word; 
+        overflow-wrap: break-word; 
     }
+
 
     .register-btn {
         padding: 1rem;
